@@ -5,22 +5,11 @@ CoordMode, Pixel, Relative
 
 Initialize()
 
-;////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-;//////////////////////////////////////////////CONFIG////////////////////////////////////////////////////////////
-;////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-WINID = KanColleViewer!
-
-;Manual input of remaining time for expeditions started before script. MUST BE UPDATED EVERY TIME YOU OPEN THE SCRIPT.
-;Use -1 to disable scripting for that fleet. AKA the fleet is not on an exped currently and do not wish to script.
-;Use 0 to resupply and send fleet when script starts
-;Can be used in conjunction with SetExped[n] := 0 to accept a returning exped without resending it.
-;Two syntax available. 2 Hours, 30 Mins, 50 Secs is RT2 := "2h30m50s" Do NOT forget quotation marks.
-;Alternatively, RT2 := 9050000 (milliseconds). Do not use quotation marks if entering milliseconds.
+IniRead, WINID, config.ini, Variables, WINID, KanColleViewer!
 
 ;Variable Delays
 
-LoadingDelay   := 4000      ;Most important delay, server response delay.  No lower than 4000.
+IniRead, LoadingDelay, config.ini, Variables, LoadingDelay, 5000    ;Most important delay, server response delay.  No lower than 4000.
 IniRead, MinRandomWait, config.ini, Variables, MinRandomWait, 4000		;Minimum time to wait after exped returns.
 IniRead, MaxRandomWait, config.ini, Variables, MaxRandomWait, 300000	;Maximum time to wait after exped returns.
 
@@ -32,16 +21,6 @@ SendDelay      := 4000      ;Used for expedition sending animation
 MiscDelay      := 1000      ;Delay for actions with little to no animation time
 
 RTI := 2000 ;Refresh interval for GUI
-
-;HOW TO USE: While on home menu in KanColle, run this script.
-;WARNINGS: Do not minimize KanColle. Do not change the size of flash (keep at 100%)
-;If you are using a browser to play, open a separate window just for KanColle. Will not work when hidden in tabs.
-;After the script runs, all automated clicks will be done in background so KanColle does not have to be visible.
-
-
-;////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-;//////////////////////////////////////////////ENDCONFIG/////////////////////////////////////////////////////////
-;////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 ;CM: 1=Home, 2=Resupply, 3=SortieMenu, 4=ExpedList
 
@@ -295,12 +274,14 @@ Queue:
             return
         }
     }Until Q.MaxIndex() = ""
+	GuiControl,, NB, Idle
     return
 }    
 
 Resupply(r)
 {
     global
+	GuiControl,, NB, Resupplying...
     if CM = 1
         ControlClick, x%Rx% y%Ry%, %WINID%
     else if CM > 2
@@ -311,6 +292,7 @@ Resupply(r)
     }
     CM := 2
     Sleep MiscDelay
+	GuiControl,, NB, Resupplying expedition %r%
     if r = 2
         ControlClick, x%2Rx% y%234Ry%, %WINID%
     else if r = 3
@@ -329,6 +311,7 @@ SendExp(n)
     global
     if SetExped[n] != 0
     {
+		GuiControl,, NB, Sending...
         td := SetExped[n]
         te := Eh[td]
         if (CM != 4 and CM != 1)
@@ -346,6 +329,7 @@ SendExp(n)
             CM := 4
 			Sleep LoadingDelay
         }
+		GuiControl,, NB, Sending expedition %n%
         if td >  32
         {
             tf := PGx[5]
