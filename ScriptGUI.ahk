@@ -1,4 +1,4 @@
-﻿;KANCOLLE AHK EXPEDITION SCRIPT GUI V0.91 4/5/15
+﻿;KANCOLLE AHK EXPEDITION SCRIPT GUI V0.92 4/6/15
 #Persistent
 #SingleInstance
 CoordMode, Pixel, Relative
@@ -42,6 +42,8 @@ ClockDelay     := -59000   	;Set your clock delay (normally around -59000 to be 
 ReturnDelay    := 8000    	;Used for expedition returning animation (AT LEAST 8 SECONDS)
 SendDelay      := 4000      ;Used for expedition sending animation
 MiscDelay      := 1000      ;Delay for actions with little to no animation time
+
+RTI := 2000 ;Refresh interval for GUI
 
 ;HOW TO USE: While on home menu in KanColle, run this script.
 ;WARNINGS: Do not minimize KanColle. Do not change the size of flash (keep at 100%)
@@ -96,6 +98,7 @@ if ErrorLevel = 0
     PGy := FoundY - 20
     CM := 1
     RC := 0
+	TO := 0
     index := 1
     Loop
     {
@@ -113,10 +116,13 @@ if ErrorLevel = 0
         index += 1
     }Until index = 9
 	
-	Gui, GUI: New
+	Gui, 1: New
+	Gui, 1: Default
 	Gui, Add, Text,,Exped 2:
 	Gui, Add, Text, y+27, Exped 3:
 	Gui, Add, Text, y+27, Exped 4:
+	Gui, Add, Edit, y+50 r1 w20 vNB ReadOnly
+	GuiControl, Move, NB, w330
 	Gui, Add, Edit, gESE2 r2 limit4 w20 vSE2 -VScroll ym
 	GuiControl, Move, SE2, h20
 	Gui, Add, Edit, gESE3 r2 limit4 w20 vSE3 -VScroll
@@ -124,7 +130,7 @@ if ErrorLevel = 0
 	Gui, Add, Edit, gESE4 r2 limit4 w20 vSE4 -VScroll
 	GuiControl, Move, SE4, h20
 
-	Gui, Add, Text,ym x+30,Remaining Time:
+	Gui, Add, Text,ym x+25,Remaining Time:
 	Gui, Add, Text,y+27,Remaining Time:
 	Gui, Add, Text,y+27,Remaining Time:
 	Gui, Add, Edit, ReadOnly gERT2 r2 w60 vTRT2 -VScroll ym
@@ -134,7 +140,14 @@ if ErrorLevel = 0
 	Gui, Add, Edit, ReadOnly gERT4 r2 w60 vTRT4 -VScroll
 	GuiControl, Move, TRT4, h20
 	Gui, Add, Button, gSEButton vSEB, Send Expeditions
+	Gui, Add, Text, vT2 ym, 00:00:00
+	GuiControl, Move, T2, x275
+	Gui, Add, Text, vT3 y+27, 00:00:00
+	GuiControl, Move, T3, x275
+	Gui, Add, Text, vT4 y+27, 00:00:00
+	GuiControl, Move, T4, x275
 	GuiControl, Hide, SEB
+	GuiControl, Focus, SE2
 	Gui, Show
 }
 else
@@ -162,6 +175,8 @@ return
 			}
 			n += 1
 		}Until n > 4
+		SRS := Round(SR/60000,2)
+		GuiControl,, NB, Expedition 2 returning - Delay: %SRS% minutes
 		Sleep SR
         goto Queue
     }
@@ -188,6 +203,8 @@ return
 			}
 			n += 1
 		}Until n > 4
+		SRS := Round(SR/60000,2)
+		GuiControl,, NB, Expedition 3 returning - Delay: %SRS% minutes
 		Sleep SR
         goto Queue
     }
@@ -214,6 +231,8 @@ return
 			}
 			n += 1
 		}Until n > 4
+		SRS := Round(SR/60000,2)
+		GuiControl,, NB, Expedition 4 returning - Delay: %SRS% minutes
 		Sleep SR
         goto Queue
     }
@@ -390,6 +409,13 @@ SendExp(n)
     }
 }
 
+GetRemainingTime(expedn) 
+{	
+	global
+	return (TCS[expedn]+TCL[expedn]-A_TickCount)
+}
+	
+
 HMS2MS(ss)
 {
     global
@@ -429,10 +455,27 @@ HMS2MS(ss)
     return tt
 }
 
-GetRemainingTime(expedn) 
-{	
-	global
-	return (TCS[expedn]+TCL[expedn]-A_TickCount)
+MS2HMS(ms)
+{
+	var := Floor(ms/3600000)
+	ms := ms - var*3600000
+	if (var<10) 
+		tString := "0" . var . ":"
+	else 
+		tString := var . ":"
+	
+	var := Floor(ms/60000)
+	ms := ms - var*60000
+	if (var<10) 
+		tString := tString . "0" . var . ":"
+	else 
+		tString := tString . var . ":"
+	var := Floor(ms/1000)
+	if (var<10) 
+		tString := tString . "0" . var
+	else 
+		tString := tString . var
+	return tString
 }
 
 ESE2:
@@ -448,13 +491,16 @@ ESE2:
 		{
 			if SetExped[2] = 0
 			{
-				MsgBox Expedition will not be resent
+				GuiControl,, NB, Expedition 2 will not be resent
+			}else{
+				GuiControl,, NB, Expedition 2 set
 			}
 			GuiControl, % "-Readonly", TRT2
+			GuiControl, Focus, TRT2
 		}
 		else
 		{
-			MsgBox Invalid Expedition
+			GuiControl,, NB, Invalid expedition for fleet 2
 		}
 	}
 }
@@ -472,13 +518,16 @@ ESE3:
 		{
 			if SetExped[3] = 0
 			{
-				MsgBox Expedition will not be resent
+				GuiControl,, NB, Expedition 3 will not be resent
+			}else{
+				GuiControl,, NB, Expedition 3 set
 			}
 			GuiControl, % "-Readonly", TRT3
+			GuiControl, Focus, TRT3
 		}
 		else
 		{
-			MsgBox Invalid Expedition
+			GuiControl,, NB, Invalid expedition for fleet 3
 		}
 	}
 }
@@ -496,19 +545,22 @@ ESE4:
 		{
 			if SetExped[4] = 0
 			{
-				MsgBox Expedition will not be resent
+				GuiControl,, NB, Expedition 4 will not be resent
+			}else{
+				GuiControl,, NB, Expedition 4 set
 			}
 			GuiControl, % "-Readonly", TRT4
+			GuiControl, Focus, TRT4
 		}
 		else
 		{
-			MsgBox Invalid Expedition
+			GuiControl,, NB, Invalid expedition for fleet 4
 		}
 	}
 }
 
 ERT2:
-{
+{	
 	Gui, Submit, NoHide
 	if TRT2 contains `n
 	{
@@ -526,7 +578,7 @@ ERT2:
 					GuiControl, Show, SEB
 					IB := 1
 				}
-				MsgBox Expedition is ready to be refueled and sent
+				GuiControl,, NB, Expedition 2 is ready to be refueled and sent
 			}
 			else if RT2 != -1
 			{
@@ -538,12 +590,24 @@ ERT2:
 				TCS[2] := A_TickCount
 				TCL[2] := -ta
 				SetTimer, 2Return, %ta%
-				MsgBox Remaining time set
+				GuiControl,, NB, Remaining time for fleet 2 set
+				GuiControl, % "+ReadOnly", TRT2
+				GuiControl, Focus, SE3
+				if TO = 0
+				{
+					SetTimer, Refresh, %RTI%
+					TO := 1
+				}
+				CDT[2] := 1				
 			}
-			else MsgBox Expedition Disabled
+			else {
+				GuiControl,, NB, Expedition 2 disabled
+				GuiControl,, T2, 00:00:00
+				CDT[2] := 0
+			}
 		}
 	}
-return
+	return
 }
 
 ERT3:
@@ -565,7 +629,7 @@ ERT3:
 					GuiControl, Show, SEB
 					IB := 1
 				}
-				MsgBox Expedition is ready to be refueled and sent
+				GuiControl,, NB, Expedition 3 is ready to be refueled and sent
 			}
 			else if RT3 != -1
 			{
@@ -577,12 +641,25 @@ ERT3:
 				TCS[3] := A_TickCount
 				TCL[3] := -ta
 				SetTimer, 3Return, %ta%
-				MsgBox Remaining time set
+				GuiControl,, NB, Remaining time for fleet 3 set
+				GuiControl, % "+Readonly", TRT3
+				GuiControl, Focus, SE4
+				if TO = 0
+				{
+					SetTimer, Refresh, %RTI%
+					TO := 1
+				}
+				CDT[3] := 1	
 			}
-			else MsgBox Expedition Disabled
+			else
+			{
+				GuiControl,, NB, Expedition 3 disabled
+				GuiControl,, T3, 00:00:00
+				CDT[3] := 0
+			}
 		}
 	}
-return
+	return
 }
 
 ERT4:
@@ -604,7 +681,7 @@ ERT4:
 					GuiControl, Show, SEB
 					IB := 1
 				}
-				MsgBox Expedition is ready to be refueled and sent
+				GuiControl,, NB, Expedition 4 is ready to be refueled and sent
 			}
 			else if RT4 != -1
 			{
@@ -616,12 +693,24 @@ ERT4:
 				TCS[4] := A_TickCount
 				TCL[4] := -ta
 				SetTimer, 4Return, %ta%
-				MsgBox Remaining time set
+				GuiControl,, NB, Remaining time for fleet 4 set
+				GuiControl, % "+Readonly", TRT4
+				if TO = 0
+				{
+					SetTimer, Refresh, %RTI%
+					TO := 1
+				}
+				CDT[4] := 1	
 			}
-			else MsgBox Expedition Disabled
+			else
+			{
+				GuiControl,, NB, Expedition 4 disabled
+				GuiControl,, T4, 00:00:00
+				CDT[4] := 0
+			}
 		}
 	}
-return
+	return
 }
 
 SEButton:
@@ -634,7 +723,25 @@ SEButton:
         goto Queue
     }
 }
-	
+
+Refresh:
+{
+	if CDT[2] = 1 
+	{
+		tSS := MS2HMS(GetRemainingTime(2))
+		GuiControl,, T2, %tSS%
+	}	
+	if CDT[3] = 1 
+	{
+		tSS := MS2HMS(GetRemainingTime(3))
+		GuiControl,, T3, %tSS%
+	}	
+	if CDT[4] = 1 
+	{
+		tSS := MS2HMS(GetRemainingTime(4))
+		GuiControl,, T4, %tSS%
+	}	
+}
 
 Initialize()
 {
@@ -645,13 +752,20 @@ Initialize()
     PGx := Array(item)
 	TCS := Array(item)
 	TCL := Array(item)
+	CDT := Array(item)
     Q := Array()
+	TRT2 := 0
+	TRT3 := 0
+	TRT4 := 0
 	TCS[2] := 0
 	TCS[3] := 0
 	TCS[4] := 0
 	TCL[2] := 0
 	TCL[3] := 0
 	TCL[4] := 0
+	CDT[2] := 0
+	CDT[3] := 0
+	CDT[4] := 0
     ET[1] := 900000
     ET[2] := 1800000
     ET[3] := 1200000
@@ -702,6 +816,7 @@ Initialize()
 ;Remove image search requirement. Possibly a pixel search alternative.
 
 ;ChangeLog
+;0.92: Improved GUI, Added countdown timer and notification bar
 ;0.91: Fixed all remaining times updating when pressing enter.
 ;0.9: GUI Interface
 ;0.8: Added a new detection method of overlapping returning fleets. Added support for expedition 32. Reformatted and simplified configuration instructions.
