@@ -1,4 +1,4 @@
-﻿;KANCOLLE AHK EXPEDITION SCRIPT GUI V0.93 4/6/15
+﻿;KANCOLLE AHK EXPEDITION SCRIPT GUI V0.95 4/6/15
 #Persistent
 #SingleInstance
 CoordMode, Pixel, Relative
@@ -11,18 +11,6 @@ Initialize()
 
 WINID = KanColleViewer!
 
-;Expedition
-
-;SetExped[2] := 0         	;Set Expedition for Fleet 2, etc.
-;SetExped[3] := 0        	;You may disable fleet scripting with value 0.
-;SetExped[4] := 0		;Can be used with a Remaining Time for a returning exped that you do not wish to resend.
-
-;Remaining Time
-
-;RT2 := 0
-;RT3 := 0
-;RT4 := 0
-
 ;Manual input of remaining time for expeditions started before script. MUST BE UPDATED EVERY TIME YOU OPEN THE SCRIPT.
 ;Use -1 to disable scripting for that fleet. AKA the fleet is not on an exped currently and do not wish to script.
 ;Use 0 to resupply and send fleet when script starts
@@ -33,8 +21,8 @@ WINID = KanColleViewer!
 ;Variable Delays
 
 LoadingDelay   := 4000      ;Most important delay, server response delay.  No lower than 4000.
-MinRandomWait  := 4000		;Minimum time to wait after exped returns.
-MaxRandomWait  := 300000	;Maximum time to wait after exped returns.
+IniRead, MinRandomWait, config.ini, Variables, MinRandomWait, 4000		;Minimum time to wait after exped returns.
+IniRead, MaxRandomWait, config.ini, Variables, MaxRandomWait, 300000	;Maximum time to wait after exped returns.
 
 ;Constant Delays
 
@@ -118,37 +106,44 @@ if ErrorLevel = 0
 	
 	Gui, 1: New
 	Gui, 1: Default
-	Gui, Add, Text,,Exped 2:
-	Gui, Add, Text, y+27, Exped 3:
-	Gui, Add, Text, y+27, Exped 4:
-	Gui, Add, Edit, y+50 r1 w20 vNB ReadOnly
-	GuiControl, Move, NB, w330
-	Gui, Add, Edit, gESE2 r2 limit4 w20 vSE2 -VScroll ym
+	Gui, Add, Text,, Exped 2:
+	Gui, Add, Text,, Exped 3:
+	Gui, Add, Text,, Exped 4:
+	Gui, Add, Text,, MinWait:
+	Gui, Add, Text,, MaxWait:
+	Gui, Add, Edit, r1 w20 vNB ReadOnly
+	GuiControl, Move, NB, w300 y139
+	IniRead, tSetExped, config.ini, Variables, SetExped2, %A_Space%
+	Gui, Add, Edit, gESE2 r2 limit4 w20 vSE2 -VScroll ym, %tSetExped%
 	GuiControl, Move, SE2, h20
-	Gui, Add, Edit, gESE3 r2 limit4 w20 vSE3 -VScroll
-	GuiControl, Move, SE3, h20
-	Gui, Add, Edit, gESE4 r2 limit4 w20 vSE4 -VScroll
-	GuiControl, Move, SE4, h20
-
-	Gui, Add, Text,ym x+25,Remaining Time:
-	Gui, Add, Text,y+27,Remaining Time:
-	Gui, Add, Text,y+27,Remaining Time:
+	IniRead, tSetExped, config.ini, Variables, SetExped3, %A_Space%
+	Gui, Add, Edit, gESE3 r2 limit4 w20 vSE3 -VScroll, %tSetExped%
+	GuiControl, Move, SE3, h20 y32
+	IniRead, tSetExped, config.ini, Variables, SetExped4, %A_Space%
+	Gui, Add, Edit, gESE4 r2 limit4 w20 vSE4 -VScroll, %tSetExped%
+	GuiControl, Move, SE4, h20 y58
+	Gui, Add, Edit, gMiW r2 w20 vmid -VScroll, %MinRandomWait%
+	GuiControl, Move, mid, h20 y85 w80
+	Gui, Add, Edit, gMaW r2 w20 vmad -VScroll, %MaxRandomWait%
+	GuiControl, Move, mad, h20 y112 w80
+	Gui, Add, Text,ym x+20,Remaining Time:
+	Gui, Add, Text,,Remaining Time:
+	Gui, Add, Text,,Remaining Time:
 	Gui, Add, Edit, ReadOnly gERT2 r2 w60 vTRT2 -VScroll ym
 	GuiControl, Move, TRT2, h20
 	Gui, Add, Edit, ReadOnly gERT3 r2 w60 vTRT3 -VScroll
-	GuiControl, Move, TRT3, h20
+	GuiControl, Move, TRT3, h20 y32
 	Gui, Add, Edit, ReadOnly gERT4 r2 w60 vTRT4 -VScroll
-	GuiControl, Move, TRT4, h20
-	Gui, Add, Button, gSEButton vSEB, Send Expeditions
+	GuiControl, Move, TRT4, h20 y58
 	Gui, Add, Text, vT2 ym, 00:00:00
-	GuiControl, Move, T2, x275
-	Gui, Add, Text, vT3 y+27, 00:00:00
-	GuiControl, Move, T3, x275
-	Gui, Add, Text, vT4 y+27, 00:00:00
-	GuiControl, Move, T4, x275
+	Gui, Add, Text, vT3, 00:00:00
+	Gui, Add, Text, vT4, 00:00:00
+	Gui, Add, Button, gSEButton vSEB, A
+	GuiControl, Move, SEB, x210 y83 w95
+	GuiControl,,SEB, Send Expeditions
 	GuiControl, Hide, SEB
 	GuiControl, Focus, SE2
-	Gui, Show
+	Gui, Show, Autosize
 }
 else
 {
@@ -177,6 +172,7 @@ return
 		}Until n > 4
 		SRS := Round(SR/60000,2)
 		GuiControl,, NB, Expedition 2 returning - Delay: %SRS% minutes
+		CDT[2] := 0
 		Sleep SR
         goto Queue
     }
@@ -205,6 +201,7 @@ return
 		}Until n > 4
 		SRS := Round(SR/60000,2)
 		GuiControl,, NB, Expedition 3 returning - Delay: %SRS% minutes
+		CDT[3] := 0
 		Sleep SR
         goto Queue
     }
@@ -233,6 +230,7 @@ return
 		}Until n > 4
 		SRS := Round(SR/60000,2)
 		GuiControl,, NB, Expedition 4 returning - Delay: %SRS% minutes
+		CDT[4] := 0
 		Sleep SR
         goto Queue
     }
@@ -453,7 +451,7 @@ HMS2MS(ss)
                 tt := tt+ii*1000
             else
             {
-                MsgBox Invalid Time Input
+                GuiControl,, NB, Invalid time input
                 Exit
             }
             ii := 0
@@ -486,6 +484,34 @@ MS2HMS(ms)
 	return tString
 }
 
+MiW:
+{
+	Gui, submit,nohide
+	if mid contains `n
+	{
+		StringReplace, mid, mid, `n,,All
+		GuiControl,, mid, %mid%
+		Send, {end}
+		MinRandomWait := mid
+		IniWrite,%mid%,config.ini,Variables,MinRandomWait
+		GuiControl,, NB, Changed minimum random delay
+	}
+}
+
+MaW:
+{
+	Gui, submit,nohide
+	if mad contains `n
+	{
+		StringReplace, mad, mad, `n,,All
+		GuiControl,, mad, %mad%
+		Send, {end}
+		MaxRandomWait := mad
+		IniWrite,%mad%,config.ini,Variables,MaxRandomWait
+		GuiControl,, NB, Changed max random delay
+	}
+}
+
 ESE2:
 {
 	Gui, submit,nohide
@@ -503,6 +529,8 @@ ESE2:
 			}else{
 				GuiControl,, NB, Expedition 2 set
 			}
+			tSetExped := SetExped[2]
+			IniWrite,%tSetExped%,config.ini,Variables,SetExped2
 			GuiControl, % "-Readonly", TRT2
 			GuiControl, Focus, TRT2
 		}
@@ -530,6 +558,8 @@ ESE3:
 			}else{
 				GuiControl,, NB, Expedition 3 set
 			}
+			tSetExped := SetExped[3]
+			IniWrite,%tSetExped%,config.ini,Variables,SetExped3
 			GuiControl, % "-Readonly", TRT3
 			GuiControl, Focus, TRT3
 		}
@@ -557,6 +587,8 @@ ESE4:
 			}else{
 				GuiControl,, NB, Expedition 4 set
 			}
+			tSetExped := SetExped[4]
+			IniWrite,%tSetExped%,config.ini,Variables,SetExped4
 			GuiControl, % "-Readonly", TRT4
 			GuiControl, Focus, TRT4
 		}
@@ -749,7 +781,7 @@ Refresh:
 		tSS := MS2HMS(GetRemainingTime(4))
 		GuiControl,, T4, %tSS%
 	}
-	if (CDT[2] = 0 and CDT[3] = 0 and CDT[4] = 0
+	if (CDT[2] = 0 and CDT[3] = 0 and CDT[4] = 0)
 	{
 		SetTimer, Refresh, Off
 		TO := 0
@@ -829,6 +861,7 @@ Initialize()
 ;Remove image search requirement. Possibly a pixel search alternative.
 
 ;ChangeLog
+;0.95: Added support for INI file for saved values, repositioned GUI controls
 ;0.92: Improved GUI, Added countdown timer and notification bar
 ;0.91: Fixed all remaining times updating when pressing enter.
 ;0.9: GUI Interface
