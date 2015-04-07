@@ -1,4 +1,4 @@
-﻿;KANCOLLE AHK EXPEDITION SCRIPT GUI V0.95 4/6/15
+﻿;KANCOLLE AHK EXPEDITION SCRIPT GUI V0.96 4/6/15
 #Persistent
 #SingleInstance
 CoordMode, Pixel, Relative
@@ -229,7 +229,7 @@ Queue:
 		{
 			ControlClick, x%Hx% y%Hy%, %WINID%
 		}
-		else if Skip = 0
+		else
 		{
 			ControlClick, x%Rx% y%Ry%, %WINID%
 			Sleep MiscDelay
@@ -594,6 +594,17 @@ ERT2:
 		RT2 := TRT2
 		if RT2 != ""
 		{
+			if Q.MaxIndex() > 0
+			{
+				qi := 1
+			    Loop
+				{
+					if Q[qi] = 2 {
+						Q.Remove(qi)
+					}
+					qi += 1
+				}Until qi > Q.MaxIndex()
+			}
 			if TRT2 = 0
 			{
 				Q.Insert(2)
@@ -603,6 +614,8 @@ ERT2:
 					IB := 1
 				}
 				GuiControl,, NB, Expedition 2 is ready to be refueled and sent
+				GuiControl, % "+ReadOnly", TRT2
+				GuiControl, Focus, SE3
 			}
 			else if RT2 != -1
 			{
@@ -628,6 +641,8 @@ ERT2:
 				GuiControl,, NB, Expedition 2 disabled
 				GuiControl,, T2, 00:00:00
 				CDT[2] := 0
+				GuiControl, % "+ReadOnly", TRT2
+				GuiControl, Focus, SE3
 			}
 		}
 	}
@@ -645,6 +660,17 @@ ERT3:
 		RT3 := TRT3
 		if RT3 != ""
 		{
+			if Q.MaxIndex() > 0
+			{
+				qi := 1
+			    Loop
+				{
+					if Q[qi] = 3 {
+						Q.Remove(qi)
+					}
+					qi += 1
+				}Until qi > Q.MaxIndex()
+			}
 			if RT3 = 0
 			{
 				Q.Insert(3)
@@ -654,6 +680,8 @@ ERT3:
 					IB := 1
 				}
 				GuiControl,, NB, Expedition 3 is ready to be refueled and sent
+				GuiControl, % "+Readonly", TRT3
+				GuiControl, Focus, SE4
 			}
 			else if RT3 != -1
 			{
@@ -680,6 +708,8 @@ ERT3:
 				GuiControl,, NB, Expedition 3 disabled
 				GuiControl,, T3, 00:00:00
 				CDT[3] := 0
+				GuiControl, % "+Readonly", TRT3
+				GuiControl, Focus, SE4
 			}
 		}
 	}
@@ -697,6 +727,17 @@ ERT4:
 		RT4 := TRT4
 		if RT4 != ""
 		{
+			if Q.MaxIndex() > 0
+			{
+				qi := 1
+			    Loop
+				{
+					if Q[qi] = 4 {
+						Q.Remove(qi)
+					}
+					qi += 1
+				}Until qi > Q.MaxIndex()
+			}
 			if RT4 = 0
 			{
 				Q.Insert(4)
@@ -706,6 +747,7 @@ ERT4:
 					IB := 1
 				}
 				GuiControl,, NB, Expedition 4 is ready to be refueled and sent
+				GuiControl, % "+Readonly", TRT4
 			}
 			else if RT4 != -1
 			{
@@ -731,6 +773,7 @@ ERT4:
 				GuiControl,, NB, Expedition 4 disabled
 				GuiControl,, T4, 00:00:00
 				CDT[4] := 0
+				GuiControl, % "+Readonly", TRT4
 			}
 		}
 	}
