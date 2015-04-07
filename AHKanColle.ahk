@@ -82,7 +82,7 @@ if ErrorLevel = 0
         ;MsgBox % "Eh[" . index2 . "] is " . Eh[index2]
         index += 1
     }Until index = 9
-	
+	IniRead, iDOL, config.ini, Variables, iDOL, 0
 	Gui, 1: New
 	Gui, 1: Default
 	Gui, Add, Text,, Exped 2:
@@ -118,9 +118,11 @@ if ErrorLevel = 0
 	Gui, Add, Text, vT3, 00:00:00
 	Gui, Add, Text, vT4, 00:00:00
 	Gui, Add, Button, gSEButton vSEB, A
-	GuiControl, Move, SEB, x210 y83 w95
+	GuiControl, Move, SEB, x210 y110 w95
 	GuiControl,,SEB, Send Expeditions
 	GuiControl, Hide, SEB
+	Menu, Main, Add, Pause, Pause2
+	Gui, Menu, Main
 	GuiControl, Focus, SE2
 	Gui, Show, Autosize
 }
@@ -274,6 +276,11 @@ Queue:
             return
         }
     }Until Q.MaxIndex() = ""
+	if iDOL = 1 
+	{
+		ControlClick, x%Hx% y%Hy%, %WINID%
+		CM := 1	
+	}	
 	GuiControl,, NB, Idle
     return
 }    
@@ -480,6 +487,7 @@ MiW:
 		IniWrite,%mid%,config.ini,Variables,MinRandomWait
 		GuiControl,, NB, Changed minimum random delay
 	}
+	return
 }
 
 MaW:
@@ -494,6 +502,7 @@ MaW:
 		IniWrite,%mad%,config.ini,Variables,MaxRandomWait
 		GuiControl,, NB, Changed max random delay
 	}
+	return
 }
 
 ESE2:
@@ -523,6 +532,7 @@ ESE2:
 			GuiControl,, NB, Invalid expedition for fleet 2
 		}
 	}
+	return
 }
 
 ESE3:
@@ -552,6 +562,7 @@ ESE3:
 			GuiControl,, NB, Invalid expedition for fleet 3
 		}
 	}
+	return
 }
 
 ESE4:
@@ -581,6 +592,7 @@ ESE4:
 			GuiControl,, NB, Invalid expedition for fleet 4
 		}
 	}
+	return
 }
 
 ERT2:
@@ -789,6 +801,7 @@ SEButton:
 		Skip := 1
         goto Queue
     }
+	return
 }
 
 Refresh:
@@ -813,7 +826,15 @@ Refresh:
 		SetTimer, Refresh, Off
 		TO := 0
 	}
+	return
 }
+
+Pause2:
+{
+	Pause
+}
+
+Pause::Pause
 
 Initialize()
 {
