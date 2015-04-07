@@ -1,17 +1,21 @@
 AHKanColle Script
+
 by Ryuuhou
+
 README 4/6/15
+--
 
 >scripting
 
 >kuso ttk
 
-Requirements: AHK_L
+## Requirements: 
+
+*AHK_L
 
 AHK click script for KanColle expeditions
 
-HOW TO USE:
-
+## HOW TO USE:
 Set which expedition each fleet will run, press ENTER to submit.  
 Use expedition 0 to disable resending that fleet.
 
@@ -27,7 +31,7 @@ If you are not playing with KanColleViewer, add an entry in the config.ini file 
 
 If using a browser, the name of window will usually be in the titlebar.
 
-WARNINGS:
+## WARNINGS:
 Although this script was designed to work in background, certain applications may lose focus while scripting.
 
 Do NOT minimize browser/KCV, mouse clicks do not work while minimized. It can be behind other windows.
