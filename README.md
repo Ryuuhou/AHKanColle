@@ -1,9 +1,9 @@
 AHKanColle Script
+--
 
 by Ryuuhou
 
 README 4/6/15
---
 
 >scripting
 
