@@ -1,3 +1,5 @@
+
+AHKanColle (Click script for KanColle expeditions)
 --
 
 by Ryuuhou
