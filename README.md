@@ -1,4 +1,3 @@
-AHKanColle Script
 --
 
 by Ryuuhou
@@ -13,7 +12,6 @@ README 4/6/15
 
 *AHK_L
 
-AHK click script for KanColle expeditions
 
 ## HOW TO USE:
 Set which expedition each fleet will run, press ENTER to submit.  
