@@ -276,12 +276,13 @@ Queue:
             return
         }
     }Until Q.MaxIndex() = ""
+	GuiControl,, NB, Idle
 	if iDOL = 1 
 	{
 		ControlClick, x%Hx% y%Hy%, %WINID%
+		GuiControl,, NB, iDOL
 		CM := 1	
 	}	
-	GuiControl,, NB, Idle
     return
 }    
 
@@ -331,7 +332,7 @@ SendExp(n)
         {
             ControlClick, x%Sx% y%Sy%, %WINID%
             CM := 3
-            Sleep MiscDelay
+            Sleep MiscDelay*2
             ControlClick, x%Ex% y%Ey%, %WINID%
             CM := 4
 			Sleep LoadingDelay
