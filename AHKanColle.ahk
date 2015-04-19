@@ -1,6 +1,7 @@
-﻿;KANCOLLE AHK EXPEDITION SCRIPT GUI V0.96 4/6/15
+﻿;KANCOLLE AHK EXPEDITION SCRIPT GUI V0.97 4/19/15
 #Persistent
 #SingleInstance
+#Include Gdip.ahk ;Thanks to tic (Tariq Porter) for his GDI+ Library => ahkscript.org/boards/viewtopic.php?t=6517
 CoordMode, Pixel, Relative
 
 Initialize()
@@ -26,6 +27,7 @@ RTI := 2000 ;Refresh interval for GUI
 
 IfWinExist, %WINID%
 {
+	hwnd := WinExist(WINID)
     WinActivate
     WinGetPos, , , WinW, WinH
 }    
@@ -79,7 +81,6 @@ if ErrorLevel = 0
         Eh[index2] := th
         index2 := index+32
         Eh[index2] := th
-        ;MsgBox % "Eh[" . index2 . "] is " . Eh[index2]
         index += 1
     }Until index = 9
 	IniRead, iDOL, config.ini, Variables, iDOL, 0
@@ -276,13 +277,12 @@ Queue:
             return
         }
     }Until Q.MaxIndex() = ""
-	GuiControl,, NB, Idle
 	if iDOL = 1 
 	{
 		ControlClick, x%Hx% y%Hy%, %WINID%
-		GuiControl,, NB, iDOL
 		CM := 1	
 	}	
+	GuiControl,, NB, Idle
     return
 }    
 
@@ -332,7 +332,7 @@ SendExp(n)
         {
             ControlClick, x%Sx% y%Sy%, %WINID%
             CM := 3
-            Sleep MiscDelay*2
+            Sleep LoadingDelay
             ControlClick, x%Ex% y%Ey%, %WINID%
             CM := 4
 			Sleep LoadingDelay
@@ -830,6 +830,29 @@ Refresh:
 	return
 }
 
+PixelGetColorS(x,y)
+{
+	global
+	pToken  := Gdip_Startup()
+	pBitmap := Gdip_BitmapFromHWND(hwnd)
+	;PixelGetColor, TEST1, x, y, RGB
+	;MsgBox % TEST1
+	pARGB := GDIP_GetPixel(pBitmap, FoundX, FoundY)
+	pHEX := DEC2HEX(pARGB,"true")
+	;MsgBox % pHEX
+	Gdip_DisposeImage(pBitmap)
+	Gdip_Shutdown(pToken)
+	return pHEX
+}
+
+DEC2HEX(DEC, RARGB="false") {
+    SetFormat, IntegerFast, hex
+    RGB += DEC ;Converts the decimal to hexidecimal
+	if(RARGB=="true")
+		RGB := RGB & 0x00ffffff
+    return RGB
+}
+
 Pause2:
 {
 	Pause
@@ -906,10 +929,11 @@ Initialize()
 }
 
 ;To-do list
-;Updating timers on GUI
 ;Remove image search requirement. Possibly a pixel search alternative.
+;Test a background pixel search method
 
 ;ChangeLog
+;0.97: Adjusted delays
 ;0.95: Added support for INI file for saved values, repositioned GUI controls
 ;0.92: Improved GUI, Added countdown timer and notification bar
 ;0.91: Fixed all remaining times updating when pressing enter.
