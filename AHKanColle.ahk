@@ -277,12 +277,14 @@ Queue:
             return
         }
     }Until Q.MaxIndex() = ""
+	GuiControl,, NB, Idle
 	if iDOL = 1 
 	{
 		ControlClick, x%Hx% y%Hy%, %WINID%
+		GuiControl,, NB, iDOL
 		CM := 1	
 	}	
-	GuiControl,, NB, Idle
+	
     return
 }    
 
