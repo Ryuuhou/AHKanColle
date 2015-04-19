@@ -4,7 +4,7 @@ AHKanColle (Click script for KanColle expeditions)
 
 by Ryuuhou
 
-README 4/6/15
+README 4/19/15
 
 >scripting
 
@@ -12,7 +12,8 @@ README 4/6/15
 
 ## Requirements: 
 
-*AHK_L
+* AHK_L
+* Gdip Library by tic
 
 
 ## HOW TO USE:
