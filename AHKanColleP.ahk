@@ -451,7 +451,7 @@ HMS2MS(ss)
             else
             {
                 GuiControl,, NB, Invalid time input
-                return
+                Exit
             }
             ii := 0
         }
