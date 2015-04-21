@@ -15,7 +15,7 @@ SetExped[4] := 0
 ;Variable Delays
 
 IniRead, LoadingDelay, config.ini, Variables, LoadingDelay, 5000    ;Most important delay, server response delay.  No lower than 4000.
-IniRead, MinRandomWait, config.ini, Variables, MinRandomWait, 4000		;Minimum time to wait after exped returns.
+IniRead, MinRandomWait, config.ini, Variables, MinRandomWait, 5000		;Minimum time to wait after exped returns.
 IniRead, MaxRandomWait, config.ini, Variables, MaxRandomWait, 300000	;Maximum time to wait after exped returns.
 
 ;Constant Delays
@@ -34,6 +34,8 @@ HEPC := 0x42b6b8 ;Home + Exped
 RPC := 0xeee6d9 ;Resupply
 SPC := 0x293137 ;Sortie
 EPC := 0xede6d9 ;Expeditions
+NRPC := 0x444444 ;Needs Resupply
+RRPC := 0xd1c1b2 ;Resupplied
 
 RTI := 2000 ;Refresh interval for GUI
 
@@ -241,7 +243,7 @@ Queue:
 		RF := 0
 	tpc := 0
 	tpc := PixelGetColorS(FX,FY)
-	if (tpc != HPC)
+	if (tpc != HPC and tpc != HEPC)
 	{
 		ControlClick, x%Hx% y%Hy%, %WINID%
 	}
@@ -317,10 +319,14 @@ Resupply(r)
     else if r = 4
         ControlClick, x%4Rx% y%234Ry%, %WINID%
     Sleep MiscDelay
-    ControlClick, x%SAx% y%SAy%, %WINID%
-    Sleep MiscDelay
-    ControlClick, x%ESx% y%ESy%, %WINID%
-    WaitForPixelColor(RPC)
+	tpc := PixelGetColorS(SAx,SAy)
+	if tpc = NRPC
+	{
+		ControlClick, x%SAx% y%SAy%, %WINID%
+		Sleep MiscDelay
+		ControlClick, x%ESx% y%ESy%, %WINID%
+		WaitForPixelColor(RPC)
+	}
 }
     
 SendExp(n)
@@ -887,6 +893,7 @@ WaitForPixelColor(pc3, pc33 := 0, click3 := 0)
 	}Until index3 = 200
 	return 0
 }
+
 
 Pause2:
 {
