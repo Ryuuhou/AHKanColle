@@ -394,7 +394,7 @@ SendExp(n)
             SetTimer, 2Return, %ta%
 			CDT[2] := 1
         }
-        else (if n = 3)
+        else if (n = 3)
         {
             ta := (ET[SetExped[3]]+ClockDelay)*-1
 			TCS[3] := A_TickCount
@@ -402,7 +402,7 @@ SendExp(n)
             SetTimer, 3Return, %ta%
 			CDT[3] := 1
         }
-        else (if n = 4)
+        else if (n = 4)
         {
             ta := (ET[SetExped[4]]+ClockDelay)*-1
 			TCS[4] := A_TickCount
@@ -492,7 +492,7 @@ MS2HMS(ms)
 MiW:
 {
 	Gui, submit,nohide
-	if (mid contains `n)
+	if mid contains `n
 	{
 		StringReplace, mid, mid, `n,,All
 		GuiControl,, mid, %mid%
@@ -507,7 +507,7 @@ MiW:
 MaW:
 {
 	Gui, submit,nohide
-	if (mad contains `n)
+	if mad contains `n
 	{
 		StringReplace, mad, mad, `n,,All
 		GuiControl,, mad, %mad%
@@ -522,7 +522,7 @@ MaW:
 ESE2:
 {
 	Gui, submit,nohide
-	if (SE2 contains `n)
+	if SE2 contains `n
 	{
 		StringReplace, SE2, SE2, `n,,All
 		GuiControl,, SE2, %SE2%
@@ -552,7 +552,7 @@ ESE2:
 ESE3:
 {
 	Gui, submit,nohide
-	if (SE3 contains `n)
+	if SE3 contains `n
 	{
 		StringReplace, SE3, SE3, `n,,All
 		GuiControl,, SE3, %SE3%
@@ -582,7 +582,7 @@ ESE3:
 ESE4:
 {
 	Gui, submit,nohide
-	if (SE4 contains `n)
+	if SE4 contains `n
 	{
 		StringReplace, SE4, SE4, `n,,All
 		GuiControl,, SE4, %SE4%
@@ -612,7 +612,7 @@ ESE4:
 ERT2:
 {	
 	Gui, Submit, NoHide
-	if (TRT2 contains `n)
+	if TRT2 contains `n
 	{
 		StringReplace, TRT2, TRT2, `n,,All
 		GuiControl,, TRT2, %TRT2%
@@ -679,7 +679,7 @@ ERT2:
 ERT3:
 {
 	Gui, Submit, NoHide
-	if (TRT3 contains `n)
+	if TRT3 contains `n
 	{
 		StringReplace, TRT3, TRT3, `n,,All
 		GuiControl,, TRT3, %TRT3%
@@ -747,7 +747,7 @@ ERT3:
 ERT4:
 {
 	Gui, Submit, NoHide
-	if (TRT4 contains `n)
+	if TRT4 contains `n
 	{
 		StringReplace, TRT4, TRT4, `n,,All
 		GuiControl,, TRT4, %TRT4%
