@@ -42,7 +42,7 @@ RTI := 2000 ;Refresh interval for GUI
 ;CM: 1=Home, 2=Resupply, 3=SortieMenu, 4=ExpedList
 
 hwnd := WinExist(WINID)
-if not hwnd = 0
+if (not hwnd = 0)
 {
     WinActivate
     WinGetPos, , , WinW, WinH
@@ -54,7 +54,7 @@ else
 }
 
 ImageSearch, FX, FY, 0, 0, WinW, WinH, %A_ScriptDir%\IMG\HP.png
-if ErrorLevel = 0
+if (ErrorLevel = 0)
 {
     Hx := FX - 330 ;Home Button
     Hy := FY - 415
@@ -154,7 +154,7 @@ return
 {
     SetTimer, 2Return, Off
     Q.Insert(2)
-    if Q.MaxIndex() = 1
+    if (Q.MaxIndex() = 1)
     {
 		Random, SR, MinRandomWait, MaxRandomWait 
 		n := 2
@@ -183,7 +183,7 @@ return
 {
     SetTimer, 3Return, Off
     Q.Insert(3)
-    if Q.MaxIndex() = 1
+    if (Q.MaxIndex() = 1)
 	{
 		Random, SR, MinRandomWait, MaxRandomWait 
 		n := 2
@@ -212,7 +212,7 @@ return
 {
     SetTimer, 4Return, Off
     Q.Insert(4)
-    if Q.MaxIndex() = 1
+    if (Q.MaxIndex() = 1)
     {
 		Random, SR, MinRandomWait, MaxRandomWait 
 		n := 2
@@ -239,7 +239,7 @@ return
 
 Queue:
 {
-	if RF = 1
+	if (RF = 1)
 		RF := 0
 	tpc := 0
 	tpc := PixelGetColorS(FX,FY)
@@ -255,7 +255,7 @@ Queue:
 		
 	}
 	tpc := WaitForPixelColor(HPC,HEPC)
-	if tpc = 2
+	if (tpc = 2)
 	{
 		WaitForPixelColor(HPC,,1)
 	}
@@ -266,7 +266,7 @@ Queue:
         Resupply(Q[qi])
         qi += 1
     }Until qi > Q.MaxIndex()
-    if RF = 1
+    if (RF = 1)
     {
         RF := 0
         goto Queue
@@ -276,7 +276,7 @@ Queue:
     {
         SendExp(Q[1])
         RemovedValue := Q.Remove(1)
-        if RF = 1
+        if (RF = 1)
         {
             RF := 0
             goto Queue
@@ -284,7 +284,7 @@ Queue:
         }
     }Until Q.MaxIndex() = ""
 	GuiControl,, NB, Idle
-	if iDOL = 1 
+	if (iDOL = 1) 
 	{
 		ControlClick, x%Hx% y%Hy%, %WINID%
 		GuiControl,, NB, iDOL
@@ -312,15 +312,15 @@ Resupply(r)
     }
     Sleep MiscDelay
 	GuiControl,, NB, Resupplying expedition %r%
-    if r = 2
+    if (r = 2)
         ControlClick, x%2Rx% y%234Ry%, %WINID%
-    else if r = 3
+    else if (r = 3)
         ControlClick, x%3Rx% y%234Ry%, %WINID%
-    else if r = 4
+    else if (r = 4)
         ControlClick, x%4Rx% y%234Ry%, %WINID%
     Sleep MiscDelay
 	tpc := PixelGetColorS(SAx,SAy)
-	if tpc = NRPC
+	if (tpc = NRPC)
 	{
 		ControlClick, x%SAx% y%SAy%, %WINID%
 		Sleep MiscDelay
@@ -332,7 +332,7 @@ Resupply(r)
 SendExp(n)
 {
     global
-    if SetExped[n] != 0
+    if (SetExped[n] != 0)
     {
 		GuiControl,, NB, Sending...
         td := SetExped[n]
@@ -350,22 +350,22 @@ SendExp(n)
 			
 		}
 		GuiControl,, NB, Sending expedition %n%
-        if td >  32
+        if (td >  32)
         {
             tf := PGx[5]
             ControlClick, x%tf% y%PGy%, %WINID%
         }
-        else if td > 24
+        else if (td > 24)
         {
             tf := PGx[4]
             ControlClick, x%tf% y%PGy%, %WINID%
         }
-        else if td > 16
+        else if (td > 16)
         {
             tf := PGx[3]
             ControlClick, x%tf% y%PGy%, %WINID%
         }
-        else if td > 8
+        else if (td > 8)
         {
             tf := PGx[2]
             ControlClick, x%tf% y%PGy%, %WINID%
@@ -386,7 +386,7 @@ SendExp(n)
             ControlClick, x%4Ex% y%34Ey%, %WINID%
         Sleep MiscDelay
         ControlClick, x%ESx% y%ESy%, %WINID%
-        if n = 2
+        if (n = 2)
         {
             ta := (ET[SetExped[2]]+ClockDelay)*-1
 			TCS[2] := A_TickCount
@@ -394,7 +394,7 @@ SendExp(n)
             SetTimer, 2Return, %ta%
 			CDT[2] := 1
         }
-        else if n = 3
+        else (if n = 3)
         {
             ta := (ET[SetExped[3]]+ClockDelay)*-1
 			TCS[3] := A_TickCount
@@ -402,7 +402,7 @@ SendExp(n)
             SetTimer, 3Return, %ta%
 			CDT[3] := 1
         }
-        else if n = 4
+        else (if n = 4)
         {
             ta := (ET[SetExped[4]]+ClockDelay)*-1
 			TCS[4] := A_TickCount
@@ -410,7 +410,7 @@ SendExp(n)
             SetTimer, 4Return, %ta%
 			CDT[4] := 1
         }
-		if TO = 0
+		if (TO = 0)
 		{
 			SetTimer, Refresh, %RTI%
 			TO := 1
@@ -437,22 +437,22 @@ HMS2MS(ss)
     loop
     {
         ts := SubStr(ss,i,1)
-        if ts is integer
+        if (ts is integer)
         {
-            if ii > 0
+            if (ii > 0)
                 ii := ii*10+ts
             else
                 ii := ts
         }
-        else if ts is alpha
+        else if (ts is alpha)
         {
-            if ts = h
+            if (ts = h)
             {
                 tt := tt+ii*3600000
             }
-            else if ts = m
+            else if (ts = m)
                 tt := tt+ii*60000
-            else if ts = s
+            else if (ts = s)
                 tt := tt+ii*1000
             else
             {
@@ -492,7 +492,7 @@ MS2HMS(ms)
 MiW:
 {
 	Gui, submit,nohide
-	if mid contains `n
+	if (mid contains `n)
 	{
 		StringReplace, mid, mid, `n,,All
 		GuiControl,, mid, %mid%
@@ -507,7 +507,7 @@ MiW:
 MaW:
 {
 	Gui, submit,nohide
-	if mad contains `n
+	if (mad contains `n)
 	{
 		StringReplace, mad, mad, `n,,All
 		GuiControl,, mad, %mad%
@@ -522,15 +522,15 @@ MaW:
 ESE2:
 {
 	Gui, submit,nohide
-	if SE2 contains `n
+	if (SE2 contains `n)
 	{
 		StringReplace, SE2, SE2, `n,,All
 		GuiControl,, SE2, %SE2%
 		Send, {end}
 		SetExped[2] := SE2
-		if SetExped[2] > -1 and SetExped[2] < 40 then
+		if (SetExped[2] > -1 and SetExped[2] < 40)
 		{
-			if SetExped[2] = 0
+			if (SetExped[2] = 0)
 			{
 				GuiControl,, NB, Expedition 2 will not be resent
 			}else{
@@ -552,15 +552,15 @@ ESE2:
 ESE3:
 {
 	Gui, submit,nohide
-	if SE3 contains `n
+	if (SE3 contains `n)
 	{
 		StringReplace, SE3, SE3, `n,,All
 		GuiControl,, SE3, %SE3%
 		Send, {end}
 		SetExped[3] := SE3
-		if SetExped[3] > -1 and SetExped[3] < 40 then
+		if (SetExped[3] > -1 and SetExped[3] < 40)
 		{
-			if SetExped[3] = 0
+			if (SetExped[3] = 0)
 			{
 				GuiControl,, NB, Expedition 3 will not be resent
 			}else{
@@ -582,15 +582,15 @@ ESE3:
 ESE4:
 {
 	Gui, submit,nohide
-	if SE4 contains `n
+	if (SE4 contains `n)
 	{
 		StringReplace, SE4, SE4, `n,,All
 		GuiControl,, SE4, %SE4%
 		Send, {end}
 		SetExped[4] := SE4
-		if SetExped[4] > -1 and SetExped[4] < 40 then
+		if (SetExped[4] > -1 and SetExped[4] < 40)
 		{
-			if SetExped[4] = 0
+			if (SetExped[4] = 0)
 			{
 				GuiControl,, NB, Expedition 4 will not be resent
 			}else{
@@ -612,7 +612,7 @@ ESE4:
 ERT2:
 {	
 	Gui, Submit, NoHide
-	if TRT2 contains `n
+	if (TRT2 contains `n)
 	{
 		StringReplace, TRT2, TRT2, `n,,All
 		GuiControl,, TRT2, %TRT2%
@@ -620,21 +620,22 @@ ERT2:
 		RT2 := TRT2
 		if (RT2 != "")
 		{
-			if Q.MaxIndex() > 0
+			if (Q.MaxIndex() > 0)
 			{
 				qi := 1
 			    Loop
 				{
-					if Q[qi] = 2 {
+					if (Q[qi] = 2)
+					{
 						Q.Remove(qi)
 					}
 					qi += 1
 				}Until qi > Q.MaxIndex()
 			}
-			if TRT2 = 0
+			if (TRT2 = 0)
 			{
 				Q.Insert(2)
-				if IB = 0
+				if (IB = 0)
 				{
 					GuiControl, Show, SEB
 					IB := 1
@@ -645,7 +646,7 @@ ERT2:
 			}
 			else if (RT2 != -1)
 			{
-				if RT2 is not integer
+				if (RT2 is not integer)
 				{
 					ta := HMS2MS(RT2)
 				}
@@ -656,7 +657,7 @@ ERT2:
 				GuiControl,, NB, Remaining time for fleet 2 set
 				GuiControl, % "+ReadOnly", TRT2
 				GuiControl, Focus, SE3
-				if TO = 0
+				if (TO = 0)
 				{
 					SetTimer, Refresh, %RTI%
 					TO := 1
@@ -678,7 +679,7 @@ ERT2:
 ERT3:
 {
 	Gui, Submit, NoHide
-	if TRT3 contains `n
+	if (TRT3 contains `n)
 	{
 		StringReplace, TRT3, TRT3, `n,,All
 		GuiControl,, TRT3, %TRT3%
@@ -686,21 +687,22 @@ ERT3:
 		RT3 := TRT3
 		if (RT3 != "")
 		{
-			if Q.MaxIndex() > 0
+			if (Q.MaxIndex() > 0)
 			{
 				qi := 1
 			    Loop
 				{
-					if Q[qi] = 3 {
+					if (Q[qi] = 3)
+					{
 						Q.Remove(qi)
 					}
 					qi += 1
 				}Until qi > Q.MaxIndex()
 			}
-			if RT3 = 0
+			if (RT3 = 0)
 			{
 				Q.Insert(3)
-				if IB = 0
+				if (IB = 0)
 				{
 					GuiControl, Show, SEB
 					IB := 1
@@ -711,7 +713,7 @@ ERT3:
 			}
 			else if (RT3 != -1)
 			{
-				if RT3 is not integer
+				if (RT3 is not integer)
 				{
 					ta := HMS2MS(RT3)
 				}
@@ -722,7 +724,7 @@ ERT3:
 				GuiControl,, NB, Remaining time for fleet 3 set
 				GuiControl, % "+Readonly", TRT3
 				GuiControl, Focus, SE4
-				if TO = 0
+				if (TO = 0)
 				{
 					SetTimer, Refresh, %RTI%
 					TO := 1
@@ -745,7 +747,7 @@ ERT3:
 ERT4:
 {
 	Gui, Submit, NoHide
-	if TRT4 contains `n
+	if (TRT4 contains `n)
 	{
 		StringReplace, TRT4, TRT4, `n,,All
 		GuiControl,, TRT4, %TRT4%
@@ -753,21 +755,22 @@ ERT4:
 		RT4 := TRT4
 		if (RT4 != "")
 		{
-			if Q.MaxIndex() > 0
+			if (Q.MaxIndex() > 0)
 			{
 				qi := 1
 			    Loop
 				{
-					if Q[qi] = 4 {
+					if (Q[qi] = 4)
+					{
 						Q.Remove(qi)
 					}
 					qi += 1
 				}Until qi > Q.MaxIndex()
 			}
-			if RT4 = 0
+			if (RT4 = 0)
 			{
 				Q.Insert(4)
-				if IB = 0
+				if (IB = 0)
 				{
 					GuiControl, Show, SEB
 					IB := 1
@@ -777,7 +780,7 @@ ERT4:
 			}
 			else if (RT4 != -1)
 			{
-				if RT4 is not integer
+				if (RT4 is not integer)
 				{
 					ta := HMS2MS(RT4)
 				}
@@ -787,7 +790,7 @@ ERT4:
 				SetTimer, 4Return, %ta%
 				GuiControl,, NB, Remaining time for fleet 4 set
 				GuiControl, % "+Readonly", TRT4
-				if TO = 0
+				if (TO = 0)
 				{
 					SetTimer, Refresh, %RTI%
 					TO := 1
@@ -810,7 +813,7 @@ SEButton:
 {
 	GuiControl, Hide, SEB
 	IB := 0
-	if Q.MaxIndex() > 0
+	if (Q.MaxIndex() > 0)
     {
 		Skip := 1
         goto Queue
@@ -820,17 +823,17 @@ SEButton:
 
 Refresh:
 {
-	if CDT[2] = 1 
+	if (CDT[2] = 1) 
 	{
 		tSS := MS2HMS(GetRemainingTime(2))
 		GuiControl,, T2, %tSS%
 	}	
-	if CDT[3] = 1 
+	if (CDT[3] = 1) 
 	{
 		tSS := MS2HMS(GetRemainingTime(3))
 		GuiControl,, T3, %tSS%
 	}	
-	if CDT[4] = 1 
+	if (CDT[4] = 1)
 	{
 		tSS := MS2HMS(GetRemainingTime(4))
 		GuiControl,, T4, %tSS%
