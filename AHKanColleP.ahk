@@ -36,6 +36,7 @@ SPC := 0x293137 ;Sortie
 EPC := 0xede6d9 ;Expeditions
 NRPC := 0x444444 ;Needs Resupply
 RRPC := 0xd1c1b2 ;Resupplied
+ECPC := 0xffffff 
 
 RTI := 2000 ;Refresh interval for GUI
 
@@ -851,6 +852,11 @@ PixelGetColorS(x2,y2)
 	pARGB := GDIP_GetPixel(pBitmap, x2, y2)
 	pHEX := DEC2HEX(pARGB,"true")
 	;MsgBox % pHEX
+	if pHEX = ECPC
+	{
+		GuiControl,, NB, ErrorCat
+		Pause
+	}
 	Gdip_DisposeImage(pBitmap)
 	Gdip_Shutdown(pToken)
 	return pHEX
