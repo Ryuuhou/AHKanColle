@@ -1,7 +1,7 @@
 ﻿;KANCOLLE AHK EXPEDITION SCRIPT GUI V0.98a 4/20/15 #BLAZEIT
 #Persistent
 #SingleInstance
-#Include Gdip.ahk ;Thanks to tic (Tariq Porter) for his GDI+ Library => ahkscript.org/boards/viewtopic.php?t=6517
+#Include Gdip_All.ahk ;Thanks to tic (Tariq Porter) for his GDI+ Library => ahkscript.org/boards/viewtopic.php?t=6517
 CoordMode, Pixel, Relative
 
 Initialize()
