@@ -37,6 +37,7 @@ Enter a MinWait and MaxWait in MILLISECONDS. The script will wait a random amoun
 If you are not playing with KanColleViewer, add/create an entry in the config.ini file in the script directory.
 
 [Variables]
+
 WINID = NameOfWindow
 
 If using a browser, the name of window will usually be in the titlebar.
