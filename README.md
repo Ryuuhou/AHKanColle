@@ -4,7 +4,7 @@ AHKanColle (Click script for KanColle expeditions)
 
 by Ryuuhou
 
-README 4/19/15
+README 4/21/15
 
 >scripting
 
@@ -13,8 +13,14 @@ README 4/19/15
 ## Requirements: 
 
 * AHK_L
-* Gdip Library by tic
+* Gdip_All library by tic
 
+## Features:
+
+* Background scripting (cannot be minimized)
+* Dynamic pixel checking to prevent user error
+* Easy to use GUI with changeable settings
+* Error Cat detection (script will be paused)
 
 ## HOW TO USE:
 Set which expedition each fleet will run, press ENTER to submit.  
@@ -28,7 +34,10 @@ Use a remaining time of -1 to disable scripting for that fleet.
 
 Enter a MinWait and MaxWait in MILLISECONDS. The script will wait a random amount of time between these two numbers after an expedition comes back.
 
-If you are not playing with KanColleViewer, add an entry in the config.ini file in the script directory WINID = NameOfWindow
+If you are not playing with KanColleViewer, add/create an entry in the config.ini file in the script directory.
+
+[Variables]
+WINID = NameOfWindow
 
 If using a browser, the name of window will usually be in the titlebar.
 
@@ -36,5 +45,7 @@ If using a browser, the name of window will usually be in the titlebar.
 Although this script was designed to work in background, certain applications may lose focus while scripting.
 
 Do NOT minimize browser/KCV, mouse clicks do not work while minimized. It can be behind other windows.
+
+If you have not unlocked all expeditions, your expeditions may be out of place and cause problems.  It is up to you to change the constants within the script if you wish to use it.
 
 Playing while scripting may lead to bugging the script, avoid playing if you decide to script. Unless you know how the script works :^)

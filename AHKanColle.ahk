@@ -1,4 +1,4 @@
-﻿;KANCOLLE AHK EXPEDITION SCRIPT GUI V0.97 4/19/15
+﻿;KANCOLLE AHK EXPEDITION SCRIPT GUI V1.0 4/21/15
 #Persistent
 #SingleInstance
 #Include Gdip_All.ahk ;Thanks to tic (Tariq Porter) for his GDI+ Library => ahkscript.org/boards/viewtopic.php?t=6517
@@ -8,10 +8,14 @@ Initialize()
 
 IniRead, WINID, config.ini, Variables, WINID, KanColleViewer!
 
+SetExped[2] := 0
+SetExped[3] := 0
+SetExped[4] := 0
+
 ;Variable Delays
 
 IniRead, LoadingDelay, config.ini, Variables, LoadingDelay, 5000    ;Most important delay, server response delay.  No lower than 4000.
-IniRead, MinRandomWait, config.ini, Variables, MinRandomWait, 4000		;Minimum time to wait after exped returns.
+IniRead, MinRandomWait, config.ini, Variables, MinRandomWait, 5000		;Minimum time to wait after exped returns.
 IniRead, MaxRandomWait, config.ini, Variables, MaxRandomWait, 300000	;Maximum time to wait after exped returns.
 
 ;Constant Delays
@@ -21,57 +25,70 @@ ReturnDelay    := 8000    	;Used for expedition returning animation (AT LEAST 8 
 SendDelay      := 4000      ;Used for expedition sending animation
 MiscDelay      := 1000      ;Delay for actions with little to no animation time
 
+;PixelColor Contants
+
+HPC := 0x4acacd ;Home
+HEPC := 0x42b6b8 ;Home + Exped
+;0x49afb1 = fleet selection
+;0x41413c = " "
+RPC := 0xeee6d9 ;Resupply
+SPC := 0x293137 ;Sortie
+EPC := 0xede6d9 ;Expeditions
+NRPC := 0x444444 ;Needs Resupply
+RRPC := 0xd1c1b2 ;Resupplied
+ECPC := 0xffffff ;Error Cat
+
 RTI := 2000 ;Refresh interval for GUI
 
 ;CM: 1=Home, 2=Resupply, 3=SortieMenu, 4=ExpedList
 
-IfWinExist, %WINID%
+hwnd := WinExist(WINID)
+if not hwnd = 0
 {
-	hwnd := WinExist(WINID)
     WinActivate
     WinGetPos, , , WinW, WinH
 }    
 else
 {
     MsgBox Window not found
-    Exit
+    ExitApp
 }
 
-ImageSearch, FoundX, FoundY, 0, 0, WinW, WinH, %A_ScriptDir%\IMG\HP.png
+ImageSearch, FX, FY, 0, 0, WinW, WinH, %A_ScriptDir%\IMG\HP.png
 if ErrorLevel = 0
 {
-    Hx := FoundX - 330 ;Home Button
-    Hy := FoundY - 415
-    Sx := FoundX - 185 ;Sortie Button
-    Sy := FoundY - 200
-    Rx := FoundX - 300 ;Resupply Button
-    Ry := FoundY - 240
-    SAx := FoundX - 255
-    SAy := FoundY - 335
-    Ex := FoundX + 280 ;Expedition Button
-    Ey := FoundY - 240
-    ESx := FoundX + 330
-    ESy := FoundY - 15
-    3Ex := FoundX + 45
-    4Ex := FoundX + 75
-    34Ey := FoundY - 335
-    2Rx := FoundX - 200
-    3Rx := FoundX - 170
-    4Rx := FoundX - 140
-    234Ry := FoundY - 340
-    PGx[1] := FoundX - 240
-    PGx[2] := FoundX - 180
-    PGx[3] := FoundX - 125
-    PGx[4] := FoundX - 70
-    PGx[5] := FoundX - 10
-    PGy := FoundY - 20
+    Hx := FX - 330 ;Home Button
+    Hy := FY - 415
+    Sx := FX - 185 ;Sortie Button
+    Sy := FY - 200
+    Rx := FX - 300 ;Resupply Button
+    Ry := FY - 240
+    SAx := FX - 255
+    SAy := FY - 335
+    Ex := FX + 280 ;Expedition Button
+    Ey := FY - 240
+    ESx := FX + 330
+    ESy := FY - 15
+    3Ex := FX + 45
+    4Ex := FX + 75
+    34Ey := FY - 335
+    2Rx := FX - 200
+    3Rx := FX - 170
+    4Rx := FX - 140
+    234Ry := FY - 340
+    PGx[1] := FX - 240
+    PGx[2] := FX - 180
+    PGx[3] := FX - 125
+    PGx[4] := FX - 70
+    PGx[5] := FX - 10
+    PGy := FY - 20
     CM := 1
     RC := 0
 	TO := 0
     index := 1
     Loop
     {
-        th := FoundY-280+30*(index-1)
+        th := FY-280+30*(index-1)
         Eh[index] := th
         index2 := index+8
         Eh[index2] := th
@@ -130,7 +147,7 @@ if ErrorLevel = 0
 else
 {
     MsgBox KanColle is not on home screen
-    Exit
+    ExitApp
 }
 return
     
@@ -225,36 +242,27 @@ Queue:
 {
 	if RF = 1
 		RF := 0
-    qi := 1
-	if Skip = 0
+	tpc := 0
+	tpc := PixelGetColorS(FX,FY)
+	if (tpc != HPC and tpc != HEPC)
 	{
-		if CM != 1
-		{
-			ControlClick, x%Hx% y%Hy%, %WINID%
-		}
-		else
-		{
-			ControlClick, x%Rx% y%Ry%, %WINID%
-			Sleep MiscDelay
-			ControlClick, x%Hx% y%Hy%, %WINID%
-			
-		}
-		CM := 1
-		Sleep LoadingDelay
-		Loop
-		{
-			ControlClick, x%ESx% y%ESy%, %WINID%
-			Sleep ReturnDelay+LoadingDelay
-			ControlClick, x%ESx% y%ESy%, %WINID%
-			Sleep MiscDelay
-			ControlClick, x%ESx% y%ESy%, %WINID%
-			Sleep MiscDelay
-			qi += 1
-		}Until qi > Q.MaxIndex()
+		ControlClick, x%Hx% y%Hy%, %WINID%
 	}
-	Skip := 0
+	else
+	{
+		ControlClick, x%Rx% y%Ry%, %WINID%
+		Sleep MiscDelay
+		ControlClick, x%Hx% y%Hy%, %WINID%
+		
+	}
+	GuiControl,, NB, Waiting for home screen...
+	tpc := WaitForPixelColor(HPC,HEPC,,2500)
+	if tpc = 2
+	{
+		WaitForPixelColor(HPC,,1)
+	}
     RC += 1
-    qi := 1
+	qi := 1
     Loop
     {
         Resupply(Q[qi])
@@ -292,15 +300,18 @@ Resupply(r)
 {
     global
 	GuiControl,, NB, Resupplying...
-    if CM = 1
+	tpc := 0
+	tpc := PixelGetColorS(FX,FY)
+	if (tpc = HPC)
+	{
         ControlClick, x%Rx% y%Ry%, %WINID%
-    else if CM > 2
+	}
+	else if (tpc != RPC) 
     {
         ControlClick, x%Hx% y%Hy%, %WINID%
-        Sleep LoadingDelay
+        WaitForPixelColor(HPC)
         ControlClick, x%Rx% y%Ry%, %WINID%
     }
-    CM := 2
     Sleep MiscDelay
 	GuiControl,, NB, Resupplying expedition %r%
     if r = 2
@@ -310,10 +321,14 @@ Resupply(r)
     else if r = 4
         ControlClick, x%4Rx% y%234Ry%, %WINID%
     Sleep MiscDelay
-    ControlClick, x%SAx% y%SAy%, %WINID%
-    Sleep MiscDelay
-    ControlClick, x%ESx% y%ESy%, %WINID%
-    Sleep LoadingDelay
+	tpc := PixelGetColorS(SAx,SAy)
+	if (tpc = NRPC)
+	{
+		ControlClick, x%SAx% y%SAy%, %WINID%
+		Sleep MiscDelay
+		ControlClick, x%ESx% y%ESy%, %WINID%
+		WaitForPixelColor(RPC)
+	}
 }
     
 SendExp(n)
@@ -324,21 +339,18 @@ SendExp(n)
 		GuiControl,, NB, Sending...
         td := SetExped[n]
         te := Eh[td]
-        if (CM != 4 and CM != 1)
-        {
-            ControlClick, x%Hx% y%Hy%, %WINID%
-            CM := 1
-            Sleep LoadingDelay
-        }
-        if CM = 1
-        {
-            ControlClick, x%Sx% y%Sy%, %WINID%
-            CM := 3
-            Sleep LoadingDelay
+		tpc := 0
+		tpc := PixelGetColorS(FX,FY)
+		if (tpc != EPC)
+		{
+			ControlClick, x%Hx% y%Hy%, %WINID%
+            WaitForPixelColor(HPC)
+			ControlClick, x%Sx% y%Sy%, %WINID%
+            WaitForPixelColor(SPC)
             ControlClick, x%Ex% y%Ey%, %WINID%
-            CM := 4
-			Sleep LoadingDelay
-        }
+            WaitForPixelColor(EPC)
+			
+		}
 		GuiControl,, NB, Sending expedition %n%
         if td >  32
         {
@@ -366,7 +378,7 @@ SendExp(n)
             ControlClick, x%tf% y%PGy%, %WINID%
         }
         Sleep MiscDelay
-        ControlClick, x%FoundX% y%te%, %WINID%
+        ControlClick, x%FX% y%te%, %WINID%
         Sleep MiscDelay
         ControlClick, x%ESx% y%ESy%, %WINID%
         Sleep MiscDelay
@@ -405,7 +417,8 @@ SendExp(n)
 			SetTimer, Refresh, %RTI%
 			TO := 1
 		}
-        Sleep SendDelay+LoadingDelay
+        Sleep SendDelay
+		WaitForPixelColor(EPC)
     }
 }
 
@@ -607,7 +620,7 @@ ERT2:
 		GuiControl,, TRT2, %TRT2%
 		Send, {end}
 		RT2 := TRT2
-		if RT2 != ""
+		if (RT2 != "")
 		{
 			if Q.MaxIndex() > 0
 			{
@@ -632,7 +645,7 @@ ERT2:
 				GuiControl, % "+ReadOnly", TRT2
 				GuiControl, Focus, SE3
 			}
-			else if RT2 != -1
+			else if (RT2 != -1)
 			{
 				if RT2 is not integer
 				{
@@ -673,7 +686,7 @@ ERT3:
 		GuiControl,, TRT3, %TRT3%
 		Send, {end}
 		RT3 := TRT3
-		if RT3 != ""
+		if (RT3 != "")
 		{
 			if Q.MaxIndex() > 0
 			{
@@ -698,7 +711,7 @@ ERT3:
 				GuiControl, % "+Readonly", TRT3
 				GuiControl, Focus, SE4
 			}
-			else if RT3 != -1
+			else if (RT3 != -1)
 			{
 				if RT3 is not integer
 				{
@@ -740,7 +753,7 @@ ERT4:
 		GuiControl,, TRT4, %TRT4%
 		Send, {end}
 		RT4 := TRT4
-		if RT4 != ""
+		if (RT4 != "")
 		{
 			if Q.MaxIndex() > 0
 			{
@@ -764,7 +777,7 @@ ERT4:
 				GuiControl,, NB, Expedition 4 is ready to be refueled and sent
 				GuiControl, % "+Readonly", TRT4
 			}
-			else if RT4 != -1
+			else if (RT4 != -1)
 			{
 				if RT4 is not integer
 				{
@@ -832,28 +845,62 @@ Refresh:
 	return
 }
 
-PixelGetColorS(x,y)
+PixelGetColorS(x2,y2)
 {
 	global
 	pToken  := Gdip_Startup()
 	pBitmap := Gdip_BitmapFromHWND(hwnd)
-	;PixelGetColor, TEST1, x, y, RGB
-	;MsgBox % TEST1
-	pARGB := GDIP_GetPixel(pBitmap, FoundX, FoundY)
+	pARGB := GDIP_GetPixel(pBitmap, x2, y2)
 	pHEX := DEC2HEX(pARGB,"true")
 	;MsgBox % pHEX
+	if pHEX = ECPC
+	{
+		GuiControl,, NB, ErrorCat
+		Pause
+	}
 	Gdip_DisposeImage(pBitmap)
 	Gdip_Shutdown(pToken)
 	return pHEX
 }
 
-DEC2HEX(DEC, RARGB="false") {
+DEC2HEX(DEC, RARGB="false") 
+{
     SetFormat, IntegerFast, hex
     RGB += DEC ;Converts the decimal to hexidecimal
 	if(RARGB=="true")
 		RGB := RGB & 0x00ffffff
+	SetFormat, IntegerFast, d
     return RGB
 }
+
+WaitForPixelColor(pc3, pc33 := 0, click3 := 0, timeout := 60)
+{
+	global
+	index3 := 0
+	tpc3 := 0
+	loop
+	{
+		Sleep 1000
+		tpc3 := PixelGetColorS(FX,FY)
+		if (tpc3 = pc3)
+		{
+			Sleep 1000
+			return 1
+		}
+		else if (pc33 != 0 and tpc3 = pc33)
+		{
+			Sleep 1000
+			return 2
+		}
+		if (click3 = 1)
+		{
+			ControlClick, x%ESx% y%ESy%, %WINID%
+		}
+		index3 += 1
+	}Until index3 > timeout
+	return 0
+}
+
 
 Pause2:
 {
@@ -935,6 +982,8 @@ Initialize()
 ;Test a background pixel search method
 
 ;ChangeLog
+;1.0: Stable (?) Release
+;0.98a: (ALPHA) Highly untested background pixel checking. Expect problems #BLAZEIT
 ;0.97: Adjusted delays
 ;0.95: Added support for INI file for saved values, repositioned GUI controls
 ;0.92: Improved GUI, Added countdown timer and notification bar
