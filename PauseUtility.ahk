@@ -1,8 +1,22 @@
 ﻿#Persistent
 
 ;Use 24 hour format only.
-PauseHr := 18
-PauseMn := 00
+;Set these variables in config.ini file.
+;
+;Example for 18:00. Order of the variables does not matter. config.ini is used by AHKanColle.ahk as well.
+;
+;[Variables]
+;PauseHr=18
+;PauseMn=00
+
+IniRead, PauseHr, config.ini, Variables, PauseHr, -1
+IniRead, PauseMn, config.ini, Variables, PauseMn, -1
+
+if (PauseHr = -1 or PauseMn = -1)
+{
+	MsgBox PauseHr and PauseMn not set in config.ini file.
+	ExitApp
+}
 
 ;Put PC to sleep after pausing, 0 for disable, 1 for enable.
 PCSleep := 0
