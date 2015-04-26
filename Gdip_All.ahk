@@ -2,6 +2,7 @@
 ; Modifed by Rseding91 using fincs 64 bit compatible Gdip library 5/1/2013
 ; Supports: Basic, _L ANSi, _L Unicode x86 and _L Unicode x64
 ;
+;
 ;#####################################################################################
 ;#####################################################################################
 ; STATUS ENUMERATION
