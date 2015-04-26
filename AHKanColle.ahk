@@ -1,4 +1,4 @@
-﻿;KANCOLLE AHK EXPEDITION SCRIPT GUI V1.0 4/21/15
+﻿;KANCOLLE AHK EXPEDITION SCRIPT GUI V1.01 4/26/15
 #Persistent
 #SingleInstance
 #Include Gdip_All.ahk ;Thanks to tic (Tariq Porter) for his GDI+ Library => ahkscript.org/boards/viewtopic.php?t=6517
@@ -898,6 +898,7 @@ WaitForPixelColor(pc3, pc33 := 0, click3 := 0, timeout := 60)
 		}
 		index3 += 1
 	}Until index3 > timeout
+	goto Queue
 	return 0
 }
 

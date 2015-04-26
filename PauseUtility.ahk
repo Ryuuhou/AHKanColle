@@ -5,7 +5,7 @@ PauseHr := 18
 PauseMn := 00
 
 ;Put PC to sleep after pausing, 0 for disable, 1 for enable.
-PCSleep := 1
+PCSleep := 0
 
 if (PauseHr < A_Hour)
 {
