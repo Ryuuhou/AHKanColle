@@ -37,6 +37,8 @@ EPC := 0xede6d9 ;Expeditions
 NRPC := 0x444444 ;Needs Resupply
 RRPC := 0xd1c1b2 ;Resupplied
 ECPC := 0xffffff ;Error Cat
+EHPC := 0x288e8d ;Expedition button hovered
+ENPC := 0x277d6f ;Expedition button
 
 RTI := 2000 ;Refresh interval for GUI
 
@@ -380,14 +382,18 @@ SendExp(n)
         Sleep MiscDelay
         ControlClick, x%FX% y%te%, %WINID%
         Sleep MiscDelay
-        ControlClick, x%ESx% y%ESy%, %WINID%
-        Sleep MiscDelay
-        if n = 3
-            ControlClick, x%3Ex% y%34Ey%, %WINID%
-        else if n = 4
-            ControlClick, x%4Ex% y%34Ey%, %WINID%
-        Sleep MiscDelay
-        ControlClick, x%ESx% y%ESy%, %WINID%
+		tpc := PixelGetColorS(ESx,ESy)
+		if (tpc = EHPC or tpc = ENPC)
+		{
+			ControlClick, x%ESx% y%ESy%, %WINID%
+			Sleep MiscDelay
+			if n = 3
+				ControlClick, x%3Ex% y%34Ey%, %WINID%
+			else if n = 4
+				ControlClick, x%4Ex% y%34Ey%, %WINID%
+			Sleep MiscDelay
+			ControlClick, x%ESx% y%ESy%, %WINID%
+		}
         if n = 2
         {
             ta := (ET[SetExped[2]]+ClockDelay)*-1
@@ -898,7 +904,7 @@ WaitForPixelColor(pc3, pc33 := 0, click3 := 0, timeout := 60)
 		}
 		index3 += 1
 	}Until index3 > timeout
-	goto Queue
+	gosub Queue
 	return 0
 }
 
