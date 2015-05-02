@@ -1,4 +1,4 @@
-﻿;KANCOLLE AHK EXPEDITION SCRIPT GUI V1.01 4/26/15
+﻿;KANCOLLE AHK EXPEDITION SCRIPT GUI V1.02 5/2/15
 #Persistent
 #SingleInstance
 #Include Gdip_All.ahk ;Thanks to tic (Tariq Porter) for his GDI+ Library => ahkscript.org/boards/viewtopic.php?t=6517
@@ -156,6 +156,7 @@ return
 2Return:
 {
     SetTimer, 2Return, Off
+	CDT[2] := 0
     Q.Insert(2)
     if Q.MaxIndex() = 1
     {
@@ -173,7 +174,6 @@ return
 		}Until n > 4
 		SRS := Round(SR/60000,2)
 		GuiControl,, NB, Expedition 2 returning - Delay: %SRS% minutes
-		CDT[2] := 0
 		Sleep SR
         goto Queue
     }
@@ -185,6 +185,7 @@ return
 3Return:
 {
     SetTimer, 3Return, Off
+	CDT[3] := 0
     Q.Insert(3)
     if Q.MaxIndex() = 1
 	{
@@ -202,7 +203,6 @@ return
 		}Until n > 4
 		SRS := Round(SR/60000,2)
 		GuiControl,, NB, Expedition 3 returning - Delay: %SRS% minutes
-		CDT[3] := 0
 		Sleep SR
         goto Queue
     }
@@ -214,6 +214,7 @@ return
 4Return:
 {
     SetTimer, 4Return, Off
+	CDT[4] := 0
     Q.Insert(4)
     if Q.MaxIndex() = 1
     {
@@ -231,7 +232,6 @@ return
 		}Until n > 4
 		SRS := Round(SR/60000,2)
 		GuiControl,, NB, Expedition 4 returning - Delay: %SRS% minutes
-		CDT[4] := 0
 		Sleep SR
         goto Queue
     }
@@ -258,7 +258,7 @@ Queue:
 		
 	}
 	GuiControl,, NB, Waiting for home screen...
-	tpc := WaitForPixelColor(HPC,HEPC,,2500)
+	tpc := WaitForPixelColor(HPC,HEPC,,900)
 	if tpc = 2
 	{
 		WaitForPixelColor(HPC,,1)

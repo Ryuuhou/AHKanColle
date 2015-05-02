@@ -15,9 +15,9 @@ IniRead, PauseHr, config.ini, Variables, PauseHr, -1
 IniRead, PauseMn, config.ini, Variables, PauseMn, -1
 IniRead, PCSleep, config.ini, Variables, PCSleep, 0
 
-if (PauseHr = -1 or PauseMn = -1)
+if (PauseHr = -1 or PauseHr < 0 or PauseHr > 23 or PauseMn = -1 or PauseMn < 0 or PauseMn > 59)
 {
-	MsgBox PauseHr and PauseMn not set in config.ini file.
+	MsgBox PauseHr and PauseMn not set in config.ini file or invalid time input.
 	ExitApp
 }
 
