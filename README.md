@@ -4,7 +4,7 @@ AHKanColle (Click script for KanColle expeditions)
 
 by Ryuuhou
 
-README 4/21/15
+README 5/6/15
 
 >scripting
 
@@ -22,7 +22,7 @@ README 4/21/15
 * Easy to use GUI with changeable settings
 * Error Cat detection (script will be paused)
 
-## How to use:
+## How to use: AHKanColle
 Set which expedition each fleet will run, press ENTER to submit.  
 Use expedition 0 to disable resending that fleet.
 
@@ -42,10 +42,18 @@ If you are not playing with KanColleViewer, add/create an entry in the config.in
 
 If using a browser, the name of window will usually be in the titlebar.
 
+## How to use: Pause Utility
+
+Simple pause script that runs alongside AHKanColle.  ONLY PAUSES ONCE. You will need to reopen it if you want it to pause again.
+
+Enter in config.ini under [Variables], PauseHr=22 , and PauseMn=22 to pause at 22:22.  Use 24 Hour format only. You may use PCSleep=1 to sleep the computer at that time as well.
+
 ## Warnings:
 Although this script was designed to work in background, certain applications may lose focus while scripting.
 
 Do NOT minimize browser/KCV, mouse clicks do not work while minimized. It can be behind other windows.
+
+Do NOT adjust window size after starting the script, this will mess up the pixel check.
 
 If you have not unlocked all expeditions, your expeditions may be out of place and cause problems.  It is up to you to change the constants within the script if you wish to use it.
 
