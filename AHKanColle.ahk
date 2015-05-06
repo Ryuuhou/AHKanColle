@@ -42,8 +42,6 @@ ENPC := 0x277d6f ;Expedition button
 
 RTI := 2000 ;Refresh interval for GUI
 
-;CM: 1=Home, 2=Resupply, 3=SortieMenu, 4=ExpedList
-
 hwnd := WinExist(WINID)
 if not hwnd = 0
 {
@@ -84,7 +82,6 @@ if ErrorLevel = 0
     PGx[4] := FX - 70
     PGx[5] := FX - 10
     PGy := FY - 20
-    CM := 1
     RC := 0
 	TO := 0
     index := 1
@@ -292,7 +289,6 @@ Queue:
 	{
 		ControlClick, x%Hx% y%Hy%, %WINID%
 		GuiControl,, NB, iDOL
-		CM := 1	
 	}	
 	
     return
