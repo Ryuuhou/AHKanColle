@@ -1,4 +1,4 @@
-﻿;KANCOLLE AHK EXPEDITION SCRIPT GUI V1.02 5/2/15
+﻿;KANCOLLE AHK EXPEDITION SCRIPT GUI V1.03 5/7/15
 #Persistent
 #SingleInstance
 #Include Gdip_All.ahk ;Thanks to tic (Tariq Porter) for his GDI+ Library => ahkscript.org/boards/viewtopic.php?t=6517
@@ -39,6 +39,10 @@ RRPC := 0xd1c1b2 ;Resupplied
 ECPC := 0xffffff ;Error Cat
 EHPC := 0x288e8d ;Expedition button hovered
 ENPC := 0x277d6f ;Expedition button
+BPC1 := 0xaab974 ;Bucket1
+BPC2 := 0xc3c89a ;Bucket2
+BEPC1 := 0xeae2cc ;BucketExped1
+BEPC2 := 0xece3cf ;BucketExped2
 
 RTI := 2000 ;Refresh interval for GUI
 
@@ -54,9 +58,27 @@ else
     ExitApp
 }
 
-ImageSearch, FX, FY, 0, 0, WinW, WinH, %A_ScriptDir%\IMG\HP.png
-if ErrorLevel = 0
+PSS := 0
+PixelSearch, BX1, BY1, 0, 0, WinW, WinH, BPC1,, Fast RGB
+PixelGetColor, BPCT, BX1+1, BY1, RGB
+if (ErrorLevel = 0 and BPCT = BPC2)
 {
+	PSS := 1
+}	
+else
+{
+	PixelSearch, BX1, BY1, 0, 0, WinW, WinH, BEPC1,, Fast RGB
+	PixelGetColor, BPCT, BX1+1, BY1, RGB
+	if (ErrorLevel = 0 and BPCT = BEPC2)
+	{
+		PSS := 1
+	}
+}
+
+if PSS = 1
+{
+	FX := BX1 - 304
+	FY := BY1 + 441
     Hx := FX - 330 ;Home Button
     Hy := FY - 415
     Sx := FX - 185 ;Sortie Button
@@ -145,7 +167,7 @@ if ErrorLevel = 0
 }
 else
 {
-    MsgBox KanColle is not on home screen
+    MsgBox KanColle is not on a valid screen
     ExitApp
 }
 return
@@ -419,8 +441,8 @@ SendExp(n)
 			SetTimer, Refresh, %RTI%
 			TO := 1
 		}
-        Sleep SendDelay
 		WaitForPixelColor(EPC)
+        Sleep SendDelay
     }
 }
 
@@ -985,6 +1007,7 @@ Initialize()
 ;Test a background pixel search method
 
 ;ChangeLog
+;1.03: Image no longer required, script can now be started on most pages of the game. Fixed a pixel check after sending expeditions that may bug iDOL and sending multiple expeds.
 ;1.0: Stable (?) Release
 ;0.98a: (ALPHA) Highly untested background pixel checking. Expect problems #BLAZEIT
 ;0.97: Adjusted delays
