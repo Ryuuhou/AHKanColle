@@ -1,4 +1,4 @@
-﻿;KANCOLLE AHK EXPEDITION SCRIPT GUI V1.03 5/7/15
+﻿;KANCOLLE AHK EXPEDITION SCRIPT GUI V1.04 5/9/15
 #Persistent
 #SingleInstance
 #Include Gdip_All.ahk ;Thanks to tic (Tariq Porter) for his GDI+ Library => ahkscript.org/boards/viewtopic.php?t=6517
@@ -14,15 +14,13 @@ SetExped[4] := 0
 
 ;Variable Delays
 
-IniRead, LoadingDelay, config.ini, Variables, LoadingDelay, 5000    ;Most important delay, server response delay.  No lower than 4000.
 IniRead, MinRandomWait, config.ini, Variables, MinRandomWait, 5000		;Minimum time to wait after exped returns.
 IniRead, MaxRandomWait, config.ini, Variables, MaxRandomWait, 300000	;Maximum time to wait after exped returns.
 
 ;Constant Delays
 
 ClockDelay     := -59000   	;Set your clock delay (normally around -59000 to be safe)
-ReturnDelay    := 8000    	;Used for expedition returning animation (AT LEAST 8 SECONDS)
-SendDelay      := 4000      ;Used for expedition sending animation
+SendDelay      := 3500      ;Used for expedition sending animation
 MiscDelay      := 1000      ;Delay for actions with little to no animation time
 
 ;PixelColor Contants
@@ -57,7 +55,7 @@ else
     MsgBox Window not found
     ExitApp
 }
-
+Sleep 300
 PSS := 0
 PixelSearch, BX1, BY1, 0, 0, WinW, WinH, BPC1,, Fast RGB
 PixelGetColor, BPCT, BX1+1, BY1, RGB
@@ -184,7 +182,7 @@ return
 		loop
 		{
 			GRT := GetRemainingTime(n)
-			if (GRT > SR-LoadingDelay and GRT < SR+60000 and SR < GRT+10000)
+			if (GRT > SR and GRT < SR+60000 and SR < GRT+10000)
 			{
 				SR := GRT+10000
 				n := 1
@@ -195,6 +193,7 @@ return
 		GuiControl,, NB, Expedition 2 returning - Delay: %SRS% minutes
 		Sleep SR
         goto Queue
+		return
     }
     else
         RF := 1
@@ -213,7 +212,7 @@ return
 		loop
 		{
 			GRT := GetRemainingTime(n)
-			if (GRT > SR-LoadingDelay and GRT < SR+60000 and SR < GRT+10000)
+			if (GRT > SR and GRT < SR+60000 and SR < GRT+10000)
 			{
 				SR := GRT+10000
 				n := 1
@@ -224,6 +223,7 @@ return
 		GuiControl,, NB, Expedition 3 returning - Delay: %SRS% minutes
 		Sleep SR
         goto Queue
+		return
     }
     else
         RF := 1
@@ -242,7 +242,7 @@ return
 		loop
 		{
 			GRT := GetRemainingTime(n)
-			if (GRT > SR-LoadingDelay and GRT < SR+60000 and SR < GRT+10000)
+			if (GRT > SR and GRT < SR+60000 and SR < GRT+10000)
 			{
 				SR := GRT+10000
 				n := 1
@@ -253,6 +253,7 @@ return
 		GuiControl,, NB, Expedition 4 returning - Delay: %SRS% minutes
 		Sleep SR
         goto Queue
+		return
     }
     else
         RF := 1
@@ -265,16 +266,14 @@ Queue:
 		RF := 0
 	tpc := 0
 	tpc := PixelGetColorS(FX,FY)
-	if (tpc != HPC and tpc != HEPC)
-	{
-		ControlClick, x%Hx% y%Hy%, %WINID%
-	}
-	else
+	if (tpc = HPC)
 	{
 		ControlClick, x%Rx% y%Ry%, %WINID%
-		Sleep MiscDelay
+		WaitForPixelColor(RPC)
+	}
+	if (tpc != HEPC)
+	{
 		ControlClick, x%Hx% y%Hy%, %WINID%
-		
 	}
 	GuiControl,, NB, Waiting for home screen...
 	tpc := WaitForPixelColor(HPC,HEPC,,900)
@@ -332,7 +331,7 @@ Resupply(r)
         WaitForPixelColor(HPC)
         ControlClick, x%Rx% y%Ry%, %WINID%
     }
-    Sleep MiscDelay
+	WaitForPixelColor(RPC)
 	GuiControl,, NB, Resupplying expedition %r%
     if r = 2
         ControlClick, x%2Rx% y%234Ry%, %WINID%
@@ -363,13 +362,15 @@ SendExp(n)
 		tpc := PixelGetColorS(FX,FY)
 		if (tpc != EPC)
 		{
-			ControlClick, x%Hx% y%Hy%, %WINID%
-            WaitForPixelColor(HPC)
+			if (tpc != HPC)
+			{
+				ControlClick, x%Hx% y%Hy%, %WINID%
+				WaitForPixelColor(HPC)
+			}
 			ControlClick, x%Sx% y%Sy%, %WINID%
             WaitForPixelColor(SPC)
             ControlClick, x%Ex% y%Ey%, %WINID%
-            WaitForPixelColor(EPC)
-			
+            WaitForPixelColor(EPC)	
 		}
 		GuiControl,, NB, Sending expedition %n%
         if td >  32
@@ -412,6 +413,7 @@ SendExp(n)
 			Sleep MiscDelay
 			ControlClick, x%ESx% y%ESy%, %WINID%
 		}
+		WaitForPixelColor(EPC)
         if n = 2
         {
             ta := (ET[SetExped[2]]+ClockDelay)*-1
@@ -441,7 +443,6 @@ SendExp(n)
 			SetTimer, Refresh, %RTI%
 			TO := 1
 		}
-		WaitForPixelColor(EPC)
         Sleep SendDelay
     }
 }
@@ -922,7 +923,10 @@ WaitForPixelColor(pc3, pc33 := 0, click3 := 0, timeout := 60)
 		}
 		index3 += 1
 	}Until index3 > timeout
-	gosub Queue
+	if Q.MaxIndex() > 0
+	{
+		gosub Queue
+	}
 	return 0
 }
 
@@ -1003,10 +1007,10 @@ Initialize()
 }
 
 ;To-do list
-;Remove image search requirement. Possibly a pixel search alternative.
-;Test a background pixel search method
+
 
 ;ChangeLog
+;1.04: Added short delay to allow window activation, fixed starting script on expedition return. Removal of archaic variables.
 ;1.03: Image no longer required, script can now be started on most pages of the game. Fixed a pixel check after sending expeditions that may bug iDOL and sending multiple expeds.
 ;1.0: Stable (?) Release
 ;0.98a: (ALPHA) Highly untested background pixel checking. Expect problems #BLAZEIT
