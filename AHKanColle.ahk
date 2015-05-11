@@ -1,4 +1,4 @@
-﻿;KANCOLLE AHK EXPEDITION SCRIPT GUI V1.04 5/9/15
+﻿;AHKanColle V1.05 5/11/15
 #Persistent
 #SingleInstance
 #Include Gdip_All.ahk ;Thanks to tic (Tariq Porter) for his GDI+ Library => ahkscript.org/boards/viewtopic.php?t=6517
@@ -161,7 +161,7 @@ if PSS = 1
 	Menu, Main, Add, Pause, Pause2
 	Gui, Menu, Main
 	GuiControl, Focus, SE2
-	Gui, Show, Autosize
+	Gui, Show, Autosize, AHKanColle
 }
 else
 {
@@ -174,7 +174,7 @@ return
 {
     SetTimer, 2Return, Off
 	CDT[2] := 0
-    Q.Insert(2)
+    QueueInsert(2)
     if Q.MaxIndex() = 1
     {
 		Random, SR, MinRandomWait, MaxRandomWait 
@@ -204,7 +204,7 @@ return
 {
     SetTimer, 3Return, Off
 	CDT[3] := 0
-    Q.Insert(3)
+    QueueInsert(3)
     if Q.MaxIndex() = 1
 	{
 		Random, SR, MinRandomWait, MaxRandomWait 
@@ -234,7 +234,7 @@ return
 {
     SetTimer, 4Return, Off
 	CDT[4] := 0
-    Q.Insert(4)
+    QueueInsert(4)
     if Q.MaxIndex() = 1
     {
 		Random, SR, MinRandomWait, MaxRandomWait 
@@ -647,20 +647,10 @@ ERT2:
 		RT2 := TRT2
 		if (RT2 != "")
 		{
-			if Q.MaxIndex() > 0
-			{
-				qi := 1
-			    Loop
-				{
-					if Q[qi] = 2 {
-						Q.Remove(qi)
-					}
-					qi += 1
-				}Until qi > Q.MaxIndex()
-			}
+			QueueRemove(2)
 			if TRT2 = 0
 			{
-				Q.Insert(2)
+				QueueInsert(2,1)
 				if IB = 0
 				{
 					GuiControl, Show, SEB
@@ -713,20 +703,10 @@ ERT3:
 		RT3 := TRT3
 		if (RT3 != "")
 		{
-			if Q.MaxIndex() > 0
-			{
-				qi := 1
-			    Loop
-				{
-					if Q[qi] = 3 {
-						Q.Remove(qi)
-					}
-					qi += 1
-				}Until qi > Q.MaxIndex()
-			}
+			QueueRemove(3)
 			if RT3 = 0
 			{
-				Q.Insert(3)
+				QueueInsert(3,1)
 				if IB = 0
 				{
 					GuiControl, Show, SEB
@@ -780,20 +760,10 @@ ERT4:
 		RT4 := TRT4
 		if (RT4 != "")
 		{
-			if Q.MaxIndex() > 0
-			{
-				qi := 1
-			    Loop
-				{
-					if Q[qi] = 4 {
-						Q.Remove(qi)
-					}
-					qi += 1
-				}Until qi > Q.MaxIndex()
-			}
+			QueueRemove(4)
 			if RT4 = 0
 			{
-				Q.Insert(4)
+				QueueInsert(4,1)
 				if IB = 0
 				{
 					GuiControl, Show, SEB
@@ -839,9 +809,37 @@ SEButton:
 	IB := 0
 	if Q.MaxIndex() > 0
     {
-		Skip := 1
         goto Queue
     }
+	return
+}
+
+QueueRemove(qrn)
+{
+	global
+	if Q.MaxIndex() > 0
+	{
+		QRi := 1
+		Loop
+		{
+			if Q[QRi] = qrn
+			{
+				Q.Remove(QRi)
+			}
+			QRi += 1
+		}Until QRi > Q.MaxIndex()
+	}
+	return
+}
+
+QueueInsert(qin,QIs := 0)
+{
+	global
+	if QIs = 0
+	{
+		QueueRemove(qin)
+	}
+	Q.Insert(qin)
 	return
 }
 
@@ -905,22 +903,23 @@ WaitForPixelColor(pc3, pc33 := 0, click3 := 0, timeout := 60)
 	tpc3 := 0
 	loop
 	{
-		Sleep 1000
+		Sleep 500
 		tpc3 := PixelGetColorS(FX,FY)
 		if (tpc3 = pc3)
 		{
-			Sleep 1000
+			Sleep 500
 			return 1
 		}
 		else if (pc33 != 0 and tpc3 = pc33)
 		{
-			Sleep 1000
+			Sleep 500
 			return 2
 		}
 		if (click3 = 1)
 		{
 			ControlClick, x%ESx% y%ESy%, %WINID%
 		}
+		Sleep 500
 		index3 += 1
 	}Until index3 > timeout
 	if Q.MaxIndex() > 0
@@ -1000,16 +999,20 @@ Initialize()
     ET[37] := 9900000
     ET[38] := 10500000
     ET[39] := 108000000
-    RandomDelay := 0
     RF := 0
 	IB := 0
-	Skip := 0
+}
+
+GuiClose:
+{
+	ExitApp 
 }
 
 ;To-do list
 
 
 ;ChangeLog
+;1.05: Fixed repeat resupply/sending. Adjusted pixel check delay. Script now exits when GUI is closed.
 ;1.04: Added short delay to allow window activation, fixed starting script on expedition return. Removal of archaic variables.
 ;1.03: Image no longer required, script can now be started on most pages of the game. Fixed a pixel check after sending expeditions that may bug iDOL and sending multiple expeds.
 ;1.0: Stable (?) Release
