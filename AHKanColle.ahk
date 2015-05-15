@@ -1,4 +1,4 @@
-﻿;AHKanColle V1.05 5/11/15
+﻿;AHKanColle V1.06 5/15/15
 #Persistent
 #SingleInstance
 #Include Gdip_All.ahk ;Thanks to tic (Tariq Porter) for his GDI+ Library => ahkscript.org/boards/viewtopic.php?t=6517
@@ -35,8 +35,8 @@ EPC := 0xede6d9 ;Expeditions
 NRPC := 0x444444 ;Needs Resupply
 RRPC := 0xd1c1b2 ;Resupplied
 ECPC := 0xffffff ;Error Cat
-EHPC := 0x288e8d ;Expedition button hovered
-ENPC := 0x277d6f ;Expedition button
+EHPC := 0xee8b28 ;Cancel expedition button hovered
+ENPC := 0xcd3547 ;Cancel expedition button
 BPC1 := 0xaab974 ;Bucket1
 BPC2 := 0xc3c89a ;Bucket2
 BEPC1 := 0xeae2cc ;BucketExped1
@@ -265,7 +265,7 @@ Queue:
 	if RF = 1
 		RF := 0
 	tpc := 0
-	tpc := PixelGetColorS(FX,FY)
+	tpc := PixelGetColorS(FX,FY,3)
 	if (tpc = HPC)
 	{
 		ControlClick, x%Rx% y%Ry%, %WINID%
@@ -320,7 +320,7 @@ Resupply(r)
     global
 	GuiControl,, NB, Resupplying...
 	tpc := 0
-	tpc := PixelGetColorS(FX,FY)
+	tpc := PixelGetColorS(FX,FY,3)
 	if (tpc = HPC)
 	{
         ControlClick, x%Rx% y%Ry%, %WINID%
@@ -340,8 +340,8 @@ Resupply(r)
     else if r = 4
         ControlClick, x%4Rx% y%234Ry%, %WINID%
     Sleep MiscDelay
-	tpc := PixelGetColorS(SAx,SAy)
-	if (tpc = NRPC)
+	tpc := PixelGetColorS(SAx,SAy,2)
+	if (tpc != RRPC)
 	{
 		ControlClick, x%SAx% y%SAy%, %WINID%
 		Sleep MiscDelay
@@ -359,7 +359,7 @@ SendExp(n)
         td := SetExped[n]
         te := Eh[td]
 		tpc := 0
-		tpc := PixelGetColorS(FX,FY)
+		tpc := PixelGetColorS(FX,FY,3)
 		if (tpc != EPC)
 		{
 			if (tpc != HPC)
@@ -401,8 +401,8 @@ SendExp(n)
         Sleep MiscDelay
         ControlClick, x%FX% y%te%, %WINID%
         Sleep MiscDelay
-		tpc := PixelGetColorS(ESx,ESy)
-		if (tpc = EHPC or tpc = ENPC)
+		tpc := PixelGetColorS(ESx,ESy,2)
+		if (tpc != EHPC and tpc != ENPC)
 		{
 			ControlClick, x%ESx% y%ESy%, %WINID%
 			Sleep MiscDelay
@@ -868,22 +868,34 @@ Refresh:
 	return
 }
 
-PixelGetColorS(x2,y2)
+PixelGetColorS(x2,y2,v2 := 0)
 {
 	global
-	pToken  := Gdip_Startup()
-	pBitmap := Gdip_BitmapFromHWND(hwnd)
-	pARGB := GDIP_GetPixel(pBitmap, x2, y2)
-	pHEX := DEC2HEX(pARGB,"true")
-	;MsgBox % pHEX
-	if pHEX = ECPC
+	vc2 := 0
+	lHEX := 0
+	Loop
+	{
+		pToken  := Gdip_Startup()
+		pBitmap := Gdip_BitmapFromHWND(hwnd)
+		pARGB := GDIP_GetPixel(pBitmap, x2, y2)
+		pHEX := DEC2HEX(pARGB,"true")
+		if (pHEX = lHEX)
+		{
+			vc2 += 1
+		}else
+		{
+			lHEX := pHEX
+			vc2 := 1
+		}
+		Gdip_DisposeImage(pBitmap)
+		Gdip_Shutdown(pToken)
+		Sleep 50
+	}Until vc2 > v2
+	if lHEX = ECPC
 	{
 		GuiControl,, NB, ErrorCat
-		Pause
 	}
-	Gdip_DisposeImage(pBitmap)
-	Gdip_Shutdown(pToken)
-	return pHEX
+	return lHEX
 }
 
 DEC2HEX(DEC, RARGB="false") 
@@ -927,6 +939,17 @@ WaitForPixelColor(pc3, pc33 := 0, click3 := 0, timeout := 60)
 		gosub Queue
 	}
 	return 0
+}
+
+SysIntSuspend(sus)
+{
+	if sus = 1
+	{
+		Run %A_ScriptDir%\Sysinternals\pssuspend.exe KanColleViewer.exe
+	}else
+	{
+		Run %A_ScriptDir%\Sysinternals\pssuspend.exe -r KanColleViewer.exe
+	}
 }
 
 
@@ -1012,6 +1035,7 @@ GuiClose:
 
 
 ;ChangeLog
+;1.06: Added multi pixel checking to further reduce bugging. Addition of SysInternal for future suspend option.
 ;1.05: Fixed repeat resupply/sending. Adjusted pixel check delay. Script now exits when GUI is closed.
 ;1.04: Added short delay to allow window activation, fixed starting script on expedition return. Removal of archaic variables.
 ;1.03: Image no longer required, script can now be started on most pages of the game. Fixed a pixel check after sending expeditions that may bug iDOL and sending multiple expeds.
