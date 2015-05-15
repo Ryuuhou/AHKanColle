@@ -1,71 +1,89 @@
-﻿;KANCOLLE AHK EXPEDITION SCRIPT GUI V0.97 4/19/15
+﻿;PixelTest for AHKanColle v1.0 5/15/15
 #Persistent
 #SingleInstance
 #Include Gdip_All.ahk ;Thanks to tic (Tariq Porter) for his GDI+ Library => ahkscript.org/boards/viewtopic.php?t=6517
 CoordMode, Pixel, Relative
 
-Initialize()
-
 IniRead, WINID, config.ini, Variables, WINID, KanColleViewer!
 
-;Variable Delays
-
-IniRead, LoadingDelay, config.ini, Variables, LoadingDelay, 5000    ;Most important delay, server response delay.  No lower than 4000.
-IniRead, MinRandomWait, config.ini, Variables, MinRandomWait, 4000		;Minimum time to wait after exped returns.
-IniRead, MaxRandomWait, config.ini, Variables, MaxRandomWait, 300000	;Maximum time to wait after exped returns.
-
-;Constant Delays
-
-ClockDelay     := -59000   	;Set your clock delay (normally around -59000 to be safe)
-ReturnDelay    := 8000    	;Used for expedition returning animation (AT LEAST 8 SECONDS)
-SendDelay      := 4000      ;Used for expedition sending animation
-MiscDelay      := 1000      ;Delay for actions with little to no animation time
-LastPixel := 0
-
-RTI := 2000 ;Refresh interval for GUI
-
-;CM: 1=Home, 2=Resupply, 3=SortieMenu, 4=ExpedList
-
-IfWinExist, %WINID%
+hwnd := WinExist(WINID)
+if not hwnd = 0
 {
-	hwnd := WinExist(WINID)
     WinActivate
     WinGetPos, , , WinW, WinH
 }    
 else
 {
     MsgBox Window not found
-    Exit
+    ExitApp
 }
 
-ImageSearch, FoundX, FoundY, 0, 0, WinW, WinH, %A_ScriptDir%\IMG\HP.png
-if ErrorLevel = 0
+;PixelColor Contants
+
+HPC := 0x4acacd ;Home
+HEPC := 0x42b6b8 ;Home + Exped
+RPC := 0xeee6d9 ;Resupply
+SPC := 0x293137 ;Sortie
+EPC := 0xede6d9 ;Expeditions
+NRPC := 0x444444 ;Needs Resupply
+RRPC := 0xd1c1b2 ;Resupplied
+ECPC := 0xffffff ;Error Cat
+EHPC := 0xee8b28 ;Cancel expedition button hovered
+ENPC := 0xcd3547 ;Cancel expedition button
+BPC1 := 0xaab974 ;Bucket1
+BPC2 := 0xc3c89a ;Bucket2
+BEPC1 := 0xeae2cc ;BucketExped1
+BEPC2 := 0xece3cf ;BucketExped2
+
+LastPixel := 0
+
+Sleep 300
+PSS := 0
+PixelSearch, BX1, BY1, 0, 0, WinW, WinH, BPC1,, Fast RGB
+PixelGetColor, BPCT, BX1+1, BY1, RGB
+if (ErrorLevel = 0 and BPCT = BPC2)
 {
-    Hx := FoundX - 330 ;Home Button
-    Hy := FoundY - 415
-    Sx := FoundX - 185 ;Sortie Button
-    Sy := FoundY - 200
-    Rx := FoundX - 300 ;Resupply Button
-    Ry := FoundY - 240
-    SAx := FoundX - 255
-    SAy := FoundY - 335
-    Ex := FoundX + 280 ;Expedition Button
-    Ey := FoundY - 240
-    ESx := FoundX + 330
-    ESy := FoundY - 15
-    3Ex := FoundX + 45
-    4Ex := FoundX + 75
-    34Ey := FoundY - 335
-    2Rx := FoundX - 200
-    3Rx := FoundX - 170
-    4Rx := FoundX - 140
-    234Ry := FoundY - 340
-    PGx[1] := FoundX - 240
-    PGx[2] := FoundX - 180
-    PGx[3] := FoundX - 125
-    PGx[4] := FoundX - 70
-    PGx[5] := FoundX - 10
-    PGy := FoundY - 20
+	PSS := 1
+}	
+else
+{
+	PixelSearch, BX1, BY1, 0, 0, WinW, WinH, BEPC1,, Fast RGB
+	PixelGetColor, BPCT, BX1+1, BY1, RGB
+	if (ErrorLevel = 0 and BPCT = BEPC2)
+	{
+		PSS := 1
+	}
+}
+
+if PSS = 1
+{
+	FX := BX1 - 304
+	FY := BY1 + 441
+    Hx := FX - 330 ;Home Button
+    Hy := FY - 415
+    Sx := FX - 185 ;Sortie Button
+    Sy := FY - 200
+    Rx := FX - 300 ;Resupply Button
+    Ry := FY - 240
+    SAx := FX - 255
+    SAy := FY - 335
+    Ex := FX + 280 ;Expedition Button
+    Ey := FY - 240
+    ESx := FX + 330
+    ESy := FY - 15
+    3Ex := FX + 45
+    4Ex := FX + 75
+    34Ey := FY - 335
+    2Rx := FX - 200
+    3Rx := FX - 170
+    4Rx := FX - 140
+    234Ry := FY - 340
+    PGx[1] := FX - 240
+    PGx[2] := FX - 180
+    PGx[3] := FX - 125
+    PGx[4] := FX - 70
+    PGx[5] := FX - 10
+    PGy := FY - 20
     CM := 1
 	tpc := 0
 	Gui, 1: New
@@ -75,14 +93,14 @@ if ErrorLevel = 0
 	Gui, Show, Autosize
 	Loop
 	{
-		tpc := PixelGetColorS(FoundX,FoundY)
+		tpc := PixelGetColorS(FX,FY)
 		Sleep 100
 	}
 }
 else
 {
-    MsgBox KanColle is not on home screen
-    Exit
+    MsgBox KanColle is not on a valid screen
+    ExitApp
 }
 return
     
@@ -112,100 +130,3 @@ DEC2HEX(DEC, RARGB="false") {
 		RGB := RGB & 0x00ffffff
     return RGB
 }
-
-
-
-Initialize()
-{
-    global
-    SetExped := Array(item)
-    ET := Array(item)
-    Eh := Array(item)
-    PGx := Array(item)
-	TCS := Array(item)
-	TCL := Array(item)
-	CDT := Array(item)
-    Q := Array()
-	TRT2 := 0
-	TRT3 := 0
-	TRT4 := 0
-	TCS[2] := 0
-	TCS[3] := 0
-	TCS[4] := 0
-	TCL[2] := 0
-	TCL[3] := 0
-	TCL[4] := 0
-	CDT[2] := 0
-	CDT[3] := 0
-	CDT[4] := 0
-    ET[1] := 900000
-    ET[2] := 1800000
-    ET[3] := 1200000
-    ET[4] := 3000000
-    ET[5] := 5400000
-    ET[6] := 2400000
-    ET[7] := 3600000
-    ET[8] := 10800000
-    ET[9] := 14400000
-    ET[10] := 5400000
-    ET[11] := 18000000
-    ET[12] := 28800000
-    ET[13] := 14400000
-    ET[14] := 21600000
-    ET[15] := 43200000
-    ET[16] := 14400000
-    ET[17] := 2700000
-    ET[18] := 18000000
-    ET[19] := 21600000
-    ET[20] := 7200000
-    ET[21] := 8400000
-    ET[22] := 10800000
-    ET[23] := 14400000
-    ET[24] := 0           ;Does not exist
-    ET[25] := 144000000
-    ET[26] := 288000000
-    ET[27] := 72000000
-    ET[28] := 90000000
-    ET[29] := 86400000
-    ET[30] := 172800000
-    ET[31] := 7200000
-    ET[32] := 86400000
-    ET[33] := 900000      ;Support
-    ET[34] := 1800000     ;Support
-    ET[35] := 25200000
-    ET[36] := 32400000
-    ET[37] := 9900000
-    ET[38] := 10500000
-    ET[39] := 108000000
-    RandomDelay := 0
-    RF := 0
-	IB := 0
-	Skip := 0
-}
-
-;To-do list
-;Remove image search requirement. Possibly a pixel search alternative.
-;Test a background pixel search method
-
-;ChangeLog
-;0.97: Adjusted delays
-;0.95: Added support for INI file for saved values, repositioned GUI controls
-;0.92: Improved GUI, Added countdown timer and notification bar
-;0.91: Fixed all remaining times updating when pressing enter.
-;0.9: GUI Interface
-;0.8: Added a new detection method of overlapping returning fleets. Added support for expedition 32. Reformatted and simplified configuration instructions.
-;0.7: Bugfixes, reduce bug rate of overlapping.
-;0.6: Added text syntax for remaining time. Retimed constant delays. Revised delay variables for better configuration.
-;0.5: Bugfixes.
-;0.4: Early stage support for overlapping expeditions.
-;0.1: Simple timer script created.
-
-;0x4acacd = main menu
-;0x42b6b8 = main menu + exped
-;0x49afb1 = fleet selection
-;0x41413c = " "
-;0xeee6d9 = resupply
-;0x293137 = sortie menu
-;0xede6d9 = expeditions
-
-
