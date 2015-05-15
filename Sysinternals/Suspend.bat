@@ -1,0 +1,1 @@
+pssuspend KanColleViewer.exe
