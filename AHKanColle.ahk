@@ -1,4 +1,4 @@
-﻿;AHKanColle V1.06 5/15/15
+﻿;AHKanColle v1.07 5/18/15
 #Persistent
 #SingleInstance
 #Include Gdip_All.ahk ;Thanks to tic (Tariq Porter) for his GDI+ Library => ahkscript.org/boards/viewtopic.php?t=6517
@@ -44,130 +44,50 @@ BEPC2 := 0xece3cf ;BucketExped2
 
 RTI := 2000 ;Refresh interval for GUI
 
-hwnd := WinExist(WINID)
-if not hwnd = 0
-{
-    WinActivate
-    WinGetPos, , , WinW, WinH
-}    
-else
-{
-    MsgBox Window not found
-    ExitApp
-}
-Sleep 300
-PSS := 0
-PixelSearch, BX1, BY1, 0, 0, WinW, WinH, BPC1,, Fast RGB
-PixelGetColor, BPCT, BX1+1, BY1, RGB
-if (ErrorLevel = 0 and BPCT = BPC2)
-{
-	PSS := 1
-}	
-else
-{
-	PixelSearch, BX1, BY1, 0, 0, WinW, WinH, BEPC1,, Fast RGB
-	PixelGetColor, BPCT, BX1+1, BY1, RGB
-	if (ErrorLevel = 0 and BPCT = BEPC2)
-	{
-		PSS := 1
-	}
-}
-
-if PSS = 1
-{
-	FX := BX1 - 304
-	FY := BY1 + 441
-    Hx := FX - 330 ;Home Button
-    Hy := FY - 415
-    Sx := FX - 185 ;Sortie Button
-    Sy := FY - 200
-    Rx := FX - 300 ;Resupply Button
-    Ry := FY - 240
-    SAx := FX - 255
-    SAy := FY - 335
-    Ex := FX + 280 ;Expedition Button
-    Ey := FY - 240
-    ESx := FX + 330
-    ESy := FY - 15
-    3Ex := FX + 45
-    4Ex := FX + 75
-    34Ey := FY - 335
-    2Rx := FX - 200
-    3Rx := FX - 170
-    4Rx := FX - 140
-    234Ry := FY - 340
-    PGx[1] := FX - 240
-    PGx[2] := FX - 180
-    PGx[3] := FX - 125
-    PGx[4] := FX - 70
-    PGx[5] := FX - 10
-    PGy := FY - 20
-    RC := 0
-	TO := 0
-    index := 1
-    Loop
-    {
-        th := FY-280+30*(index-1)
-        Eh[index] := th
-        index2 := index+8
-        Eh[index2] := th
-        index2 := index+16
-        Eh[index2] := th
-        index2 := index+24
-        Eh[index2] := th
-        index2 := index+32
-        Eh[index2] := th
-        index += 1
-    }Until index = 9
-	IniRead, iDOL, config.ini, Variables, iDOL, 0
-	Gui, 1: New
-	Gui, 1: Default
-	Gui, Add, Text,, Exped 2:
-	Gui, Add, Text,, Exped 3:
-	Gui, Add, Text,, Exped 4:
-	Gui, Add, Text,, MinWait:
-	Gui, Add, Text,, MaxWait:
-	Gui, Add, Edit, r1 w20 vNB ReadOnly
-	GuiControl, Move, NB, w300 y139
-	IniRead, tSetExped, config.ini, Variables, SetExped2, %A_Space%
-	Gui, Add, Edit, gESE2 r2 limit4 w20 vSE2 -VScroll ym, %tSetExped%
-	GuiControl, Move, SE2, h20
-	IniRead, tSetExped, config.ini, Variables, SetExped3, %A_Space%
-	Gui, Add, Edit, gESE3 r2 limit4 w20 vSE3 -VScroll, %tSetExped%
-	GuiControl, Move, SE3, h20 y32
-	IniRead, tSetExped, config.ini, Variables, SetExped4, %A_Space%
-	Gui, Add, Edit, gESE4 r2 limit4 w20 vSE4 -VScroll, %tSetExped%
-	GuiControl, Move, SE4, h20 y58
-	Gui, Add, Edit, gMiW r2 w20 vmid -VScroll, %MinRandomWait%
-	GuiControl, Move, mid, h20 y85 w80
-	Gui, Add, Edit, gMaW r2 w20 vmad -VScroll, %MaxRandomWait%
-	GuiControl, Move, mad, h20 y112 w80
-	Gui, Add, Text,ym x+20,Remaining Time:
-	Gui, Add, Text,,Remaining Time:
-	Gui, Add, Text,,Remaining Time:
-	Gui, Add, Edit, ReadOnly gERT2 r2 w60 vTRT2 -VScroll ym
-	GuiControl, Move, TRT2, h20
-	Gui, Add, Edit, ReadOnly gERT3 r2 w60 vTRT3 -VScroll
-	GuiControl, Move, TRT3, h20 y32
-	Gui, Add, Edit, ReadOnly gERT4 r2 w60 vTRT4 -VScroll
-	GuiControl, Move, TRT4, h20 y58
-	Gui, Add, Text, vT2 ym, 00:00:00
-	Gui, Add, Text, vT3, 00:00:00
-	Gui, Add, Text, vT4, 00:00:00
-	Gui, Add, Button, gSEButton vSEB, A
-	GuiControl, Move, SEB, x210 y110 w95
-	GuiControl,,SEB, Send Expeditions
-	GuiControl, Hide, SEB
-	Menu, Main, Add, Pause, Pause2
-	Gui, Menu, Main
-	GuiControl, Focus, SE2
-	Gui, Show, Autosize, AHKanColle
-}
-else
-{
-    MsgBox KanColle is not on a valid screen
-    ExitApp
-}
+PixelMap()
+IniRead, iDOL, config.ini, Variables, iDOL, 0
+Gui, 1: New
+Gui, 1: Default
+Gui, Add, Text,, Exped 2:
+Gui, Add, Text,, Exped 3:
+Gui, Add, Text,, Exped 4:
+Gui, Add, Text,, MinWait:
+Gui, Add, Text,, MaxWait:
+Gui, Add, Edit, r1 w20 vNB ReadOnly
+GuiControl, Move, NB, w300 y139
+IniRead, tSetExped, config.ini, Variables, SetExped2, %A_Space%
+Gui, Add, Edit, gESE2 r2 limit4 w20 vSE2 -VScroll ym, %tSetExped%
+GuiControl, Move, SE2, h20
+IniRead, tSetExped, config.ini, Variables, SetExped3, %A_Space%
+Gui, Add, Edit, gESE3 r2 limit4 w20 vSE3 -VScroll, %tSetExped%
+GuiControl, Move, SE3, h20 y32
+IniRead, tSetExped, config.ini, Variables, SetExped4, %A_Space%
+Gui, Add, Edit, gESE4 r2 limit4 w20 vSE4 -VScroll, %tSetExped%
+GuiControl, Move, SE4, h20 y58
+Gui, Add, Edit, gMiW r2 w20 vmid -VScroll, %MinRandomWait%
+GuiControl, Move, mid, h20 y85 w80
+Gui, Add, Edit, gMaW r2 w20 vmad -VScroll, %MaxRandomWait%
+GuiControl, Move, mad, h20 y112 w80
+Gui, Add, Text,ym x+20,Remaining Time:
+Gui, Add, Text,,Remaining Time:
+Gui, Add, Text,,Remaining Time:
+Gui, Add, Edit, ReadOnly gERT2 r2 w60 vTRT2 -VScroll ym
+GuiControl, Move, TRT2, h20
+Gui, Add, Edit, ReadOnly gERT3 r2 w60 vTRT3 -VScroll
+GuiControl, Move, TRT3, h20 y32
+Gui, Add, Edit, ReadOnly gERT4 r2 w60 vTRT4 -VScroll
+GuiControl, Move, TRT4, h20 y58
+Gui, Add, Text, vT2 ym, 00:00:00
+Gui, Add, Text, vT3, 00:00:00
+Gui, Add, Text, vT4, 00:00:00
+Gui, Add, Button, gSEButton vSEB, A
+GuiControl, Move, SEB, x210 y110 w95
+GuiControl,,SEB, Send Expeditions
+GuiControl, Hide, SEB
+Menu, Main, Add, Pause, Pause2
+Gui, Menu, Main
+GuiControl, Focus, SE2
+Gui, Show, Autosize, AHKanColle
 return
     
 2Return:
@@ -263,7 +183,16 @@ return
 Queue:
 {
 	if RF = 1
+	{
 		RF := 0
+	}
+	WinGetPos, , , TWinW, TWinH, ahk_id %hwnd%
+	if (TWinW != WinW or TWinH != WinH)
+	{
+		GuiControl,, NB, Window size changed, reinitializing pixel map
+		PixelMap()
+		Sleep 1000
+	}
 	tpc := 0
 	tpc := PixelGetColorS(FX,FY,3)
 	if (tpc = HPC)
@@ -280,6 +209,14 @@ Queue:
 	if tpc = 2
 	{
 		WaitForPixelColor(HPC,,1)
+	}
+	else if tpc = 0
+	{
+		if Q.MaxIndex() > 0
+		{
+			goto Queue
+		}
+		return
 	}
     RC += 1
 	qi := 1
@@ -894,6 +831,7 @@ PixelGetColorS(x2,y2,v2 := 0)
 	if lHEX = ECPC
 	{
 		GuiControl,, NB, ErrorCat
+		Pause
 	}
 	return lHEX
 }
@@ -934,10 +872,6 @@ WaitForPixelColor(pc3, pc33 := 0, click3 := 0, timeout := 60)
 		Sleep 500
 		index3 += 1
 	}Until index3 > timeout
-	if Q.MaxIndex() > 0
-	{
-		gosub Queue
-	}
 	return 0
 }
 
@@ -960,6 +894,92 @@ Pause2:
 
 Pause::Pause
 
+PixelMap()
+{
+	global
+	hwnd := WinExist(WINID)
+	if not hwnd = 0
+	{
+		WinActivate
+		WinGetPos, , , WinW, WinH
+	}    
+	else
+	{
+		MsgBox Window not found
+		ExitApp
+	}
+	Sleep 300
+	PSS := 0
+	PixelSearch, BX1, BY1, 0, 0, WinW, WinH, BPC1,, Fast RGB
+	PixelGetColor, BPCT, BX1+1, BY1, RGB
+	if (ErrorLevel = 0 and BPCT = BPC2)
+	{
+		PSS := 1
+	}	
+	else
+	{
+		PixelSearch, BX1, BY1, 0, 0, WinW, WinH, BEPC1,, Fast RGB
+		PixelGetColor, BPCT, BX1+1, BY1, RGB
+		if (ErrorLevel = 0 and BPCT = BEPC2)
+		{
+			PSS := 1
+		}
+	}
+
+	if PSS = 1
+	{
+		FX := BX1 - 304
+		FY := BY1 + 441
+		Hx := FX - 330 ;Home Button
+		Hy := FY - 415
+		Sx := FX - 185 ;Sortie Button
+		Sy := FY - 200
+		Rx := FX - 300 ;Resupply Button
+		Ry := FY - 240
+		SAx := FX - 255
+		SAy := FY - 335
+		Ex := FX + 280 ;Expedition Button
+		Ey := FY - 240
+		ESx := FX + 330
+		ESy := FY - 15
+		3Ex := FX + 45
+		4Ex := FX + 75
+		34Ey := FY - 335
+		2Rx := FX - 200
+		3Rx := FX - 170
+		4Rx := FX - 140
+		234Ry := FY - 340
+		PGx[1] := FX - 240
+		PGx[2] := FX - 180
+		PGx[3] := FX - 125
+		PGx[4] := FX - 70
+		PGx[5] := FX - 10
+		PGy := FY - 20
+		RC := 0
+		TO := 0
+		index := 1
+		Loop
+		{
+			th := FY-280+30*(index-1)
+			Eh[index] := th
+			index2 := index+8
+			Eh[index2] := th
+			index2 := index+16
+			Eh[index2] := th
+			index2 := index+24
+			Eh[index2] := th
+			index2 := index+32
+			Eh[index2] := th
+			index += 1
+		}Until index = 9
+	}
+	else
+	{
+		MsgBox KanColle is not on a valid screen
+		ExitApp
+	}
+}
+		
 Initialize()
 {
     global
@@ -1035,6 +1055,7 @@ GuiClose:
 
 
 ;ChangeLog
+;1.07: Fixed script interaction with timing out waiting for home screen. Added check for change in window size.
 ;1.06: Added multi pixel checking to further reduce bugging. Addition of SysInternal for future suspend option.
 ;1.05: Fixed repeat resupply/sending. Adjusted pixel check delay. Script now exits when GUI is closed.
 ;1.04: Added short delay to allow window activation, fixed starting script on expedition return. Removal of archaic variables.
