@@ -1,4 +1,4 @@
-﻿;AHKanColle v1.07 5/18/15
+﻿;AHKanColle v1.071 5/18/15
 #Persistent
 #SingleInstance
 #Include Gdip_All.ahk ;Thanks to tic (Tariq Porter) for his GDI+ Library => ahkscript.org/boards/viewtopic.php?t=6517
@@ -46,6 +46,8 @@ RTI := 2000 ;Refresh interval for GUI
 
 PixelMap()
 IniRead, iDOL, config.ini, Variables, iDOL, 0
+IniRead, TWinX, config.ini, Variables, LastX, 0
+IniRead, TWinY, config.ini, Variables, LastY, 0
 Gui, 1: New
 Gui, 1: Default
 Gui, Add, Text,, Exped 2:
@@ -87,7 +89,7 @@ GuiControl, Hide, SEB
 Menu, Main, Add, Pause, Pause2
 Gui, Menu, Main
 GuiControl, Focus, SE2
-Gui, Show, Autosize, AHKanColle
+Gui, Show, X%TWinX% Y%TWinY% Autosize, AHKanColle
 return
     
 2Return:
@@ -1048,6 +1050,9 @@ Initialize()
 
 GuiClose:
 {
+	WinGetPos,TWinX,TWinY
+	IniWrite,%TWinX%,config.ini,Variables,LastX
+	IniWrite,%TWinY%,config.ini,Variables,LastY
 	ExitApp 
 }
 
