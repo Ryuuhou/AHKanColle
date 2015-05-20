@@ -48,6 +48,7 @@ PixelMap()
 IniRead, iDOL, config.ini, Variables, iDOL, 0
 IniRead, TWinX, config.ini, Variables, LastX, 0
 IniRead, TWinY, config.ini, Variables, LastY, 0
+IniRead, Debug, config.ini, Variables, Debug, 0
 Gui, 1: New
 Gui, 1: Default
 Gui, Add, Text,, Exped 2:
@@ -220,7 +221,6 @@ Queue:
 		}
 		return
 	}
-    RC += 1
 	qi := 1
     Loop
     {
@@ -250,7 +250,7 @@ Queue:
 		ControlClick, x%Hx% y%Hy%, %WINID%
 		GuiControl,, NB, iDOL
 	}	
-	
+	RC := NRC
     return
 }    
 
@@ -818,6 +818,13 @@ PixelGetColorS(x2,y2,v2 := 0)
 		pBitmap := Gdip_BitmapFromHWND(hwnd)
 		pARGB := GDIP_GetPixel(pBitmap, x2, y2)
 		pHEX := DEC2HEX(pARGB,"true")
+		if Debug = 1 
+		{
+			tPath := A_ScriptDir . "/IMG/" . RC . "-" . pHEX . ".jpg"
+			Gdip_SaveBitmapToFile(pBitmap, tPath)
+		}
+		SetFormat, IntegerFast, d
+		RC += 1
 		if (pHEX = lHEX)
 		{
 			vc2 += 1
@@ -844,7 +851,7 @@ DEC2HEX(DEC, RARGB="false")
     RGB += DEC ;Converts the decimal to hexidecimal
 	if(RARGB=="true")
 		RGB := RGB & 0x00ffffff
-	SetFormat, IntegerFast, d
+	;SetFormat, IntegerFast, d
     return RGB
 }
 
@@ -874,6 +881,7 @@ WaitForPixelColor(pc3, pc33 := 0, click3 := 0, timeout := 60)
 		Sleep 500
 		index3 += 1
 	}Until index3 > timeout
+	NRC += 1000
 	return 0
 }
 
@@ -958,6 +966,7 @@ PixelMap()
 		PGx[5] := FX - 10
 		PGy := FY - 20
 		RC := 0
+		NRC := 0
 		TO := 0
 		index := 1
 		Loop
