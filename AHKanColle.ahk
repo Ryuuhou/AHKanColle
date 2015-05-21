@@ -1,4 +1,4 @@
-﻿;AHKanColle v1.071 5/18/15
+﻿;AHKanColle v1.073 5/21/15
 #Persistent
 #SingleInstance
 #Include Gdip_All.ahk ;Thanks to tic (Tariq Porter) for his GDI+ Library => ahkscript.org/boards/viewtopic.php?t=6517
@@ -920,7 +920,7 @@ PixelMap()
 	}
 	Sleep 300
 	PSS := 0
-	PixelSearch, BX1, BY1, 0, 0, WinW, WinH, BPC1,, Fast RGB
+	PixelSearch, BX1, BY1, 0, 0, WinW, WinH, BPC1, 1, Fast RGB
 	PixelGetColor, BPCT, BX1+1, BY1, RGB
 	if (ErrorLevel = 0 and BPCT = BPC2)
 	{
@@ -928,7 +928,7 @@ PixelMap()
 	}	
 	else
 	{
-		PixelSearch, BX1, BY1, 0, 0, WinW, WinH, BEPC1,, Fast RGB
+		PixelSearch, BX1, BY1, 0, 0, WinW, WinH, BEPC1, 1, Fast RGB
 		PixelGetColor, BPCT, BX1+1, BY1, RGB
 		if (ErrorLevel = 0 and BPCT = BEPC2)
 		{
