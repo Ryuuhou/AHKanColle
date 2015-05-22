@@ -4,7 +4,7 @@ AHKanColle (Click script for KanColle expeditions)
 
 by Ryuuhou
 
-README 5/21/15
+README 5/22/15
 
 >scripting
 
@@ -14,7 +14,7 @@ README 5/21/15
 
 * AHK_L
 * Gdip_All library by tic
-* Pssuspend from Windows Sysinternal for suspend functionality. (Place pssuspend.exe in AHKanColle/Sysinternals) https://technet.microsoft.com/en-us/sysinternals/bb897540.aspx
+* (OPTIONAL) Pssuspend from Windows Sysinternal for suspend functionality. (Place pssuspend.exe in AHKanColle/Sysinternals) https://technet.microsoft.com/en-us/sysinternals/bb897540.aspx
 
 ## Features:
 
@@ -27,7 +27,7 @@ README 5/21/15
 Set which expedition each fleet will run, press ENTER to submit.  
 Use expedition 0 to disable resending that fleet.
 
-Enter a remaining time if it is currently already on an expedition. The syntax is 2h2m2s for fleet returning in 2 hours 2 minutes and 2 seconds (02:02:02).
+Enter a remaining time if it is currently already on an expedition. The following syntax are allowed for the time 2 hours 2 minutes and 2 seconds. 02:02:02 | 2:2:2 | 2h2m2s
 
 If it is not on an expedition, use 0 to resupply and send after pushing the button "Send Expeditions."
 
