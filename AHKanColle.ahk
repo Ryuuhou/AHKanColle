@@ -1,4 +1,4 @@
-﻿;AHKanColle v1.073 5/21/15
+﻿;AHKanColle v1.08 5/22/15
 #Persistent
 #SingleInstance
 #Include Gdip_All.ahk ;Thanks to tic (Tariq Porter) for his GDI+ Library => ahkscript.org/boards/viewtopic.php?t=6517
@@ -74,11 +74,11 @@ GuiControl, Move, mad, h20 y112 w80
 Gui, Add, Text,ym x+20,Remaining Time:
 Gui, Add, Text,,Remaining Time:
 Gui, Add, Text,,Remaining Time:
-Gui, Add, Edit, ReadOnly gERT2 r2 w60 vTRT2 -VScroll ym
+Gui, Add, Edit, ReadOnly gERT2 r2 w63 vTRT2 -VScroll -HScroll ym
 GuiControl, Move, TRT2, h20
-Gui, Add, Edit, ReadOnly gERT3 r2 w60 vTRT3 -VScroll
+Gui, Add, Edit, ReadOnly gERT3 r2 w63 vTRT3 -VScroll -HScroll
 GuiControl, Move, TRT3, h20 y32
-Gui, Add, Edit, ReadOnly gERT4 r2 w60 vTRT4 -VScroll
+Gui, Add, Edit, ReadOnly gERT4 r2 w63 vTRT4 -VScroll -HScroll
 GuiControl, Move, TRT4, h20 y58
 Gui, Add, Text, vT2 ym, 00:00:00
 Gui, Add, Text, vT3, 00:00:00
@@ -97,6 +97,7 @@ return
 {
     SetTimer, 2Return, Off
 	CDT[2] := 0
+	GuiControl,, T2, 00:00:00
     QueueInsert(2)
     if Q.MaxIndex() = 1
     {
@@ -127,6 +128,7 @@ return
 {
     SetTimer, 3Return, Off
 	CDT[3] := 0
+	GuiControl,, T3, 00:00:00
     QueueInsert(3)
     if Q.MaxIndex() = 1
 	{
@@ -157,6 +159,7 @@ return
 {
     SetTimer, 4Return, Off
 	CDT[4] := 0
+	GuiControl,, T4, 00:00:00
     QueueInsert(4)
     if Q.MaxIndex() = 1
     {
@@ -392,48 +395,83 @@ GetRemainingTime(expedn)
 	return (TCS[expedn]+TCL[expedn]-A_TickCount)
 }
 	
-
-HMS2MS(ss)
+ParseTime(ss)
 {
     global
     sl := StrLen(ss)
-    i := 1
+    i := 0
     ii := 0
     tt := 0
+	mx := 1000
+	cc := 0
+	format := 0
     loop
     {
-        ts := SubStr(ss,i,1)
+        ts := SubStr(ss,sl,1)
         if ts is integer
         {
-            if ii > 0
-                ii := ii*10+ts
-            else
-                ii := ts
+			i := i + ts*10**ii
+			ii += 1
+			if sl = 1
+			{
+				tt := tt + i * mx
+				return tt
+			}
         }
         else if ts is alpha
         {
-            if ts = h
-            {
-                tt := tt+ii*3600000
-            }
-            else if ts = m
-                tt := tt+ii*60000
-            else if ts = s
-                tt := tt+ii*1000
-            else
-            {
-                GuiControl,, NB, Invalid time input
-                Exit
-            }
-            ii := 0
+			if (format = 1 and i > 0)
+			{
+				tt := tt + i * mx
+			}
+			if ts = h
+			{
+				mx := 3600000
+			}
+			else if ts = m
+			{
+				mx := 60000
+			}
+			else if ts = s
+			{
+				mx := 1000
+			}
+			else
+			{
+				GuiControl,, NB, Invalid time input
+				Exit
+			}
+			ii := 0
+			i := 0
+			format := 1
         }
-        i += 1
-    }Until i > sl
-    return tt
+		else if ts = :
+		{
+			if cc = 0
+			{
+				tt := tt + i * 1000
+				mx := 60000
+			}
+			else if cc = 1
+			{
+				tt := tt + i * 60000
+				mx := 3600000
+			}
+			i := 0
+			ii := 0
+			cc += 1
+			format := 2
+		}
+        sl := sl - 1
+    }
 }
 
 MS2HMS(ms)
 {
+	if ms < 0
+	{
+		return "00:00:00"
+	}
 	var := Floor(ms/3600000)
 	ms := ms - var*3600000
 	if (var<10) 
@@ -601,9 +639,10 @@ ERT2:
 			}
 			else if (RT2 != -1)
 			{
-				if RT2 is not integer
+				ta := ParseTime(RT2)
+				if (ta < ClockDelay*-1)
 				{
-					ta := HMS2MS(RT2)
+					ta := ClockDelay*-1+1000
 				}
 				ta := (ta+ClockDelay)*-1
 				TCS[2] := A_TickCount
@@ -657,9 +696,10 @@ ERT3:
 			}
 			else if (RT3 != -1)
 			{
-				if RT3 is not integer
+				ta := ParseTime(RT3)
+				if (ta < ClockDelay*-1)
 				{
-					ta := HMS2MS(RT3)
+					ta := ClockDelay*-1+1000
 				}
 				ta := (ta+ClockDelay)*-1
 				TCS[3] := A_TickCount
@@ -713,9 +753,10 @@ ERT4:
 			}
 			else if (RT4 != -1)
 			{
-				if RT4 is not integer
+				ta := ParseTime(RT4)
+				if (ta < ClockDelay*-1)
 				{
-					ta := HMS2MS(RT4)
+					ta := ClockDelay*-1+1000
 				}
 				ta := (ta+ClockDelay)*-1
 				TCS[4] := A_TickCount
@@ -820,7 +861,7 @@ PixelGetColorS(x2,y2,v2 := 0)
 		pHEX := DEC2HEX(pARGB,"true")
 		if Debug = 1 
 		{
-			tPath := A_ScriptDir . "/IMG/" . RC . "-" . pHEX . ".jpg"
+			tPath := A_ScriptDir . "/IMG/" . RC . ".jpg"
 			Gdip_SaveBitmapToFile(pBitmap, tPath)
 		}
 		SetFormat, IntegerFast, d
@@ -1069,6 +1110,7 @@ GuiClose:
 
 
 ;ChangeLog
+;1.08: Now accepts 02:02:02 timer input format.  Old format also accepted.
 ;1.07: Fixed script interaction with timing out waiting for home screen. Added check for change in window size.
 ;1.06: Added multi pixel checking to further reduce bugging. Addition of SysInternal for future suspend option.
 ;1.05: Fixed repeat resupply/sending. Adjusted pixel check delay. Script now exits when GUI is closed.
