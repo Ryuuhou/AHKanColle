@@ -4,7 +4,7 @@ AHKanColle (Click script for KanColle expeditions)
 
 by Ryuuhou
 
-README 5/6/15
+README 5/21/15
 
 >scripting
 
@@ -14,6 +14,7 @@ README 5/6/15
 
 * AHK_L
 * Gdip_All library by tic
+* Pssuspend from Windows Sysinternal for suspend functionality. (Place pssuspend.exe in AHKanColle/Sysinternals) https://technet.microsoft.com/en-us/sysinternals/bb897540.aspx
 
 ## Features:
 
@@ -49,6 +50,8 @@ Simple pause script that runs alongside AHKanColle.  ONLY PAUSES ONCE. You will 
 Enter in config.ini under [Variables], PauseHr=22 , and PauseMn=22 to pause at 22:22.  Use 24 Hour format only. You may use PCSleep=1 to sleep the computer at that time as well.
 
 ## Warnings:
+Do NOT use hardware acceleration on your browsers or use "Direct/GPU" on KCV unless your computer is set to never idle.  When the computer idles, hardware acceleration is turned off and flash no longer renders.
+
 Although this script was designed to work in background, certain applications may lose focus while scripting.
 
 Do NOT minimize browser/KCV, mouse clicks do not work while minimized. It can be behind other windows.
