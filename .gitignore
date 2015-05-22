@@ -2,3 +2,5 @@
 *.ini
 *.jpg
 *.db
+*.exe
+*.bat
