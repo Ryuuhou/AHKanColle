@@ -1,4 +1,4 @@
-﻿;AHKanColle v1.08 5/22/15
+﻿;AHKanColle v1.09 5/24/15
 #Persistent
 #SingleInstance
 #Include Gdip_All.ahk ;Thanks to tic (Tariq Porter) for his GDI+ Library => ahkscript.org/boards/viewtopic.php?t=6517
@@ -44,7 +44,6 @@ BEPC2 := 0xece3cf ;BucketExped2
 
 RTI := 2000 ;Refresh interval for GUI
 
-PixelMap()
 IniRead, iDOL, config.ini, Variables, iDOL, 0
 IniRead, TWinX, config.ini, Variables, LastX, 0
 IniRead, TWinY, config.ini, Variables, LastY, 0
@@ -91,6 +90,7 @@ Menu, Main, Add, Pause, Pause2
 Gui, Menu, Main
 GuiControl, Focus, SE2
 Gui, Show, X%TWinX% Y%TWinY% Autosize, AHKanColle
+SetWindow()
 return
     
 2Return:
@@ -192,12 +192,21 @@ Queue:
 	{
 		RF := 0
 	}
-	WinGetPos, , , TWinW, TWinH, ahk_id %hwnd%
-	if (TWinW != WinW or TWinH != WinH)
+	IfWinExist, ahk_id %hwnd%
 	{
-		GuiControl,, NB, Window size changed, reinitializing pixel map
-		PixelMap()
+		WinGetPos, , , TWinW, TWinH
+		if (TWinW != WinW or TWinH != WinH)
+		{
+			GuiControl,, NB, Window size changed, reinitializing pixel map
+			Sleep 1000
+			PixelMap()
+		}
+	}
+	else
+	{
+		GuiControl,, NB, Window not found, searching for window
 		Sleep 1000
+		SetWindow()
 	}
 	tpc := 0
 	tpc := PixelGetColorS(FX,FY,3)
@@ -404,7 +413,6 @@ ParseTime(ss)
     tt := 0
 	mx := 1000
 	cc := 0
-	format := 0
     loop
     {
         ts := SubStr(ss,sl,1)
@@ -420,7 +428,7 @@ ParseTime(ss)
         }
         else if ts is alpha
         {
-			if (format = 1 and i > 0)
+			if i > 0
 			{
 				tt := tt + i * mx
 			}
@@ -443,7 +451,6 @@ ParseTime(ss)
 			}
 			ii := 0
 			i := 0
-			format := 1
         }
 		else if ts = :
 		{
@@ -460,7 +467,6 @@ ParseTime(ss)
 			i := 0
 			ii := 0
 			cc += 1
-			format := 2
 		}
         sl := sl - 1
     }
@@ -864,7 +870,6 @@ PixelGetColorS(x2,y2,v2 := 0)
 			tPath := A_ScriptDir . "/IMG/" . RC . ".jpg"
 			Gdip_SaveBitmapToFile(pBitmap, tPath)
 		}
-		SetFormat, IntegerFast, d
 		RC += 1
 		if (pHEX = lHEX)
 		{
@@ -892,7 +897,7 @@ DEC2HEX(DEC, RARGB="false")
     RGB += DEC ;Converts the decimal to hexidecimal
 	if(RARGB=="true")
 		RGB := RGB & 0x00ffffff
-	;SetFormat, IntegerFast, d
+	SetFormat, IntegerFast, d
     return RGB
 }
 
@@ -945,90 +950,124 @@ Pause2:
 
 Pause::Pause
 
+SetWindow()
+{
+	global
+	Sleep 300
+	RCount := 1
+	Loop
+	{
+		hwnd := 0
+		hwnd := WinExist(WINID)
+		if not hwnd = 0
+		{
+			WinActivate
+			WinGetPos, , , WinW, WinH
+			GuiControl,, NB, Window found
+			Break
+		}    
+		else
+		{
+			GuiControl,, NB, Window not found. Retrying (%RCount%)
+			Sleep 1000
+			RCount += 1
+			if RCount > 30
+			{
+				GuiControl,, NB, Could not find window, unpause script to try again
+				RCount := 1
+				Pause
+			}
+		}
+	}
+	PixelMap()
+}
+
 PixelMap()
 {
 	global
-	hwnd := WinExist(WINID)
-	if not hwnd = 0
+	RCount := 1
+	Loop
 	{
-		WinActivate
-		WinGetPos, , , WinW, WinH
-	}    
-	else
-	{
-		MsgBox Window not found
-		ExitApp
-	}
-	Sleep 300
-	PSS := 0
-	PixelSearch, BX1, BY1, 0, 0, WinW, WinH, BPC1, 1, Fast RGB
-	PixelGetColor, BPCT, BX1+1, BY1, RGB
-	if (ErrorLevel = 0 and BPCT = BPC2)
-	{
-		PSS := 1
-	}	
-	else
-	{
-		PixelSearch, BX1, BY1, 0, 0, WinW, WinH, BEPC1, 1, Fast RGB
+		WinActivate, ahk_id %hwnd%
+		PSS := 0
+		PixelSearch, BX1, BY1, 0, 0, WinW, WinH, BPC1, 1, Fast RGB
 		PixelGetColor, BPCT, BX1+1, BY1, RGB
-		if (ErrorLevel = 0 and BPCT = BEPC2)
+		if (ErrorLevel = 0 and BPCT = BPC2)
 		{
 			PSS := 1
-		}
-	}
-
-	if PSS = 1
-	{
-		FX := BX1 - 304
-		FY := BY1 + 441
-		Hx := FX - 330 ;Home Button
-		Hy := FY - 415
-		Sx := FX - 185 ;Sortie Button
-		Sy := FY - 200
-		Rx := FX - 300 ;Resupply Button
-		Ry := FY - 240
-		SAx := FX - 255
-		SAy := FY - 335
-		Ex := FX + 280 ;Expedition Button
-		Ey := FY - 240
-		ESx := FX + 330
-		ESy := FY - 15
-		3Ex := FX + 45
-		4Ex := FX + 75
-		34Ey := FY - 335
-		2Rx := FX - 200
-		3Rx := FX - 170
-		4Rx := FX - 140
-		234Ry := FY - 340
-		PGx[1] := FX - 240
-		PGx[2] := FX - 180
-		PGx[3] := FX - 125
-		PGx[4] := FX - 70
-		PGx[5] := FX - 10
-		PGy := FY - 20
-		RC := 0
-		NRC := 0
-		TO := 0
-		index := 1
-		Loop
+		}	
+		else
 		{
-			th := FY-280+30*(index-1)
-			Eh[index] := th
-			index2 := index+8
-			Eh[index2] := th
-			index2 := index+16
-			Eh[index2] := th
-			index2 := index+24
-			Eh[index2] := th
-			index2 := index+32
-			Eh[index2] := th
-			index += 1
-		}Until index = 9
-	}
-	else
-	{
-		MsgBox KanColle is not on a valid screen
-		ExitApp
+			PixelSearch, BX1, BY1, 0, 0, WinW, WinH, BEPC1, 1, Fast RGB
+			PixelGetColor, BPCT, BX1+1, BY1, RGB
+			if (ErrorLevel = 0 and BPCT = BEPC2)
+			{
+				PSS := 1
+			}
+		}
+
+		if PSS = 1
+		{
+			FX := BX1 - 304
+			FY := BY1 + 441
+			Hx := FX - 330 ;Home Button
+			Hy := FY - 415
+			Sx := FX - 185 ;Sortie Button
+			Sy := FY - 200
+			Rx := FX - 300 ;Resupply Button
+			Ry := FY - 240
+			SAx := FX - 255
+			SAy := FY - 335
+			Ex := FX + 280 ;Expedition Button
+			Ey := FY - 240
+			ESx := FX + 330
+			ESy := FY - 15
+			3Ex := FX + 45
+			4Ex := FX + 75
+			34Ey := FY - 335
+			2Rx := FX - 200
+			3Rx := FX - 170
+			4Rx := FX - 140
+			234Ry := FY - 340
+			PGx[1] := FX - 240
+			PGx[2] := FX - 180
+			PGx[3] := FX - 125
+			PGx[4] := FX - 70
+			PGx[5] := FX - 10
+			PGy := FY - 20
+			RC := 0
+			NRC := 0
+			TO := 0
+			index := 1
+			Loop
+			{
+				th := FY-280+30*(index-1)
+				Eh[index] := th
+				index2 := index+8
+				Eh[index2] := th
+				index2 := index+16
+				Eh[index2] := th
+				index2 := index+24
+				Eh[index2] := th
+				index2 := index+32
+				Eh[index2] := th
+				index += 1
+			}Until index = 9
+			GuiControl,, NB, Ready
+			return
+		}
+		else
+		{
+			GuiControl,, NB, Invalid Screen, Retrying (%RCount%)
+			Sleep 1000
+			RCount += 1
+			if RCount > 30
+			{
+				GuiControl,, NB, Could not find reference pixel, unpause script to try again
+				RCount := 1
+				Pause
+			}
+		}
 	}
 }
 		
@@ -1110,6 +1149,7 @@ GuiClose:
 
 
 ;ChangeLog
+;1.09: Script can now be opened when window is not open or on an invalid screen.
 ;1.08: Now accepts 02:02:02 timer input format.  Old format also accepted.
 ;1.07: Fixed script interaction with timing out waiting for home screen. Added check for change in window size.
 ;1.06: Added multi pixel checking to further reduce bugging. Addition of SysInternal for future suspend option.
