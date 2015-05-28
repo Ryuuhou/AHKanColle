@@ -48,7 +48,7 @@ FPC := 0x1b1b1b ;Formation
 SRPC := 0x202122 ;Sortie Results
 NBPC := 0x408 ;Night Battle
 CSPC := 0x162629 ;Continue Screen
-CCPC := 0xf2615a ;Critical
+CCPC := 0xcc5852 ;Critical
 
 RTI := 2000 ;Refresh interval for GUI
 
@@ -224,17 +224,17 @@ Queue:
 	if (tpc = HPC)
 	{
 		ControlClick, x%Rx% y%Ry%, %WINID%
-		WaitForPixelColor(RPC)
+		WaitForPixelColor(FX,FY,RPC)
 	}
 	if (tpc != HEPC)
 	{
 		ControlClick, x%Hx% y%Hy%, %WINID%
 	}
 	GuiControl,, NB, Waiting for home screen...
-	tpc := WaitForPixelColor(HPC,HEPC,,900)
+	tpc := WaitForPixelColor(FX,FY,HPC,HEPC,,900)
 	if tpc = 2
 	{
-		WaitForPixelColor(HPC,,1)
+		WaitForPixelColor(FX,FY,HPC,,1)
 	}
 	else if tpc = 0
 	{
@@ -280,22 +280,23 @@ Queue:
 Repair()
 {
 	global
-	tpc := PixelGetColorS(FX,FY,3)
-	if (tpc != HPC)
+	tpc2 := PixelGetColorT(FX,FY,3)
+	if (tpc2 != HPC)
 	{
 		ControlClick, x%Hx% y%Hy%, %WINID%
 		GuiControl,, NB, Waiting for home screen
-		WaitForPixelColor(HPC)
+		WaitForPixelColorS(FX,FY,HPC)
 	}
 	ControlClick, x%REx% y%REy%, %WINID%
 	GuiControl,, NB, Waiting for repair screen
-	WaitForPixelColor(REPC)
-	ControlClick, x%RBx% y%RBy%, %WINID%
+	WaitForPixelColorS(FX,FY,REPC)
 	Sleep MiscDelay
 	Loop
 	{
-		tpc := PixelGetColorS(CCx,CCy,3)
-		if tpc = CCPC
+		ControlClick, x%RBx% y%RBy%, %WINID%
+		Sleep MiscDelay
+		tpc2 := PixelGetColorT(CCx,CCy,3)
+		if (tpc2 = CCPC)
 		{
 			GuiControl,, NB, Critical HP detected, repairing
 			ControlClick, x%CCx% y%CCy%, %WINID%
@@ -305,7 +306,8 @@ Repair()
 			ControlClick, x%ESx% y%ESy%, %WINID%
 			Sleep 500
 			ControlClick, x%BCx% y%BCy%, %WINID%	
-			Sleep 3000			
+			WaitForPixelColorS(FX,FY,REPC)
+			Sleep 9000			
 		}
 		else
 		{
@@ -323,19 +325,19 @@ Sortie:
 		SetTimer, Sortie, Off
 		Repair()
 		Resupply(1)
-		tpc := PixelGetColorS(FX,FY,3)
-		if (tpc != HPC)
+		tpc2 := PixelGetColorS(FX,FY,3)
+		if (tpc2 != HPC)
 		{
 			ControlClick, x%Hx% y%Hy%, %WINID%
 			GuiControl,, NB, Waiting for home screen
-			WaitForPixelColor(HPC)
+			WaitForPixelColorS(FX,FY,HPC)
 		}
 		ControlClick, x%Sx% y%Sy%, %WINID%
 		GuiControl,, NB, Waiting for sortie screen
-        WaitForPixelColor(SPC)
+        WaitForPixelColorS(FX,FY,SPC)
 		ControlClick, x%S2x% y%S2y%, %WINID%
 		GuiControl,, NB, Waiting for sortie selection screen
-        WaitForPixelColor(S2PC)
+        WaitForPixelColorS(FX,FY,S2PC)
 		tf := SPGx[World]
 		ControlClick, x%tf% y%PGy%, %WINID%
 		GuiControl,, NB, Starting sortie
@@ -348,22 +350,24 @@ Sortie:
 		Sleep MiscDelay
 		ControlClick, x%ESx% y%ESy%, %WINID%
 		GuiControl,, NB, Waiting for compass
-		WaitForPixelColor(CPC)
+		WaitForPixelColorS(FX,FY,CPC)
+		Sleep 5000
 		ControlClick, x%ESx% y%ESy%, %WINID%
 		GuiControl,, NB, Waiting for formation
-		WaitForPixelColor(FPC)
-		Sleep 500
+		WaitForPixelColorS(FX,FY,FPC)
+		Sleep MiscDelay
 		ControlClick, x%LAx% y%LAy%, %WINID%
-		GuiControl,, NB, Waiting for sortie to finish
-		tpc := WaitForPixelColor(SRPC,NBPC,,300000)
-		if tpc = 2
+		GuiControl,, NB, Waiting for results
+		tpc2 := WaitForPixelColorS(FX,FY,SRPC,NBPC,,300000)
+		if tpc2 = 2
 		{
+			Sleep 3000
 			ControlClick, x%CNBx% y%CNBy%, %WINID%
 		}
-		GuiControl,, NB, Waiting for sortie to finish
-		WaitForPixelColor(CSPC,,1)
+		GuiControl,, NB, Waiting for end sortie
+		WaitForPixelColorS(FX,FY,CSPC,,1)
 		ControlClick, x%ESBx% y%ESBy%, %WINID%
-		WaitForPixelColor(HPC,HEPC)
+		WaitForPixelColorS(FX,FY,HPC,HEPC)
 		GuiControl,, NB, Idle
 		SetTimer, Sortie, %SortieInterval%
 	}
@@ -386,10 +390,10 @@ Resupply(r)
 	else if (tpc != RPC) 
     {
         ControlClick, x%Hx% y%Hy%, %WINID%
-        WaitForPixelColor(HPC)
+        WaitForPixelColor(FX,FY,HPC)
         ControlClick, x%Rx% y%Ry%, %WINID%
     }
-	WaitForPixelColor(RPC)
+	WaitForPixelColor(FX,FY,RPC)
 	GuiControl,, NB, Resupplying expedition %r%
     if r = 2
 	{
@@ -410,7 +414,7 @@ Resupply(r)
 		ControlClick, x%SAx% y%SAy%, %WINID%
 		Sleep MiscDelay
 		ControlClick, x%ESx% y%ESy%, %WINID%
-		WaitForPixelColor(RPC)
+		WaitForPixelColor(FX,FY,RPC)
 	}
 }
     
@@ -429,12 +433,12 @@ SendExp(n)
 			if (tpc != HPC)
 			{
 				ControlClick, x%Hx% y%Hy%, %WINID%
-				WaitForPixelColor(HPC)
+				WaitForPixelColor(FX,FY,HPC)
 			}
 			ControlClick, x%Sx% y%Sy%, %WINID%
-            WaitForPixelColor(SPC)
+            WaitForPixelColor(FX,FY,SPC)
             ControlClick, x%Ex% y%Ey%, %WINID%
-            WaitForPixelColor(EPC)	
+            WaitForPixelColor(FX,FY,EPC)	
 		}
 		GuiControl,, NB, Sending expedition %n%
         if td >  32
@@ -477,7 +481,7 @@ SendExp(n)
 			Sleep MiscDelay
 			ControlClick, x%ESx% y%ESy%, %WINID%
 		}
-		WaitForPixelColor(EPC)
+		WaitForPixelColor(FX,FY,EPC)
         if n = 2
         {
             ta := (ET[SetExped[2]]+ClockDelay)*-1

@@ -1,6 +1,8 @@
-﻿ParseTime(ss)
+﻿;AHKanColle Functions
+
+ParseTime(ss)
 {
-    global
+    global NB
     sl := StrLen(ss)
     i := 0
     ii := 0
@@ -103,35 +105,31 @@ DEC2HEX(DEC, RARGB="false")
     return RGB
 }
 
-PixelGetColorS(x2,y2,v2 := 0)
+PixelGetColorS(x,y,z := 0)
 {
-	global
-	vc2 := 0
+	global hwnd
+	global NB
+	global ECPC
+	i := 0
 	lHEX := 0
 	Loop
 	{
 		pToken  := Gdip_Startup()
 		pBitmap := Gdip_BitmapFromHWND(hwnd)
-		pARGB := GDIP_GetPixel(pBitmap, x2, y2)
+		pARGB := GDIP_GetPixel(pBitmap, x, y)
 		pHEX := DEC2HEX(pARGB,"true")
-		if Debug = 1 
-		{
-			tPath := A_ScriptDir . "/IMG/" . RC . ".jpg"
-			Gdip_SaveBitmapToFile(pBitmap, tPath)
-		}
-		RC += 1
 		if (pHEX = lHEX)
 		{
-			vc2 += 1
+			i += 1
 		}else
 		{
 			lHEX := pHEX
-			vc2 := 1
+			i := 1
 		}
 		Gdip_DisposeImage(pBitmap)
 		Gdip_Shutdown(pToken)
 		Sleep 50
-	}Until vc2 > v2
+	}Until i > z
 	if lHEX = ECPC
 	{
 		GuiControl,, NB, ErrorCat
@@ -140,35 +138,97 @@ PixelGetColorS(x2,y2,v2 := 0)
 	return lHEX
 }
 
-WaitForPixelColor(pc3, pc33 := 0, click3 := 0, timeout := 60)
+WaitForPixelColor(x, y, pc, pc2 := 0, click := 0, timeout := 60)
 {
-	global
-	index3 := 0
-	tpc3 := 0
+	global WINID
+	i := 0
+	tpc := 0
 	loop
 	{
 		Sleep 500
-		tpc3 := PixelGetColorS(FX,FY)
-		if (tpc3 = pc3)
+		tpc := PixelGetColorS(x,y)
+		if (tpc = pc)
 		{
 			Sleep 500
 			return 1
 		}
-		else if (pc33 != 0 and tpc3 = pc33)
+		else if (pc != 0 and tpc = pc2)
 		{
 			Sleep 500
 			return 2
 		}
-		if (click3 = 1)
+		if (click = 1)
 		{
-			ControlClick, x%ESx% y%ESy%, %WINID%
+			ControlClick, x%x% y%y%, %WINID%
 		}
 		Sleep 500
-		index3 += 1
-	}Until index3 > timeout
-	NRC += 1000
+		i += 1
+	}Until i > timeout
 	return 0
 }
+
+PixelGetColorT(x,y,z := 0)
+{
+	global hwnd
+	global NB
+	global ECPC
+	i := 0
+	lHEX := 0
+	Loop
+	{
+		pToken  := Gdip_Startup()
+		pBitmap := Gdip_BitmapFromHWND(hwnd)
+		pARGB := GDIP_GetPixel(pBitmap, x, y)
+		pHEX := DEC2HEX(pARGB,"true")
+		if (pHEX = lHEX)
+		{
+			i += 1
+		}else
+		{
+			lHEX := pHEX
+			i := 1
+		}
+		Gdip_DisposeImage(pBitmap)
+		Gdip_Shutdown(pToken)
+		Sleep 50
+	}Until i > z
+	if lHEX = ECPC
+	{
+		GuiControl,, NB, ErrorCat
+		Pause
+	}
+	return lHEX
+}
+
+WaitForPixelColorS(x, y, pc, pc2 := 0, click := 0, timeout := 60)
+{
+	global WINID
+	i := 0
+	tpc := 0
+	loop
+	{
+		Sleep 500
+		tpc := PixelGetColorT(x,y)
+		if (tpc = pc)
+		{
+			Sleep 500
+			return 1
+		}
+		else if (pc != 0 and tpc = pc2)
+		{
+			Sleep 500
+			return 2
+		}
+		if (click = 1)
+		{
+			ControlClick, x%x% y%y%, %WINID%
+		}
+		Sleep 500
+		i += 1
+	}Until i > timeout
+	return 0
+}
+
 
 SysIntSuspend(sus)
 {
