@@ -1,7 +1,7 @@
 ﻿;AHKanColleS v1.09 5/24/15
 #Persistent
 #SingleInstance
-#Include Gdip_All.ahk ;Thanks to tic (Tariq Porter) for his GDI+ Library => ahkscript.org/boards/viewtopic.php?t=6517
+#Include %A_ScriptDir%/Functions/Gdip_All.ahk ;Thanks to tic (Tariq Porter) for his GDI+ Library => ahkscript.org/boards/viewtopic.php?t=6517
 CoordMode, Pixel, Relative
 
 Initialize()
