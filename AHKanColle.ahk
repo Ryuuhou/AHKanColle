@@ -37,6 +37,7 @@ IniRead, Map, config.ini, Variables, Map, 0
 IniRead, SortieInterval, config.ini, Variables, SortieInterval, 300000
 Gui, 1: New
 Gui, 1: Default
+WinGet, GuiW
 Gui, Add, Text,, Exped 2:
 Gui, Add, Text,, Exped 3:
 Gui, Add, Text,, Exped 4:
@@ -78,6 +79,7 @@ Gui, Menu, Main
 Gui, Show, X%TWinX% Y%TWinY% Autosize, AHKanColle
 SetWindow()
 GuiControl, Focus, SE2
+Gui, Show
 IniWrite,1,config.ini,Do Not Modify,Busy
 return
     
