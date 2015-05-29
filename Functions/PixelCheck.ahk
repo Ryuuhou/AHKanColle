@@ -57,7 +57,7 @@ WaitForPixelColor(x, y, pc, pc2 := 0, click := 0, timeout := 60)
 			Sleep 500
 			return 1
 		}
-		else if (pc != 0 and tpc = pc2)
+		else if (pc2 != 0 and tpc = pc2)
 		{
 			Sleep 500
 			return 2

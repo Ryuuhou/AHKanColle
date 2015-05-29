@@ -121,8 +121,9 @@ Sortie:
 			ControlClick, x%CNBx% y%CNBy%, %WINID%
 		}
 		GuiControl,, NB, Waiting for end sortie
-		WaitForPixelColor(ESBx,ESBy,CSPC,,1)
+		WaitForPixelColor(FX,FY,CSPC,,1)
 		GuiControl,, NB, End sortie found
+		Sleep 3000
 		ControlClick, x%ESBx% y%ESBy%, %WINID%
 		WaitForPixelColor(FX,FY,HPC,HEPC)
 		GuiControl,, NB, Idle
@@ -251,8 +252,8 @@ PixelMap()
 			MAPy[2] := FY - 247
 			LAx := FX + 69
 			LAy := FY - 275
-			ESBx := FX + 140
-			ESBy := FY - 168
+			ESBx := FX + 130
+			ESBy := FY - 221
 			CNBx := FX - 88
 			CNBy := FY - 216
 			RBx := FX - 128

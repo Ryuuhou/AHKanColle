@@ -22,5 +22,5 @@ CPC := 0xd0d5d3 ;Compass
 FPC := 0xdedfdc ;Formation
 SRPC := 0x202122 ;Sortie Results
 NBPC := 0x408 ;Night Battle
-CSPC := 0xf2ffff ;Continue Screen
+CSPC := 0x162629 ;Continue Screen
 CCPC := 0xcc5852 ;Critical
