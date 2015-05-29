@@ -142,6 +142,7 @@ Sortie:
 		}
 		GuiControl,, NB, Waiting for end sortie
 		WaitForPixelColor(ESBx,ESBy,CSPC,,1)
+		GuiControl,, NB, End sortie found
 		ControlClick, x%ESBx% y%ESBy%, %WINID%
 		WaitForPixelColor(FX,FY,HPC,HEPC)
 		GuiControl,, NB, Idle
@@ -185,13 +186,6 @@ Resupply(r)
 }
 
 #Include Functions.ahk
-
-Pause2:
-{
-	Pause
-}
-
-Pause::Pause
 
 SetWindow()
 {

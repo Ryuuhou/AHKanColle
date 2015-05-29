@@ -778,13 +778,6 @@ Refresh:
 
 #Include Functions.ahk
 
-Pause2:
-{
-	Pause
-}
-
-Pause::Pause
-
 SetWindow()
 {
 	global

@@ -178,3 +178,10 @@ SysIntSuspend(sus)
 		Run %A_ScriptDir%\Sysinternals\pssuspend.exe -r KanColleViewer.exe
 	}
 }
+
+Pause2:
+{
+	Pause
+}
+
+Pause::Pause
