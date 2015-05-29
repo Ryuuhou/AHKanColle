@@ -27,8 +27,6 @@ MiscDelay      := 1000      ;Delay for actions with little to no animation time
 
 HPC := 0x4acacd ;Home
 HEPC := 0x42b6b8 ;Home + Exped
-;0x49afb1 = fleet selection
-;0x41413c = " "
 RPC := 0xeee6d9 ;Resupply
 SPC := 0x293137 ;Sortie
 EPC := 0xede6d9 ;Expeditions
@@ -47,7 +45,9 @@ RTI := 2000 ;Refresh interval for GUI
 IniRead, iDOL, config.ini, Variables, iDOL, 0
 IniRead, TWinX, config.ini, Variables, LastX, 0
 IniRead, TWinY, config.ini, Variables, LastY, 0
-IniRead, Debug, config.ini, Variables, Debug, 0
+IniRead, World, config.ini, Variables, World, 0
+IniRead, Map, config.ini, Variables, Map, 0
+IniRead, SortieInterval, config.ini, Variables, SortieInterval, 300000
 Gui, 1: New
 Gui, 1: Default
 Gui, Add, Text,, Exped 2:
@@ -88,14 +88,16 @@ GuiControl,,SEB, Send Expeditions
 GuiControl, Hide, SEB
 Menu, Main, Add, Pause, Pause2
 Gui, Menu, Main
-GuiControl, Focus, SE2
 Gui, Show, X%TWinX% Y%TWinY% Autosize, AHKanColle
 SetWindow()
+GuiControl, Focus, SE2
+IniWrite,1,config.ini,Do Not Modify,Busy
 return
     
 2Return:
 {
     SetTimer, 2Return, Off
+	IniWrite,1,config.ini,Do Not Modify,Busy
 	CDT[2] := 0
 	GuiControl,, T2, 00:00:00
     QueueInsert(2)
@@ -127,6 +129,7 @@ return
 3Return:
 {
     SetTimer, 3Return, Off
+	IniWrite,1,config.ini,Do Not Modify,Busy
 	CDT[3] := 0
 	GuiControl,, T3, 00:00:00
     QueueInsert(3)
@@ -158,6 +161,7 @@ return
 4Return:
 {
     SetTimer, 4Return, Off
+	IniWrite,1,config.ini,Do Not Modify,Busy
 	CDT[4] := 0
 	GuiControl,, T4, 00:00:00
     QueueInsert(4)
@@ -188,6 +192,7 @@ return
 
 Queue:
 {
+	IniWrite,1,config.ini,Do Not Modify,Busy
 	if RF = 1
 	{
 		RF := 0
@@ -213,17 +218,17 @@ Queue:
 	if (tpc = HPC)
 	{
 		ControlClick, x%Rx% y%Ry%, %WINID%
-		WaitForPixelColor(RPC)
+		WaitForPixelColor(FX,FY,RPC)
 	}
 	if (tpc != HEPC)
 	{
 		ControlClick, x%Hx% y%Hy%, %WINID%
 	}
 	GuiControl,, NB, Waiting for home screen...
-	tpc := WaitForPixelColor(HPC,HEPC,,900)
+	tpc := WaitForPixelColor(FX,FY,HPC,HEPC,,900)
 	if tpc = 2
 	{
-		WaitForPixelColor(HPC,,1)
+		WaitForPixelColor(FX,FY,HPC,,1)
 	}
 	else if tpc = 0
 	{
@@ -262,7 +267,7 @@ Queue:
 		ControlClick, x%Hx% y%Hy%, %WINID%
 		GuiControl,, NB, iDOL
 	}	
-	RC := NRC
+	IniWrite,0,config.ini,Do Not Modify,Busy
     return
 }    
 
@@ -279,17 +284,23 @@ Resupply(r)
 	else if (tpc != RPC) 
     {
         ControlClick, x%Hx% y%Hy%, %WINID%
-        WaitForPixelColor(HPC)
+        WaitForPixelColor(FX,FY,HPC)
         ControlClick, x%Rx% y%Ry%, %WINID%
     }
-	WaitForPixelColor(RPC)
+	WaitForPixelColor(FX,FY,RPC)
 	GuiControl,, NB, Resupplying expedition %r%
     if r = 2
+	{
         ControlClick, x%2Rx% y%234Ry%, %WINID%
+	}
     else if r = 3
+	{
         ControlClick, x%3Rx% y%234Ry%, %WINID%
+	}
     else if r = 4
+	{
         ControlClick, x%4Rx% y%234Ry%, %WINID%
+	}
     Sleep MiscDelay
 	tpc := PixelGetColorS(SAx,SAy,2)
 	if (tpc != RRPC)
@@ -297,7 +308,7 @@ Resupply(r)
 		ControlClick, x%SAx% y%SAy%, %WINID%
 		Sleep MiscDelay
 		ControlClick, x%ESx% y%ESy%, %WINID%
-		WaitForPixelColor(RPC)
+		WaitForPixelColor(FX,FY,RPC)
 	}
 }
     
@@ -316,12 +327,12 @@ SendExp(n)
 			if (tpc != HPC)
 			{
 				ControlClick, x%Hx% y%Hy%, %WINID%
-				WaitForPixelColor(HPC)
+				WaitForPixelColor(FX,FY,HPC)
 			}
 			ControlClick, x%Sx% y%Sy%, %WINID%
-            WaitForPixelColor(SPC)
+            WaitForPixelColor(FX,FY,SPC)
             ControlClick, x%Ex% y%Ey%, %WINID%
-            WaitForPixelColor(EPC)	
+            WaitForPixelColor(FX,FY,EPC)	
 		}
 		GuiControl,, NB, Sending expedition %n%
         if td >  32
@@ -364,7 +375,7 @@ SendExp(n)
 			Sleep MiscDelay
 			ControlClick, x%ESx% y%ESy%, %WINID%
 		}
-		WaitForPixelColor(EPC)
+		WaitForPixelColor(FX,FY,EPC)
         if n = 2
         {
             ta := (ET[SetExped[2]]+ClockDelay)*-1
@@ -404,100 +415,7 @@ GetRemainingTime(expedn)
 	return (TCS[expedn]+TCL[expedn]-A_TickCount)
 }
 	
-ParseTime(ss)
-{
-    global
-    sl := StrLen(ss)
-    i := 0
-    ii := 0
-    tt := 0
-	mx := 1000
-	cc := 0
-    loop
-    {
-        ts := SubStr(ss,sl,1)
-        if ts is integer
-        {
-			i := i + ts*10**ii
-			ii += 1
-			if sl = 1
-			{
-				tt := tt + i * mx
-				return tt
-			}
-        }
-        else if ts is alpha
-        {
-			if i > 0
-			{
-				tt := tt + i * mx
-			}
-			if ts = h
-			{
-				mx := 3600000
-			}
-			else if ts = m
-			{
-				mx := 60000
-			}
-			else if ts = s
-			{
-				mx := 1000
-			}
-			else
-			{
-				GuiControl,, NB, Invalid time input
-				Exit
-			}
-			ii := 0
-			i := 0
-        }
-		else if ts = :
-		{
-			if cc = 0
-			{
-				tt := tt + i * 1000
-				mx := 60000
-			}
-			else if cc = 1
-			{
-				tt := tt + i * 60000
-				mx := 3600000
-			}
-			i := 0
-			ii := 0
-			cc += 1
-		}
-        sl := sl - 1
-    }
-}
 
-MS2HMS(ms)
-{
-	if ms < 0
-	{
-		return "00:00:00"
-	}
-	var := Floor(ms/3600000)
-	ms := ms - var*3600000
-	if (var<10) 
-		tString := "0" . var . ":"
-	else 
-		tString := var . ":"
-	
-	var := Floor(ms/60000)
-	ms := ms - var*60000
-	if (var<10) 
-		tString := tString . "0" . var . ":"
-	else 
-		tString := tString . var . ":"
-	var := Floor(ms/1000)
-	if (var<10) 
-		tString := tString . "0" . var
-	else 
-		tString := tString . var
-	return tString
-}
 
 MiW:
 {
@@ -784,6 +702,10 @@ ERT4:
 				CDT[4] := 0
 				GuiControl, % "+Readonly", TRT4
 			}
+			if Q.MaxIndex < 1
+			{
+				IniWrite,0,config.ini,Do Not Modify,Busy
+			}
 		}
 	}
 	return
@@ -854,94 +776,7 @@ Refresh:
 	return
 }
 
-PixelGetColorS(x2,y2,v2 := 0)
-{
-	global
-	vc2 := 0
-	lHEX := 0
-	Loop
-	{
-		pToken  := Gdip_Startup()
-		pBitmap := Gdip_BitmapFromHWND(hwnd)
-		pARGB := GDIP_GetPixel(pBitmap, x2, y2)
-		pHEX := DEC2HEX(pARGB,"true")
-		if Debug = 1 
-		{
-			tPath := A_ScriptDir . "/IMG/" . RC . ".jpg"
-			Gdip_SaveBitmapToFile(pBitmap, tPath)
-		}
-		RC += 1
-		if (pHEX = lHEX)
-		{
-			vc2 += 1
-		}else
-		{
-			lHEX := pHEX
-			vc2 := 1
-		}
-		Gdip_DisposeImage(pBitmap)
-		Gdip_Shutdown(pToken)
-		Sleep 50
-	}Until vc2 > v2
-	if lHEX = ECPC
-	{
-		GuiControl,, NB, ErrorCat
-		Pause
-	}
-	return lHEX
-}
-
-DEC2HEX(DEC, RARGB="false") 
-{
-    SetFormat, IntegerFast, hex
-    RGB += DEC ;Converts the decimal to hexidecimal
-	if(RARGB=="true")
-		RGB := RGB & 0x00ffffff
-	SetFormat, IntegerFast, d
-    return RGB
-}
-
-WaitForPixelColor(pc3, pc33 := 0, click3 := 0, timeout := 60)
-{
-	global
-	index3 := 0
-	tpc3 := 0
-	loop
-	{
-		Sleep 500
-		tpc3 := PixelGetColorS(FX,FY)
-		if (tpc3 = pc3)
-		{
-			Sleep 500
-			return 1
-		}
-		else if (pc33 != 0 and tpc3 = pc33)
-		{
-			Sleep 500
-			return 2
-		}
-		if (click3 = 1)
-		{
-			ControlClick, x%ESx% y%ESy%, %WINID%
-		}
-		Sleep 500
-		index3 += 1
-	}Until index3 > timeout
-	NRC += 1000
-	return 0
-}
-
-SysIntSuspend(sus)
-{
-	if sus = 1
-	{
-		Run %A_ScriptDir%\Sysinternals\pssuspend.exe KanColleViewer.exe
-	}else
-	{
-		Run %A_ScriptDir%\Sysinternals\pssuspend.exe -r KanColleViewer.exe
-	}
-}
-
+#Include Functions.ahk
 
 Pause2:
 {
@@ -1035,8 +870,6 @@ PixelMap()
 			PGx[4] := FX - 70
 			PGx[5] := FX - 10
 			PGy := FY - 20
-			RC := 0
-			NRC := 0
 			TO := 0
 			index := 1
 			Loop
@@ -1078,6 +911,9 @@ Initialize()
     ET := Array(item)
     Eh := Array(item)
     PGx := Array(item)
+	SPGx := Array(item)
+	MAPx := Array(item)
+	MAPy := Array(item)
 	TCS := Array(item)
 	TCL := Array(item)
 	CDT := Array(item)

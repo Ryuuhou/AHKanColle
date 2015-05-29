@@ -92,8 +92,8 @@ if PSS = 1
 	MAPy[2] := FY - 247
 	LAx := FX + 69
 	LAy := FY - 275
-	ESBx := FX + 140
-	ESBy := FY - 168
+	ESBx := FX + 131
+	ESBy := FY - 220
 	CNBx := FX - 88
 	CNBy := FY - 216
 	RBx := FX - 128
@@ -110,10 +110,10 @@ if PSS = 1
 	Gui, 1: Default
 	Gui, Add, Edit, r1 w20 vNB ReadOnly
 	GuiControl, Move, NB, w100
-	Gui, Show, Autosize, ESB
+	Gui, Show, Autosize, CNB
 	Loop
 	{
-		tpc := PixelGetColorS(ESBx,ESBy)
+		tpc := PixelGetColorS(CNBx,CNBy)
 		Sleep 100
 	}
 }

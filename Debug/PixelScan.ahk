@@ -4,7 +4,8 @@
 #Include Gdip_All.ahk ;Thanks to tic (Tariq Porter) for his GDI+ Library => ahkscript.org/boards/viewtopic.php?t=6517
 CoordMode, Pixel, Relative
 
-IniRead, WINID, config.ini, Variables, WINID, ahk_class MSPaintApp
+;IniRead, WINID, config.ini, Variables, WINID, ahk_class MSPaintApp
+IniRead, WINID, config.ini, Variables, WINID, ahk_class Photoshop
 
 hwnd := WinExist(WINID)
 if not hwnd = 0
@@ -44,7 +45,7 @@ PixelGetColor, BPCT, BX1+1, BY1, RGB
 if (ErrorLevel = 0 and BPCT = BPC2)
 {
 	;Click %BX1%, %BY1%
-	MsgBox % BX1 . ", " . BY1
+	;MsgBox % BX1 . ", " . BY1
 	PSS := 1
 }	
 else
@@ -98,7 +99,7 @@ if PSS = 1
     PGy := FY - 20
 	CCx := FX + 353
 	CCy := FY - 324
-	Click %CCx%, %CCy%	
+	Click %FX%, %FY%	
     CM := 1
 }
 else
