@@ -84,13 +84,33 @@ if PSS = 1
     PGx[4] := FX - 70
     PGx[5] := FX - 10
     PGy := FY - 20
+	REx := FX - 255
+	REy := FY - 97
+	MAPx[1] := FX - 102
+	MAPy[1] := FY - 250
+	MAPx[2] := FX + 252
+	MAPy[2] := FY - 247
+	LAx := FX + 69
+	LAy := FY - 275
+	ESBx := FX + 130
+	ESBy := FY - 221
+	CNBx := FX - 88
+	CNBy := FY - 216
+	RBx := FX - 128
+	RBy := FY - 294
+	BBx := FX + 361
+	BBy := FY - 169
+	BCx := FX + 128
+	BCy := FY - 55
+	CCx := FX + 353
+	CCy := FY - 324
     CM := 1
 	tpc := 0
 	Gui, 1: New
 	Gui, 1: Default
 	Gui, Add, Edit, r1 w20 vNB ReadOnly
 	GuiControl, Move, NB, w100
-	Gui, Show, Autosize
+	Gui, Show, Autosize, ESB
 	Loop
 	{
 		tpc := PixelGetColorS(FX,FY)

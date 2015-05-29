@@ -4,8 +4,7 @@
 #Include Gdip_All.ahk ;Thanks to tic (Tariq Porter) for his GDI+ Library => ahkscript.org/boards/viewtopic.php?t=6517
 CoordMode, Pixel, Relative
 
-;IniRead, WINID, config.ini, Variables, WINID, ahk_class MSPaintApp
-IniRead, WINID, config.ini, Variables, WINID, ahk_class Photoshop
+IniRead, WINID, config.ini, Variables, WINID, KanColleViewer!
 
 hwnd := WinExist(WINID)
 if not hwnd = 0
@@ -40,38 +39,26 @@ LastPixel := 0
 
 Sleep 300
 PSS := 0
-PixelSearch, BX1, BY1, 0, 0, WinW, WinH, BPC1,1, Fast RGB
+PixelSearch, BX1, BY1, 0, 0, WinW, WinH, BPC1,, Fast RGB
 PixelGetColor, BPCT, BX1+1, BY1, RGB
 if (ErrorLevel = 0 and BPCT = BPC2)
 {
-	;Click %BX1%, %BY1%
-	;MsgBox % BX1 . ", " . BY1
 	PSS := 1
 }	
 else
 {
-	PixelSearch, BX1, BY1, 0, 0, WinW, WinH, BEPC1,1, Fast RGB
+	PixelSearch, BX1, BY1, 0, 0, WinW, WinH, BEPC1,, Fast RGB
 	PixelGetColor, BPCT, BX1+1, BY1, RGB
 	if (ErrorLevel = 0 and BPCT = BEPC2)
 	{
-		;Click %BX1%, %BY1%
-		MsgBox % BX1 . ", " . BY1 . " - 2"
 		PSS := 1
 	}
 }
 
-if PSS = 0
-{
-	PixelGetColor, BPCT, 744, 214, RGB
-	MsgBox % BPCT
-	;PixelGetColor, BPCT, 745, 214, RGB
-	;MsgBox % BPCT
-}
 if PSS = 1
 {
 	FX := BX1 - 304
 	FY := BY1 + 441
-	;Click %FX%, %FY%	
     Hx := FX - 330 ;Home Button
     Hy := FY - 415
     Sx := FX - 185 ;Sortie Button
@@ -99,8 +86,18 @@ if PSS = 1
     PGy := FY - 20
 	CCx := FX + 353
 	CCy := FY - 324
-	Click %FX%, %FY%	
     CM := 1
+	tpc := 0
+	Gui, 1: New
+	Gui, 1: Default
+	Gui, Add, Edit, r1 w20 vNB ReadOnly
+	GuiControl, Move, NB, w100
+	Gui, Show, Autosize
+	Loop
+	{
+		tpc := PixelGetColorS(CCx,CCy)
+		Sleep 100
+	}
 }
 else
 {
