@@ -40,7 +40,10 @@ Repair()
 	{
 		ControlClick, x%Hx% y%Hy%, ahk_id %hwnd%
 		GuiControl,, NB, Waiting for home screen
-		WaitForPixelColor(FX,FY,HPC)
+		tpc2 := WaitForPixelColor(FX,FY,HPC,HEPC)
+		if tpc2 = 2
+			
+		
 	}
 	ControlClick, x%REx% y%REy%, ahk_id %hwnd%
 	GuiControl,, NB, Waiting for repair screen
@@ -111,7 +114,11 @@ Sortie:
 		Sleep MiscDelay
 		ControlClick, x%ESx% y%ESy%, ahk_id %hwnd%
 		GuiControl,, NB, Waiting for formation
-		WaitForPixelColor(LAx,LAy,FPC)
+		tpc2 := WaitForPixelColor(LAx,LAy,FPC)
+		if tpc2 := 0
+		{
+			Pause
+		}
 		Sleep MiscDelay
 		ControlClick, x%LAx% y%LAy%, ahk_id %hwnd%
 		GuiControl,, NB, Waiting for results
@@ -120,6 +127,10 @@ Sortie:
 		{
 			Sleep 3000
 			ControlClick, x%CNBx% y%CNBy%, ahk_id %hwnd%
+		}
+		else if tpc2 = 0
+		{
+			Pause
 		}
 		GuiControl,, NB, Waiting for end sortie
 		WaitForPixelColor(FX,FY,CSPC,,1)
