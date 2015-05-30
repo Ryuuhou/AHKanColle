@@ -1,4 +1,4 @@
-﻿;ParseTime v1.0
+﻿;ParseTime v1.01 5/30/15
 
 ParseTime(ss)
 {
@@ -60,9 +60,23 @@ ParseTime(ss)
 				tt := tt + i * 60000
 				mx := 3600000
 			}
+			else
+			{
+				GuiControl,, NB, Invalid time input
+				Exit
+			}
+			if sl = 1
+			{
+				return tt
+			}
 			i := 0
 			ii := 0
 			cc += 1
+		}
+		else
+		{
+			GuiControl,, NB, Invalid time input
+			Exit
 		}
         sl := sl - 1
     }
