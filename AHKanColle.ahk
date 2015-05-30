@@ -80,12 +80,14 @@ SetWindow()
 GuiControl, Focus, SE2
 Gui, Show
 IniWrite,1,config.ini,Do Not Modify,Busy
+Busy := 1
 return
     
 2Return:
 {
     SetTimer, 2Return, Off
 	IniWrite,1,config.ini,Do Not Modify,Busy
+	Busy := 1
 	CDT[2] := 0
 	GuiControl,, T2, 00:00:00
     QueueInsert(2)
@@ -118,6 +120,7 @@ return
 {
     SetTimer, 3Return, Off
 	IniWrite,1,config.ini,Do Not Modify,Busy
+	Busy := 1
 	CDT[3] := 0
 	GuiControl,, T3, 00:00:00
     QueueInsert(3)
@@ -150,6 +153,7 @@ return
 {
     SetTimer, 4Return, Off
 	IniWrite,1,config.ini,Do Not Modify,Busy
+	Busy := 1
 	CDT[4] := 0
 	GuiControl,, T4, 00:00:00
     QueueInsert(4)
@@ -181,6 +185,7 @@ return
 Queue:
 {
 	IniWrite,1,config.ini,Do Not Modify,Busy
+	Busy := 1
 	if RF = 1
 	{
 		RF := 0
@@ -241,6 +246,7 @@ Queue:
 		GuiControl,, NB, iDOL
 	}	
 	IniWrite,0,config.ini,Do Not Modify,Busy
+	Busy := 0
     return
 }    
 
@@ -385,7 +391,14 @@ SendExp(n)
 GetRemainingTime(expedn) 
 {	
 	global
-	return (TCS[expedn]+TCL[expedn]-A_TickCount)
+	local i
+	i := TCS[expedn]+TCL[expedn]-A_TickCount
+	if (i < 60000 and Busy = 0)
+	{
+		IniWrite,1,config.ini,Do Not Modify,Busy
+		Busy := 1
+	}
+	return i
 }
 	
 
@@ -678,6 +691,7 @@ ERT4:
 			if Q.MaxIndex < 1
 			{
 				IniWrite,0,config.ini,Do Not Modify,Busy
+				Busy := 0
 			}
 		}
 	}
