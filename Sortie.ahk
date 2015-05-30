@@ -1,4 +1,4 @@
-﻿Sortie v1.0 5/29/15
+﻿;Sortie v1.0 5/29/15
 #Persistent
 #SingleInstance
 #Include %A_ScriptDir%/Functions/Gdip_All.ahk ;Thanks to tic (Tariq Porter) for his GDI+ Library => ahkscript.org/boards/viewtopic.php?t=6517
@@ -127,7 +127,7 @@ Sortie:
 		ControlClick, x%ESBx% y%ESBy%, %WINID%
 		WaitForPixelColor(FX,FY,HPC,HEPC)
 		GuiControl,, NB, Idle
-		SetTimer, Sortie, %SortieInterval%
+		SetTimer, Sortie, 30000
 	}
 	else
 	{
@@ -246,10 +246,10 @@ PixelMap()
 			PGy := FY - 20
 			REx := FX - 255
 			REy := FY - 97
-			MAPx[1] := FX - 102
-			MAPy[1] := FY - 250
 			MAPx[2] := FX + 252
 			MAPy[2] := FY - 247
+			MAPx[4] := FX + 252
+			MAPy[4] := FY - 100
 			LAx := FX + 69
 			LAy := FY - 275
 			ESBx := FX + 130
