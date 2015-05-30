@@ -1,4 +1,4 @@
-﻿;AHKanColle v1.091 5/29/15
+﻿;AHKanColle v1.092 5/30/15
 #Persistent
 #SingleInstance
 #Include %A_ScriptDir%/Functions/Gdip_All.ahk ;Thanks to tic (Tariq Porter) for his GDI+ Library => ahkscript.org/boards/viewtopic.php?t=6517
@@ -17,7 +17,7 @@ SetExped[4] := 0
 IniRead, MinRandomWait, config.ini, Variables, MinRandomWait, 5000		;Minimum time to wait after exped returns.
 IniRead, MaxRandomWait, config.ini, Variables, MaxRandomWait, 300000	;Maximum time to wait after exped returns.
 
-;Constant Delays
+;Constant Delays (Leave alone)
 
 ClockDelay     := -59000   	;Set your clock delay (normally around -59000 to be safe)
 SendDelay      := 3500      ;Used for expedition sending animation
@@ -37,7 +37,6 @@ IniRead, Map, config.ini, Variables, Map, 0
 IniRead, SortieInterval, config.ini, Variables, SortieInterval, 300000
 Gui, 1: New
 Gui, 1: Default
-WinGet, GuiW
 Gui, Add, Text,, Exped 2:
 Gui, Add, Text,, Exped 3:
 Gui, Add, Text,, Exped 4:
@@ -186,32 +185,17 @@ Queue:
 	{
 		RF := 0
 	}
-	IfWinExist, ahk_id %hwnd%
-	{
-		WinGetPos, , , TWinW, TWinH
-		if (TWinW != WinW or TWinH != WinH)
-		{
-			GuiControl,, NB, Window size changed, reinitializing pixel map
-			Sleep 1000
-			PixelMap()
-		}
-	}
-	else
-	{
-		GuiControl,, NB, Window not found, searching for window
-		Sleep 1000
-		SetWindow()
-	}
+	CheckWindow()
 	tpc := 0
 	tpc := PixelGetColorS(FX,FY,3)
 	if (tpc = HPC)
 	{
-		ControlClick, x%Rx% y%Ry%, %WINID%
+		ControlClick, x%Rx% y%Ry%, ahk_id %hwnd%
 		WaitForPixelColor(FX,FY,RPC)
 	}
 	if (tpc != HEPC)
 	{
-		ControlClick, x%Hx% y%Hy%, %WINID%
+		ControlClick, x%Hx% y%Hy%, ahk_id %hwnd%
 	}
 	GuiControl,, NB, Waiting for home screen...
 	tpc := WaitForPixelColor(FX,FY,HPC,HEPC,,900)
@@ -253,7 +237,7 @@ Queue:
 	GuiControl,, NB, Idle
 	if iDOL = 1 
 	{
-		ControlClick, x%Hx% y%Hy%, %WINID%
+		ControlClick, x%Hx% y%Hy%, ahk_id %hwnd%
 		GuiControl,, NB, iDOL
 	}	
 	IniWrite,0,config.ini,Do Not Modify,Busy
@@ -268,35 +252,35 @@ Resupply(r)
 	tpc := PixelGetColorS(FX,FY,3)
 	if (tpc = HPC)
 	{
-        ControlClick, x%Rx% y%Ry%, %WINID%
+        ControlClick, x%Rx% y%Ry%, ahk_id %hwnd%
 	}
 	else if (tpc != RPC) 
     {
-        ControlClick, x%Hx% y%Hy%, %WINID%
+        ControlClick, x%Hx% y%Hy%, ahk_id %hwnd%
         WaitForPixelColor(FX,FY,HPC)
-        ControlClick, x%Rx% y%Ry%, %WINID%
+        ControlClick, x%Rx% y%Ry%, ahk_id %hwnd%
     }
 	WaitForPixelColor(FX,FY,RPC)
 	GuiControl,, NB, Resupplying expedition %r%
     if r = 2
 	{
-        ControlClick, x%2Rx% y%234Ry%, %WINID%
+        ControlClick, x%2Rx% y%234Ry%, ahk_id %hwnd%
 	}
     else if r = 3
 	{
-        ControlClick, x%3Rx% y%234Ry%, %WINID%
+        ControlClick, x%3Rx% y%234Ry%, ahk_id %hwnd%
 	}
     else if r = 4
 	{
-        ControlClick, x%4Rx% y%234Ry%, %WINID%
+        ControlClick, x%4Rx% y%234Ry%, ahk_id %hwnd%
 	}
     Sleep MiscDelay
 	tpc := PixelGetColorS(SAx,SAy,2)
 	if (tpc != RRPC)
 	{
-		ControlClick, x%SAx% y%SAy%, %WINID%
+		ControlClick, x%SAx% y%SAy%, ahk_id %hwnd%
 		Sleep MiscDelay
-		ControlClick, x%ESx% y%ESy%, %WINID%
+		ControlClick, x%ESx% y%ESy%, ahk_id %hwnd%
 		WaitForPixelColor(FX,FY,RPC)
 	}
 }
@@ -315,54 +299,54 @@ SendExp(n)
 		{
 			if (tpc != HPC)
 			{
-				ControlClick, x%Hx% y%Hy%, %WINID%
+				ControlClick, x%Hx% y%Hy%, ahk_id %hwnd%
 				WaitForPixelColor(FX,FY,HPC)
 			}
-			ControlClick, x%Sx% y%Sy%, %WINID%
+			ControlClick, x%Sx% y%Sy%, ahk_id %hwnd%
             WaitForPixelColor(FX,FY,SPC)
-            ControlClick, x%Ex% y%Ey%, %WINID%
+            ControlClick, x%Ex% y%Ey%, ahk_id %hwnd%
             WaitForPixelColor(FX,FY,EPC)	
 		}
 		GuiControl,, NB, Sending expedition %n%
         if td >  32
         {
             tf := PGx[5]
-            ControlClick, x%tf% y%PGy%, %WINID%
+            ControlClick, x%tf% y%PGy%, ahk_id %hwnd%
         }
         else if td > 24
         {
             tf := PGx[4]
-            ControlClick, x%tf% y%PGy%, %WINID%
+            ControlClick, x%tf% y%PGy%, ahk_id %hwnd%
         }
         else if td > 16
         {
             tf := PGx[3]
-            ControlClick, x%tf% y%PGy%, %WINID%
+            ControlClick, x%tf% y%PGy%, ahk_id %hwnd%
         }
         else if td > 8
         {
             tf := PGx[2]
-            ControlClick, x%tf% y%PGy%, %WINID%
+            ControlClick, x%tf% y%PGy%, ahk_id %hwnd%
         }
         else
         {
             tf := PGx[1]
-            ControlClick, x%tf% y%PGy%, %WINID%
+            ControlClick, x%tf% y%PGy%, ahk_id %hwnd%
         }
         Sleep MiscDelay
-        ControlClick, x%FX% y%te%, %WINID%
+        ControlClick, x%FX% y%te%, ahk_id %hwnd%
         Sleep MiscDelay
 		tpc := PixelGetColorS(ESx,ESy,2)
 		if (tpc != EHPC and tpc != ENPC)
 		{
-			ControlClick, x%ESx% y%ESy%, %WINID%
+			ControlClick, x%ESx% y%ESy%, ahk_id %hwnd%
 			Sleep MiscDelay
 			if n = 3
-				ControlClick, x%3Ex% y%34Ey%, %WINID%
+				ControlClick, x%3Ex% y%34Ey%, ahk_id %hwnd%
 			else if n = 4
-				ControlClick, x%4Ex% y%34Ey%, %WINID%
+				ControlClick, x%4Ex% y%34Ey%, ahk_id %hwnd%
 			Sleep MiscDelay
-			ControlClick, x%ESx% y%ESy%, %WINID%
+			ControlClick, x%ESx% y%ESy%, ahk_id %hwnd%
 		}
 		WaitForPixelColor(FX,FY,EPC)
         if n = 2
@@ -768,124 +752,49 @@ Refresh:
 #Include %A_ScriptDir%/Functions/ParseTime.ahk
 #Include %A_ScriptDir%/Functions/PixelCheck.ahk
 #Include %A_ScriptDir%/Functions/Pause.ahk
-
-SetWindow()
-{
-	global
-	Sleep 300
-	RCount := 1
-	Loop
-	{
-		hwnd := 0
-		hwnd := WinExist(WINID)
-		if not hwnd = 0
-		{
-			WinActivate
-			WinGetPos, , , WinW, WinH
-			GuiControl,, NB, Window found
-			Break
-		}    
-		else
-		{
-			GuiControl,, NB, Window not found. Retrying (%RCount%)
-			Sleep 1000
-			RCount += 1
-			if RCount > 30
-			{
-				GuiControl,, NB, Could not find window, unpause script to try again
-				RCount := 1
-				Pause
-			}
-		}
-	}
-	PixelMap()
-}
+#Include %A_ScriptDir%/Functions/PixelSearch.ahk
 
 PixelMap()
 {
 	global
-	RCount := 1
+	local i := 1
+	Hx := FX - 330 ;Home Button
+	Hy := FY - 415
+	Sx := FX - 185 ;Sortie Button
+	Sy := FY - 200
+	Rx := FX - 300 ;Resupply Button
+	Ry := FY - 240
+	SAx := FX - 255
+	SAy := FY - 335
+	Ex := FX + 280 ;Expedition Button
+	Ey := FY - 240
+	ESx := FX + 330
+	ESy := FY - 15
+	3Ex := FX + 45
+	4Ex := FX + 75
+	34Ey := FY - 335
+	2Rx := FX - 200
+	3Rx := FX - 170
+	4Rx := FX - 140
+	234Ry := FY - 340
+	PGx[1] := FX - 240
+	PGx[2] := FX - 180
+	PGx[3] := FX - 125
+	PGx[4] := FX - 70
+	PGx[5] := FX - 10
+	PGy := FY - 20
+	TO := 0
 	Loop
 	{
-		WinActivate, ahk_id %hwnd%
-		PSS := 0
-		PixelSearch, BX1, BY1, 0, 0, WinW, WinH, BPC1, 1, Fast RGB
-		PixelGetColor, BPCT, BX1+1, BY1, RGB
-		if (ErrorLevel = 0 and BPCT = BPC2)
-		{
-			PSS := 1
-		}	
-		else
-		{
-			PixelSearch, BX1, BY1, 0, 0, WinW, WinH, BEPC1, 1, Fast RGB
-			PixelGetColor, BPCT, BX1+1, BY1, RGB
-			if (ErrorLevel = 0 and BPCT = BEPC2)
-			{
-				PSS := 1
-			}
-		}
-
-		if PSS = 1
-		{
-			FX := BX1 - 304
-			FY := BY1 + 441
-			Hx := FX - 330 ;Home Button
-			Hy := FY - 415
-			Sx := FX - 185 ;Sortie Button
-			Sy := FY - 200
-			Rx := FX - 300 ;Resupply Button
-			Ry := FY - 240
-			SAx := FX - 255
-			SAy := FY - 335
-			Ex := FX + 280 ;Expedition Button
-			Ey := FY - 240
-			ESx := FX + 330
-			ESy := FY - 15
-			3Ex := FX + 45
-			4Ex := FX + 75
-			34Ey := FY - 335
-			2Rx := FX - 200
-			3Rx := FX - 170
-			4Rx := FX - 140
-			234Ry := FY - 340
-			PGx[1] := FX - 240
-			PGx[2] := FX - 180
-			PGx[3] := FX - 125
-			PGx[4] := FX - 70
-			PGx[5] := FX - 10
-			PGy := FY - 20
-			TO := 0
-			index := 1
-			Loop
-			{
-				th := FY-280+30*(index-1)
-				Eh[index] := th
-				index2 := index+8
-				Eh[index2] := th
-				index2 := index+16
-				Eh[index2] := th
-				index2 := index+24
-				Eh[index2] := th
-				index2 := index+32
-				Eh[index2] := th
-				index += 1
-			}Until index = 9
-			GuiControl,, NB, Ready
-			return
-		}
-		else
-		{
-			GuiControl,, NB, Invalid Screen, Retrying (%RCount%)
-			Sleep 1000
-			RCount += 1
-			if RCount > 30
-			{
-				GuiControl,, NB, Could not find reference pixel, unpause script to try again
-				RCount := 1
-				Pause
-			}
-		}
-	}
+		th := FY-280+30*(i-1)
+		Eh[i] := th
+		Eh[i+8] := th
+		Eh[i+16] := th
+		Eh[i+24] := th
+		Eh[i+32] := th
+		i += 1
+	}Until i = 9
+	return
 }
 		
 Initialize()
