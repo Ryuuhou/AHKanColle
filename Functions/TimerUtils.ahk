@@ -1,4 +1,4 @@
-﻿;ParseTime v1.01 5/30/15
+﻿;TimerUtils v1.02 5/31/15
 
 ParseTime(ss)
 {
@@ -80,6 +80,37 @@ ParseTime(ss)
 		}
         sl := sl - 1
     }
+}
+
+IsExpedWithinRange( d, lc, uc)
+{
+	global
+	local i := 2
+	local GRT
+	loop
+	{
+		GRT := GetRemainingTime(i)
+		if (GRT > d and GRT < d+uc and d < GRT+lc)
+		{
+			d := GRT+10000
+			i := 1
+		}
+		i += 1
+	}Until i > 4
+	return d
+}
+
+GetRemainingTime(expedn) 
+{	
+	global
+	local i
+	i := TCS[expedn]+TCL[expedn]-A_TickCount
+	if (i < 60000 and Busy = 0)
+	{
+		IniWrite,1,config.ini,Do Not Modify,Busy
+		Busy := 1
+	}
+	return i
 }
 
 MS2HMS(ms)
