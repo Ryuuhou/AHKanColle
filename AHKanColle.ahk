@@ -203,10 +203,10 @@ Queue:
 		ControlClick, x%Hx% y%Hy%, ahk_id %hwnd%
 	}
 	GuiControl,, NB, Waiting for home screen...
-	tpc := WaitForPixelColor(FX,FY,HPC,HEPC,,900)
+	tpc := WaitForPixelColor(FX,FY,HPC,HEPC,,,900)
 	if tpc = 2
 	{
-		WaitForPixelColor(FX,FY,HPC,,1)
+		WaitForPixelColor(FX,FY,HPC,,,1)
 	}
 	else if tpc = 0
 	{

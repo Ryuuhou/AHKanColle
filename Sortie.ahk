@@ -119,7 +119,7 @@ Sortie:
 		Sleep MiscDelay
 		ControlClick, x%LAx% y%LAy%, ahk_id %hwnd%
 		GuiControl,, NB, Waiting for results
-		tpc2 := WaitForPixelColor(FX,FY,SRPC,NBPC,,300000)
+		tpc2 := WaitForPixelColor(FX,FY,SRPC,NBPC,,,300000)
 		if tpc2 = 2
 		{
 			Sleep 3000
@@ -130,9 +130,9 @@ Sortie:
 			Pause
 		}
 		GuiControl,, NB, Waiting for end sortie
-		WaitForPixelColor(FX,FY,CSPC,,1)
+		WaitForPixelColor(FX,FY,CSPC,HPC,HEPC,1)
 		GuiControl,, NB, End sortie found
-		Sleep 3000
+		Sleep 2000
 		ControlClick, x%ESBx% y%ESBy%, ahk_id %hwnd%
 		WaitForPixelColor(FX,FY,HPC,HEPC)
 		GuiControl,, NB, Idle

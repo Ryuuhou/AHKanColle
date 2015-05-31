@@ -43,7 +43,7 @@ PixelGetColorS(x,y,z := 0)
 	return lHEX
 }
 
-WaitForPixelColor(x, y, pc, pc2 := 0, click := 0, timeout := 60)
+WaitForPixelColor(x, y, pc, pc2 := 0, pc3 := 0, click := 0, timeout := 60)
 {
 	global WINID
 	i := 0
@@ -61,6 +61,11 @@ WaitForPixelColor(x, y, pc, pc2 := 0, click := 0, timeout := 60)
 		{
 			Sleep 500
 			return 2
+		}
+		else if (pc3 != 0 and tpc = pc3)
+		{
+			Sleep 500
+			return 3
 		}
 		if (click = 1)
 		{
