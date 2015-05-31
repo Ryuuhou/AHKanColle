@@ -1,4 +1,4 @@
-﻿;AHKanColle v1.092 5/30/15
+﻿;AHKanColle v1.093 5/31/15
 #Persistent
 #SingleInstance
 #Include %A_ScriptDir%/Functions/Gdip_All.ahk ;Thanks to tic (Tariq Porter) for his GDI+ Library => ahkscript.org/boards/viewtopic.php?t=6517
@@ -94,21 +94,10 @@ return
     if Q.MaxIndex() = 1
     {
 		Random, SR, MinRandomWait, MaxRandomWait 
-		n := 2
-		loop
-		{
-			GRT := GetRemainingTime(n)
-			if (GRT > SR and GRT < SR+60000 and SR < GRT+10000)
-			{
-				SR := GRT+10000
-				n := 1
-			}
-			n += 1
-		}Until n > 4
+		SR := IsExpedWithinRange(SR, 10000, 60000)
 		SRS := Round(SR/60000,2)
 		GuiControl,, NB, Expedition 2 returning - Delay: %SRS% minutes
-		Sleep SR
-        goto Queue
+		SetTimer, QueueTimer, %SR%
 		return
     }
     else
@@ -127,21 +116,10 @@ return
     if Q.MaxIndex() = 1
 	{
 		Random, SR, MinRandomWait, MaxRandomWait 
-		n := 2
-		loop
-		{
-			GRT := GetRemainingTime(n)
-			if (GRT > SR and GRT < SR+60000 and SR < GRT+10000)
-			{
-				SR := GRT+10000
-				n := 1
-			}
-			n += 1
-		}Until n > 4
+		SR := IsExpedWithinRange(SR, 10000, 60000)
 		SRS := Round(SR/60000,2)
 		GuiControl,, NB, Expedition 3 returning - Delay: %SRS% minutes
-		Sleep SR
-        goto Queue
+		SetTimer, QueueTimer, %SR%
 		return
     }
     else
@@ -160,21 +138,10 @@ return
     if Q.MaxIndex() = 1
     {
 		Random, SR, MinRandomWait, MaxRandomWait 
-		n := 2
-		loop
-		{
-			GRT := GetRemainingTime(n)
-			if (GRT > SR and GRT < SR+60000 and SR < GRT+10000)
-			{
-				SR := GRT+10000
-				n := 1
-			}
-			n += 1
-		}Until n > 4
+		SR := IsExpedWithinRange(SR, 10000, 60000)
 		SRS := Round(SR/60000,2)
 		GuiControl,, NB, Expedition 4 returning - Delay: %SRS% minutes
-		Sleep SR
-        goto Queue
+		SetTimer, QueueTimer, %SR%
 		return
     }
     else
@@ -182,10 +149,18 @@ return
     return
 }
 
+QueueTimer:
+{
+	SetTimer, QueueTimer, Off
+	goto Queue
+	return
+}
+
 Queue:
 {
 	IniWrite,1,config.ini,Do Not Modify,Busy
 	Busy := 1
+	GuiControl, Hide, SEB
 	if RF = 1
 	{
 		RF := 0
@@ -388,21 +363,6 @@ SendExp(n)
     }
 }
 
-GetRemainingTime(expedn) 
-{	
-	global
-	local i
-	i := TCS[expedn]+TCL[expedn]-A_TickCount
-	if (i < 60000 and Busy = 0)
-	{
-		IniWrite,1,config.ini,Do Not Modify,Busy
-		Busy := 1
-	}
-	return i
-}
-	
-
-
 MiW:
 {
 	Gui, submit,nohide
@@ -538,11 +498,6 @@ ERT2:
 			if TRT2 = 0
 			{
 				QueueInsert(2,1)
-				if IB = 0
-				{
-					GuiControl, Show, SEB
-					IB := 1
-				}
 				GuiControl,, NB, Expedition 2 is ready to be refueled and sent
 				GuiControl, % "+ReadOnly", TRT2
 				GuiControl, Focus, SE3
@@ -595,11 +550,6 @@ ERT3:
 			if RT3 = 0
 			{
 				QueueInsert(3,1)
-				if IB = 0
-				{
-					GuiControl, Show, SEB
-					IB := 1
-				}
 				GuiControl,, NB, Expedition 3 is ready to be refueled and sent
 				GuiControl, % "+Readonly", TRT3
 				GuiControl, Focus, SE4
@@ -653,11 +603,6 @@ ERT4:
 			if RT4 = 0
 			{
 				QueueInsert(4,1)
-				if IB = 0
-				{
-					GuiControl, Show, SEB
-					IB := 1
-				}
 				GuiControl,, NB, Expedition 4 is ready to be refueled and sent
 				GuiControl, % "+Readonly", TRT4
 			}
@@ -701,11 +646,13 @@ ERT4:
 SEButton:
 {
 	GuiControl, Hide, SEB
-	IB := 0
 	if Q.MaxIndex() > 0
     {
-        goto Queue
-    }
+		SR := IsExpedWithinRange(1, 10000, 60000)
+		SRS := Round(SR/1000,2)
+		SetTimer, QueueTimer, %SR%
+		GuiControl,, NB, Manual send in %SRS% seconds
+	}
 	return
 }
 
@@ -724,6 +671,11 @@ QueueRemove(qrn)
 			QRi += 1
 		}Until QRi > Q.MaxIndex()
 	}
+	if Q.MaxIndex() < 1
+	{
+		GuiControl, Hide, SEB
+		SetTimer, QueueTimer, Off
+	}
 	return
 }
 
@@ -735,6 +687,7 @@ QueueInsert(qin,QIs := 0)
 		QueueRemove(qin)
 	}
 	Q.Insert(qin)
+	GuiControl, Show, SEB
 	return
 }
 
@@ -763,7 +716,7 @@ Refresh:
 	return
 }
 
-#Include %A_ScriptDir%/Functions/ParseTime.ahk
+#Include %A_ScriptDir%/Functions/TimerUtils.ahk
 #Include %A_ScriptDir%/Functions/PixelCheck.ahk
 #Include %A_ScriptDir%/Functions/Pause.ahk
 #Include %A_ScriptDir%/Functions/PixelSearch.ahk
@@ -854,6 +807,7 @@ GuiClose:
 
 
 ;ChangeLog
+;1.093: Added integration with sortie script.  Delays can now be overidden using the start expedition button.
 ;1.09: Script can now be opened when window is not open or on an invalid screen.
 ;1.08: Now accepts 02:02:02 timer input format.  Old format also accepted.
 ;1.07: Fixed script interaction with timing out waiting for home screen. Added check for change in window size.
