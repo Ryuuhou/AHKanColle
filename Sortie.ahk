@@ -248,11 +248,11 @@ IntervalF:
 			if (SortieInterval < 1000)
 			{
 				SortieInterval := -1
-				GuiControl,, Interval disabled
+				GuiControl,, NB, Interval disabled
 			}
 			else
 			{
-				GuiControl,, Interval set
+				GuiControl,, NB, Interval set
 			}
 			IniWrite,%SortieInterval%,config.ini,Variables,SortieInterval
 		}
