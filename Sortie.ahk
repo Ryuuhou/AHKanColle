@@ -1,4 +1,4 @@
-﻿;Sortie v1.02 5/31/15
+﻿;Sortie v1.022 5/31/15
 #Persistent
 #SingleInstance
 #Include %A_ScriptDir%/Functions/Gdip_All.ahk ;Thanks to tic (Tariq Porter) for his GDI+ Library => ahkscript.org/boards/viewtopic.php?t=6517
@@ -14,12 +14,14 @@ MiscDelay := 1000
 
 #Include %A_ScriptDir%/Constants/PixelColor.ahk
 
-RTI := 2000 ;Refresh interval for GUI
+BC := 0
 
 IniRead, TWinX, config.ini, Variables, LastXS, 0
 IniRead, TWinY, config.ini, Variables, LastYS, 0
 IniRead, World, config.ini, Variables, World, %A_Space%
 IniRead, Map, config.ini, Variables, Map, %A_Space%
+IniRead, DisableCriticalCheck, config.ini, Variables, DisableCriticalCheck, 0
+IniRead, DisableResupply, config.ini, Variables, DisableResupply, 0
 IniRead, SortieInterval, config.ini, Variables, SortieInterval, -1 ;900000 for full morale
 Gui, 1: New
 Gui, 1: Default
@@ -31,21 +33,27 @@ GuiControl, Move, WorldV, x37 h17
 Gui, Add, Text, x55 ym, -
 Gui, Add, Edit, gMapF r2 limit3 w15 vMapV -VScroll ym, %Map%
 GuiControl, Move, MapV, x62 h17
-Gui, Add, Text, ym, Interval:
+Gui, Add, Text, ym, Interval(ms):
 Gui, Add, Edit, gIntervalF r2 w15 vIntervalV -VScroll ym, %SortieInterval%
-GuiControl, Move, IntervalV, h17 w90
+GuiControl, Move, IntervalV, h17 w70
 Gui, Add, Button, gSSBF vSSB, A
 GuiControl, Move, SSB, x250 w60 ym
 GuiControl,,SSB, Start
 Menu, Main, Add, Pause, Pause2
+Menu, Main, Add, 0, DN
 Gui, Menu, Main
 Gui, Show, X%TWinX% Y%TWinY% Autosize, AHKCSortie
 SetWindow()
+if DisableCriticalCheck = 1 
+{
+	GuiControl,, NB, Ready - WARNING: CRITICAL CHECK IS OFF
+}
 return
     
 Repair()
 {
 	global
+	local ti
 	tpc2 := PixelGetColorS(FX,FY,3)
 	if (tpc2 != HPC)
 	{
@@ -59,12 +67,16 @@ Repair()
 	Sleep MiscDelay
 	Loop
 	{
+		GuiControl,, NB, Checking HP states
 		ControlClick, x%RBx% y%RBy%, ahk_id %hwnd%
 		Sleep MiscDelay
 		tpc2 := PixelGetColorS(CCx,CCy,3)
 		if (tpc2 = CCPC)
 		{
 			GuiControl,, NB, Critical HP detected, repairing
+			ti := BC+1
+			Menu, Main, Rename, %BC%, %ti%
+			BC += 1
 			ControlClick, x%CCx% y%CCy%, ahk_id %hwnd%
 			Sleep 500
 			ControlClick, x%BBx% y%BBy%, ahk_id %hwnd%
@@ -91,8 +103,14 @@ Sortie:
 	{
 		SetTimer, Sortie, Off
 		CheckWindow()
-		Repair()
-		Resupply(1)
+		if not (BP = 1 and DisableCriticalCheck = 1)
+		{
+			Repair()
+		}
+		if not (BP = 1 and DisableResupply = 1)
+		{
+			Resupply(1)
+		}
 		tpc2 := PixelGetColorS(FX,FY,3)
 		if (tpc2 != HPC)
 		{
@@ -150,12 +168,16 @@ Sortie:
 		GuiControl, Show, SSB
 		if SortieInterval != -1
 		{
+			BP := 0
 			SetTimer, Sortie, %SortieInterval%
+			ts := Round(SortieInterval/60000,2)
+			GuiControl,, NB, Idle - Restarting in %ts% minutes
 		}
 	}
 	else
 	{
-		SetTimer, Sortie, 30000
+		GuiControl,, NB, An expedition is returning, retrying in 10 seconds
+		SetTimer, Sortie, 10000
 	}
 	return
 }
@@ -177,7 +199,7 @@ Resupply(r)
         ControlClick, x%Rx% y%Ry%, ahk_id %hwnd%
     }
 	WaitForPixelColor(FX,FY,RPC)
-	GuiControl,, NB, Resupplying expedition %r%
+	GuiControl,, NB, Resupplying fleet %r%
     Sleep MiscDelay
 	tpc := PixelGetColorS(SAx,SAy,2)
 	if (tpc != RRPC)
@@ -267,7 +289,13 @@ IntervalF:
 SSBF:
 {
 	GuiControl, Hide, SSB
+	BP := 1
 	goto Sortie
+	return
+}
+
+DN:
+{
 	return
 }
 
