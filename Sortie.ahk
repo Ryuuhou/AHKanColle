@@ -40,10 +40,7 @@ Repair()
 	{
 		ControlClick, x%Hx% y%Hy%, ahk_id %hwnd%
 		GuiControl,, NB, Waiting for home screen
-		tpc2 := WaitForPixelColor(FX,FY,HPC,HEPC)
-		if tpc2 = 2
-			
-		
+		WaitForPixelColor(FX,FY,HPC,HEPC)	
 	}
 	ControlClick, x%REx% y%REy%, ahk_id %hwnd%
 	GuiControl,, NB, Waiting for repair screen
