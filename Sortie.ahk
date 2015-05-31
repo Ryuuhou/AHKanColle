@@ -1,4 +1,4 @@
-﻿;Sortie v1.01 5/30/15
+﻿;Sortie v1.02 5/31/15
 #Persistent
 #SingleInstance
 #Include %A_ScriptDir%/Functions/Gdip_All.ahk ;Thanks to tic (Tariq Porter) for his GDI+ Library => ahkscript.org/boards/viewtopic.php?t=6517
@@ -18,18 +18,29 @@ RTI := 2000 ;Refresh interval for GUI
 
 IniRead, TWinX, config.ini, Variables, LastXS, 0
 IniRead, TWinY, config.ini, Variables, LastYS, 0
-IniRead, World, config.ini, Variables, World, 0
-IniRead, Map, config.ini, Variables, Map, 0
-IniRead, SortieInterval, config.ini, Variables, SortieInterval, 900000
+IniRead, World, config.ini, Variables, World, %A_Space%
+IniRead, Map, config.ini, Variables, Map, %A_Space%
+IniRead, SortieInterval, config.ini, Variables, SortieInterval, -1 ;900000 for full morale
 Gui, 1: New
 Gui, 1: Default
+Gui, Add, Text,, Map:
 Gui, Add, Edit, r1 w20 vNB ReadOnly
-GuiControl, Move, NB, w300
+GuiControl, Move, NB, w300 y30
+Gui, Add, Edit, gWorldF r2 limit3 w15 vWorldV -VScroll ym, %World%
+GuiControl, Move, WorldV, x37 h17
+Gui, Add, Text, x55 ym, -
+Gui, Add, Edit, gMapF r2 limit3 w15 vMapV -VScroll ym, %Map%
+GuiControl, Move, MapV, x62 h17
+Gui, Add, Text, ym, Interval:
+Gui, Add, Edit, gIntervalF r2 w15 vIntervalV -VScroll ym, %SortieInterval%
+GuiControl, Move, IntervalV, h17 w90
+Gui, Add, Button, gSSBF vSSB, A
+GuiControl, Move, SSB, x250 w60 ym
+GuiControl,,SSB, Start
 Menu, Main, Add, Pause, Pause2
 Gui, Menu, Main
 Gui, Show, X%TWinX% Y%TWinY% Autosize, AHKCSortie
 SetWindow()
-SetTimer, Sortie, 10000
 return
     
 Repair()
@@ -136,7 +147,11 @@ Sortie:
 		ControlClick, x%ESBx% y%ESBy%, ahk_id %hwnd%
 		WaitForPixelColor(FX,FY,HPC,HEPC)
 		GuiControl,, NB, Idle
-		SetTimer, Sortie, %SortieInterval%
+		GuiControl, Show, SSB
+		if SortieInterval != -1
+		{
+			SetTimer, Sortie, %SortieInterval%
+		}
 	}
 	else
 	{
@@ -172,6 +187,87 @@ Resupply(r)
 		ControlClick, x%ESx% y%ESy%, ahk_id %hwnd%
 		WaitForPixelColor(FX,FY,RPC)
 	}
+	return
+}
+
+WorldF:
+{
+	Gui, submit,nohide
+	if WorldV contains `n
+	{
+		StringReplace, WorldV, WorldV, `n,,All
+		GuiControl,, WorldV, %WorldV%
+		Send, {end}
+		if (WorldV = 3 or WorldV=5)
+		{
+			World := WorldV
+			GuiControl,, NB, World set
+			IniWrite,%World%,config.ini,Variables,World
+		}
+		else
+		{
+			GuiControl,, NB, Unsupported world
+		}
+	}
+	return
+}
+
+MapF:
+{
+	Gui, submit,nohide
+	if MapV contains `n
+	{
+		StringReplace, MapV, MapV, `n,,All
+		GuiControl,, MapV, %MapV%
+		Send, {end}
+		if (MapV = 2 or MapV=4)
+		{
+			Map := MapV
+			GuiControl,, NB, Map # set
+			IniWrite,%Map%,config.ini,Variables,Map
+		}
+		else
+		{
+			GuiControl,, NB, Unsupported map #
+		}
+	}
+	return
+}
+
+IntervalF:
+{
+	Gui, submit,nohide
+	if IntervalV contains `n
+	{
+		StringReplace, IntervalV, IntervalV, `n,,All
+		GuiControl,, IntervalV, %IntervalV%
+		Send, {end}
+		if IntervalV is integer
+		{
+			SortieInterval := IntervalV
+			if (SortieInterval < 1000)
+			{
+				SortieInterval := -1
+				GuiControl,, Interval disabled
+			}
+			else
+			{
+				GuiControl,, Interval set
+			}
+			IniWrite,%SortieInterval%,config.ini,Variables,SortieInterval
+		}
+		else
+		{
+			GuiControl,, NB, Invalid interval
+		}
+	}
+	return
+}
+
+SSBF:
+{
+	GuiControl, Hide, SSB
+	goto Sortie
 	return
 }
 
