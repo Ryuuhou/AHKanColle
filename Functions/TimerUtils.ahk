@@ -1,4 +1,4 @@
-﻿;TimerUtils v1.02 5/31/15
+﻿;TimerUtils v1.021 6/1/15
 
 ParseTime(ss)
 {
@@ -89,7 +89,7 @@ IsExpedWithinRange( d, lc, uc)
 	local GRT
 	loop
 	{
-		GRT := GetRemainingTime(i)
+		GRT := GetRemainingTime(TCS[i],TCL[i])
 		if (GRT > d and GRT < d+uc and d < GRT+lc)
 		{
 			d := GRT+10000
@@ -100,11 +100,10 @@ IsExpedWithinRange( d, lc, uc)
 	return d
 }
 
-GetRemainingTime(expedn) 
+GetRemainingTime(n, n2) 
 {	
 	global
-	local i
-	i := TCS[expedn]+TCL[expedn]-A_TickCount
+	local i := n+n2-A_TickCount
 	if (i < 60000 and Busy = 0)
 	{
 		IniWrite,1,config.ini,Do Not Modify,Busy
