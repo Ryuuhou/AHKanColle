@@ -1,4 +1,4 @@
-﻿;Sortie v1.022 5/31/15
+﻿;Sortie v1.03 6/1/15
 #Persistent
 #SingleInstance
 #Include %A_ScriptDir%/Functions/Gdip_All.ahk ;Thanks to tic (Tariq Porter) for his GDI+ Library => ahkscript.org/boards/viewtopic.php?t=6517
@@ -98,6 +98,7 @@ Repair()
 
 Sortie:
 {
+	SetTimer, NBUpdate, Off
 	IniRead, Busy, config.ini, Do Not Modify, Busy, KanColleViewer!
 	if Busy != 1
 	{
@@ -172,6 +173,8 @@ Sortie:
 			SetTimer, Sortie, %SortieInterval%
 			ts := Round(SortieInterval/60000,2)
 			GuiControl,, NB, Idle - Restarting in %ts% minutes
+			TCS := A_TickCount
+			SetTimer, NBUpdate, 30000
 		}
 	}
 	else
@@ -291,6 +294,13 @@ SSBF:
 	GuiControl, Hide, SSB
 	BP := 1
 	goto Sortie
+	return
+}
+
+NBUpdate:
+{
+	ts := Round((TCS + SortieInterval - A_TickCount)/60000,2)
+	GuiControl,, NB, Idle - Restarting in %ts% minutes
 	return
 }
 
