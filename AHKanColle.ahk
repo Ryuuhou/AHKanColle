@@ -1,4 +1,4 @@
-﻿;AHKanColle v1.093 5/31/15
+﻿;AHKanColle v1.094 6/1/15
 #Persistent
 #SingleInstance
 #Include %A_ScriptDir%/Functions/Gdip_All.ahk ;Thanks to tic (Tariq Porter) for his GDI+ Library => ahkscript.org/boards/viewtopic.php?t=6517
@@ -28,6 +28,7 @@ MiscDelay      := 1000      ;Delay for actions with little to no animation time
 #Include %A_ScriptDir%/Constants/PixelColor.ahk
 
 RTI := 2000 ;Refresh interval for GUI
+SetTimer, Refresh, %RTI%
 
 IniRead, iDOL, config.ini, Variables, iDOL, 0
 IniRead, TWinX, config.ini, Variables, LastX, 0
@@ -95,9 +96,10 @@ return
     {
 		Random, SR, MinRandomWait, MaxRandomWait 
 		SR := IsExpedWithinRange(SR, 10000, 60000)
-		SRS := Round(SR/60000,2)
-		GuiControl,, NB, Expedition 2 returning - Delay: %SRS% minutes
 		SetTimer, QueueTimer, %SR%
+		QTS := A_TickCount
+		QTL := SR
+		CDT[1] := 1
 		return
     }
     else
@@ -117,9 +119,10 @@ return
 	{
 		Random, SR, MinRandomWait, MaxRandomWait 
 		SR := IsExpedWithinRange(SR, 10000, 60000)
-		SRS := Round(SR/60000,2)
-		GuiControl,, NB, Expedition 3 returning - Delay: %SRS% minutes
 		SetTimer, QueueTimer, %SR%
+		QTS := A_TickCount
+		QTL := SR
+		CDT[1] := 1
 		return
     }
     else
@@ -139,9 +142,10 @@ return
     {
 		Random, SR, MinRandomWait, MaxRandomWait 
 		SR := IsExpedWithinRange(SR, 10000, 60000)
-		SRS := Round(SR/60000,2)
-		GuiControl,, NB, Expedition 4 returning - Delay: %SRS% minutes
 		SetTimer, QueueTimer, %SR%
+		QTS := A_TickCount
+		QTL := SR
+		CDT[1] := 1
 		return
     }
     else
@@ -161,6 +165,7 @@ Queue:
 	IniWrite,1,config.ini,Do Not Modify,Busy
 	Busy := 1
 	GuiControl, Hide, SEB
+	CDT[1] := 0
 	if RF = 1
 	{
 		RF := 0
@@ -354,11 +359,6 @@ SendExp(n)
             SetTimer, 4Return, %ta%
 			CDT[4] := 1
         }
-		if TO = 0
-		{
-			SetTimer, Refresh, %RTI%
-			TO := 1
-		}
         Sleep SendDelay
     }
 }
@@ -516,11 +516,6 @@ ERT2:
 				GuiControl,, NB, Remaining time for fleet 2 set
 				GuiControl, % "+ReadOnly", TRT2
 				GuiControl, Focus, SE3
-				if TO = 0
-				{
-					SetTimer, Refresh, %RTI%
-					TO := 1
-				}
 				CDT[2] := 1				
 			}
 			else {
@@ -568,11 +563,6 @@ ERT3:
 				GuiControl,, NB, Remaining time for fleet 3 set
 				GuiControl, % "+Readonly", TRT3
 				GuiControl, Focus, SE4
-				if TO = 0
-				{
-					SetTimer, Refresh, %RTI%
-					TO := 1
-				}
 				CDT[3] := 1	
 			}
 			else
@@ -619,11 +609,6 @@ ERT4:
 				SetTimer, 4Return, %ta%
 				GuiControl,, NB, Remaining time for fleet 4 set
 				GuiControl, % "+Readonly", TRT4
-				if TO = 0
-				{
-					SetTimer, Refresh, %RTI%
-					TO := 1
-				}
 				CDT[4] := 1	
 			}
 			else
@@ -675,6 +660,7 @@ QueueRemove(qrn)
 	{
 		GuiControl, Hide, SEB
 		SetTimer, QueueTimer, Off
+		CDT[1] := 0
 	}
 	return
 }
@@ -693,25 +679,25 @@ QueueInsert(qin,QIs := 0)
 
 Refresh:
 {
+	if CDT[1] = 1
+	{
+		tSS := MS2HMS(GetRemainingTime(QTS,QTL))
+		GuiControl,, NB, Expedition returning - %tSS%
+	}
 	if CDT[2] = 1 
 	{
-		tSS := MS2HMS(GetRemainingTime(2))
+		tSS := MS2HMS(GetRemainingTime(TCS[2],TCL[2]))
 		GuiControl,, T2, %tSS%
 	}	
 	if CDT[3] = 1 
 	{
-		tSS := MS2HMS(GetRemainingTime(3))
+		tSS := MS2HMS(GetRemainingTime(TCS[3],TCL[3]))
 		GuiControl,, T3, %tSS%
 	}	
 	if CDT[4] = 1 
 	{
-		tSS := MS2HMS(GetRemainingTime(4))
+		tSS := MS2HMS(GetRemainingTime(TCS[4],TCL[4]))
 		GuiControl,, T4, %tSS%
-	}
-	if (CDT[2] = 0 and CDT[3] = 0 and CDT[4] = 0)
-	{
-		SetTimer, Refresh, Off
-		TO := 0
 	}
 	return
 }
@@ -750,7 +736,6 @@ PixelMap()
 	PGx[4] := FX - 70
 	PGx[5] := FX - 10
 	PGy := FY - 20
-	TO := 0
 	Loop
 	{
 		th := FY-280+30*(i-1)
