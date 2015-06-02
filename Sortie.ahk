@@ -1,4 +1,4 @@
-﻿;Sortie v1.03 6/1/15
+﻿;Sortie v1.031 6/2/15
 #Persistent
 #SingleInstance
 #Include %A_ScriptDir%/Functions/Gdip_All.ahk ;Thanks to tic (Tariq Porter) for his GDI+ Library => ahkscript.org/boards/viewtopic.php?t=6517
@@ -15,6 +15,8 @@ MiscDelay := 1000
 #Include %A_ScriptDir%/Constants/PixelColor.ahk
 
 BC := 0
+BusyS := 0
+TR := 0
 
 IniRead, TWinX, config.ini, Variables, LastXS, 0
 IniRead, TWinY, config.ini, Variables, LastYS, 0
@@ -100,9 +102,11 @@ Sortie:
 {
 	SetTimer, NBUpdate, Off
 	IniRead, Busy, config.ini, Do Not Modify, Busy, KanColleViewer!
-	if Busy != 1
+	if (Busy != 1 and BusyS != 1)
 	{
 		SetTimer, Sortie, Off
+		BusyS := 1
+		TR := 0
 		CheckWindow()
 		if not (BP = 1 and DisableCriticalCheck = 1)
 		{
@@ -136,6 +140,12 @@ Sortie:
 		ControlClick, x%ESx% y%ESy%, ahk_id %hwnd%
 		Sleep MiscDelay
 		ControlClick, x%ESx% y%ESy%, ahk_id %hwnd%
+		if SortieInterval != -1
+		{
+			SetTimer, Sortie, %SortieInterval%
+			TR := 1
+			TCS := A_TickCount
+		}
 		GuiControl,, NB, Waiting for compass
 		WaitForPixelColor(LAx,LAy,CPC)
 		Sleep MiscDelay
@@ -149,7 +159,7 @@ Sortie:
 		Sleep MiscDelay
 		ControlClick, x%LAx% y%LAy%, ahk_id %hwnd%
 		GuiControl,, NB, Waiting for results
-		tpc2 := WaitForPixelColor(FX,FY,SRPC,NBPC,,,300000)
+		tpc2 := WaitForPixelColor(FX,FY,SRPC,NBPC,,,,300000)
 		if tpc2 = 2
 		{
 			Sleep 3000
@@ -159,27 +169,23 @@ Sortie:
 		{
 			Pause
 		}
-		GuiControl,, NB, Waiting for end sortie
-		WaitForPixelColor(FX,FY,CSPC,HPC,HEPC,1)
-		GuiControl,, NB, End sortie found
-		Sleep 2000
-		ControlClick, x%ESBx% y%ESBy%, ahk_id %hwnd%
-		WaitForPixelColor(FX,FY,HPC,HEPC)
+		GuiControl,, NB, Waiting for home screen
+		WaitForPixelColor(FX,FY,HPC,HEPC,,ESBx,ESBy)
 		GuiControl,, NB, Idle
+		BusyS := 0
 		GuiControl, Show, SSB
 		if SortieInterval != -1
 		{
 			BP := 0
-			SetTimer, Sortie, %SortieInterval%
-			ts := Round(SortieInterval/60000,2)
-			GuiControl,, NB, Idle - Restarting in %ts% minutes
-			TCS := A_TickCount
 			SetTimer, NBUpdate, 30000
 		}
 	}
 	else
 	{
-		GuiControl,, NB, An expedition is returning, retrying in 10 seconds
+		if (Busy = 1 and BusyS = 0)
+		{
+			GuiControl,, NB, An expedition is returning, retrying every 10 seconds
+		}
 		SetTimer, Sortie, 10000
 	}
 	return
@@ -274,12 +280,25 @@ IntervalF:
 			{
 				SortieInterval := -1
 				GuiControl,, NB, Interval disabled
+				SetTimer, Sortie, Off
+				SetTimer, NBUpdate, Off
+				TR := 0
 			}
 			else
 			{
+				if TR := 1
+				{
+					tt := SortieInterval - A_TickCount + TCS
+					if tt < 0
+					{
+						tt := 1000
+					}
+					SetTimer, Sortie, %tt%
+				}
 				GuiControl,, NB, Interval set
 			}
 			IniWrite,%SortieInterval%,config.ini,Variables,SortieInterval
+			
 		}
 		else
 		{
