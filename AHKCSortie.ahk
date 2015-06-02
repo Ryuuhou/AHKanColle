@@ -1,4 +1,4 @@
-﻿;AHKCSortie v1.031 6/2/15
+﻿;AHKCSortie v1.032 6/2/15
 #Persistent
 #SingleInstance
 #Include %A_ScriptDir%/Functions/Gdip_All.ahk ;Thanks to tic (Tariq Porter) for his GDI+ Library => ahkscript.org/boards/viewtopic.php?t=6517
@@ -286,7 +286,7 @@ IntervalF:
 			}
 			else
 			{
-				if TR := 1
+				if TR = 1
 				{
 					tt := SortieInterval - A_TickCount + TCS
 					if tt < 0
