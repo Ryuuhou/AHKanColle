@@ -6,9 +6,10 @@ by Ryuuhou
 
 README 6/2/15
 
+```
 >scripting
-
 >kuso ttk
+```
 
 ## Requirements: 
 
@@ -37,8 +38,10 @@ Enter a MinWait and MaxWait in MILLISECONDS. The script will wait a random amoun
 
 If you are not playing with KanColleViewer, add/create an entry in the config.ini file in the script directory. As shown below -
 
->[Variables]
->WINID = NameOfWindow
+```
+[Variables]
+WINID = NameOfWindow
+```
 
 If using a browser, the name of window will usually be in the titlebar.
 
@@ -56,11 +59,11 @@ Sortie script that should be used along with AHKanColle. GUI is pretty self expl
 Currently, only world 3 and 5, maps 2 and 4, are supported (3-2,3-4,5-2,5-4) though only 3-2 and 5-4 are recommended.  The script will check for critically damaged ships and resupply before each sortie.
 
 Some recommended intervals:
-1000 for fatigue grinding
-900000 for full morale recovery (recommended for 5-4)
-Use a -1 interval to disable auto sending.  
+* 1000 for fatigue grinding
+* 900000 for full morale recovery (recommended for 5-4)
+* -1 to disable auto sending 
 
-I AM NOT RESPONSIBLE IF THIS SCRIPT BUGS AND SINKS YOUR SHIP. Use at your own risk.
+**I AM NOT RESPONSIBLE IF THIS SCRIPT BUGS AND SINKS YOUR SHIP. Use at your own risk.**
 
 ## Warnings:
 Do NOT use hardware acceleration on your browsers or use "Direct/GPU" on KCV unless your computer is set to never idle.  When the computer idles, hardware acceleration is turned off and flash no longer renders.
