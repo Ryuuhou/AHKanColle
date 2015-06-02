@@ -1,4 +1,4 @@
-﻿;AHKanColle v1.094 6/1/15
+﻿;AHKanColle v1.0941 6/2/15
 #Persistent
 #SingleInstance
 #Include %A_ScriptDir%/Functions/Gdip_All.ahk ;Thanks to tic (Tariq Porter) for his GDI+ Library => ahkscript.org/boards/viewtopic.php?t=6517
@@ -183,7 +183,7 @@ Queue:
 		ControlClick, x%Hx% y%Hy%, ahk_id %hwnd%
 	}
 	GuiControl,, NB, Waiting for home screen...
-	tpc := WaitForPixelColor(FX,FY,HPC,HEPC,,,900)
+	tpc := WaitForPixelColor(FX,FY,HPC,HEPC,,,,900)
 	if tpc = 2
 	{
 		WaitForPixelColor(FX,FY,HPC,,,1)
@@ -525,6 +525,12 @@ ERT2:
 				GuiControl, % "+ReadOnly", TRT2
 				GuiControl, Focus, SE3
 			}
+			S[2] := 1
+			if (S[2] = 1 and S[3] = 1 and S[4] = 1 and Q.MaxIndex() < 1)
+			{
+				IniWrite,0,config.ini,Do Not Modify,Busy
+				Busy := 0
+			}
 		}
 	}
 	return
@@ -573,6 +579,12 @@ ERT3:
 				GuiControl, % "+Readonly", TRT3
 				GuiControl, Focus, SE4
 			}
+			S[3] := 1
+			if (S[2] = 1 and S[3] = 1 and S[4] = 1 and Q.MaxIndex() < 1)
+			{
+				IniWrite,0,config.ini,Do Not Modify,Busy
+				Busy := 0
+			}
 		}
 	}
 	return
@@ -619,6 +631,12 @@ ERT4:
 				GuiControl, % "+Readonly", TRT4
 			}
 			if Q.MaxIndex < 1
+			{
+				IniWrite,0,config.ini,Do Not Modify,Busy
+				Busy := 0
+			}
+			S[4] := 1
+			if (S[2] = 1 and S[3] = 1 and S[4] = 1 and Q.MaxIndex() < 1)
 			{
 				IniWrite,0,config.ini,Do Not Modify,Busy
 				Busy := 0
@@ -763,6 +781,10 @@ Initialize()
 	TCL := Array(item)
 	CDT := Array(item)
     Q := Array()
+	S := Array(item)
+	S[2] := 0
+	S[3] := 0
+	S[4] := 0
 	TRT2 := 0
 	TRT3 := 0
 	TRT4 := 0
