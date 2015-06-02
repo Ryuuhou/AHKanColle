@@ -1,4 +1,4 @@
-﻿;PixelCheck v1.01 5/31/15
+﻿;PixelCheck v1.02 6/2/15
 
 DEC2HEX(DEC, RARGB="false") 
 {
@@ -38,9 +38,9 @@ PixelGetColorS(x,y,z := 0)
 	return lHEX
 }
 
-WaitForPixelColor(x, y, pc, pc2 := 0, pc3 := 0, click := 0, timeout := 60)
+WaitForPixelColor(x, y, pc, pc2 := 0, pc3 := 0, cx := -1, cy := -1, timeout := 60)
 {
-	global WINID
+	global hwnd
 	global ECPC
 	ecc := 0
 	i := 0
@@ -68,9 +68,13 @@ WaitForPixelColor(x, y, pc, pc2 := 0, pc3 := 0, click := 0, timeout := 60)
 		{
 			ecc += 1
 		}
-		if (click = 1)
+		if cy != -1
 		{
-			ControlClick, x%x% y%y%, %WINID%
+			ControlClick, x%cx% y%cy%, ahk_id %hwnd%
+		}
+		else if cx != -1
+		{
+			ControlClick, x%x% y%y%, ahk_id %hwnd%
 		}
 		Sleep 500
 		i += 1
