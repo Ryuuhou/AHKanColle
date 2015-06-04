@@ -1,4 +1,4 @@
-﻿;AHKanColle v1.0941 6/2/15
+﻿;AHKanColle v1.0942 6/3/15
 #Persistent
 #SingleInstance
 #Include %A_ScriptDir%/Functions/Gdip_All.ahk ;Thanks to tic (Tariq Porter) for his GDI+ Library => ahkscript.org/boards/viewtopic.php?t=6517
@@ -186,7 +186,7 @@ Queue:
 	tpc := WaitForPixelColor(FX,FY,HPC,HEPC,,,,900)
 	if tpc = 2
 	{
-		WaitForPixelColor(FX,FY,HPC,,,1)
+		WaitForPixelColor(FX,FY,HPC,,,ESx,ESy,120)
 	}
 	else if tpc = 0
 	{
