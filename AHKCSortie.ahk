@@ -1,4 +1,4 @@
-﻿;AHKCSortie v1.032 6/2/15
+﻿;AHKCSortie v1.033 6/5/15
 #Persistent
 #SingleInstance
 #Include %A_ScriptDir%/Functions/Gdip_All.ahk ;Thanks to tic (Tariq Porter) for his GDI+ Library => ahkscript.org/boards/viewtopic.php?t=6517
@@ -107,6 +107,7 @@ Sortie:
 		SetTimer, Sortie, Off
 		BusyS := 1
 		TR := 0
+		GuiControl, Hide, SSB
 		CheckWindow()
 		if not (BP = 1 and DisableCriticalCheck = 1)
 		{
