@@ -1,4 +1,4 @@
-﻿;AHKanColle v1.0942 6/3/15
+﻿;AHKanColle v1.0943 6/10/15
 #Persistent
 #SingleInstance
 #Include %A_ScriptDir%/Functions/Gdip_All.ahk ;Thanks to tic (Tariq Porter) for his GDI+ Library => ahkscript.org/boards/viewtopic.php?t=6517
@@ -519,6 +519,7 @@ ERT2:
 				CDT[2] := 1				
 			}
 			else {
+				SetTimer, 2Return, Off
 				GuiControl,, NB, Expedition 2 disabled
 				GuiControl,, T2, 00:00:00
 				CDT[2] := 0
@@ -573,6 +574,7 @@ ERT3:
 			}
 			else
 			{
+				SetTimer, 3Return, Off
 				GuiControl,, NB, Expedition 3 disabled
 				GuiControl,, T3, 00:00:00
 				CDT[3] := 0
@@ -625,6 +627,7 @@ ERT4:
 			}
 			else
 			{
+				SetTimer, 4Return, Off
 				GuiControl,, NB, Expedition 4 disabled
 				GuiControl,, T4, 00:00:00
 				CDT[4] := 0
