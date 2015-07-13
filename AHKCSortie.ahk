@@ -1,4 +1,4 @@
-﻿;AHKCSortie v1.033 6/5/15
+﻿;AHKCSortie v1.04 7/13/15
 #Persistent
 #SingleInstance
 #Include %A_ScriptDir%/Functions/Gdip_All.ahk ;Thanks to tic (Tariq Porter) for his GDI+ Library => ahkscript.org/boards/viewtopic.php?t=6517
@@ -20,6 +20,7 @@ TR := 0
 
 IniRead, TWinX, config.ini, Variables, LastXS, 0
 IniRead, TWinY, config.ini, Variables, LastYS, 0
+IniRead, Background, config.ini, Variables, Background, 1
 IniRead, World, config.ini, Variables, World, %A_Space%
 IniRead, Map, config.ini, Variables, Map, %A_Space%
 IniRead, DisableCriticalCheck, config.ini, Variables, DisableCriticalCheck, 0
@@ -59,18 +60,18 @@ Repair()
 	tpc2 := PixelGetColorS(FX,FY,3)
 	if (tpc2 != HPC)
 	{
-		ControlClick, x%Hx% y%Hy%, ahk_id %hwnd%
+		ClickS(Hx,Hy)
 		GuiControl,, NB, Waiting for home screen
 		WaitForPixelColor(FX,FY,HPC,HEPC)	
 	}
-	ControlClick, x%REx% y%REy%, ahk_id %hwnd%
+	ClickS(REx,REy)
 	GuiControl,, NB, Waiting for repair screen
 	WaitForPixelColor(FX,FY,REPC)
 	Sleep MiscDelay
 	Loop
 	{
 		GuiControl,, NB, Checking HP states
-		ControlClick, x%RBx% y%RBy%, ahk_id %hwnd%
+		ClickS(RBx,RBy)
 		Sleep MiscDelay
 		tpc2 := PixelGetColorS(CCx,CCy,3)
 		if (tpc2 = CCPC)
@@ -79,13 +80,13 @@ Repair()
 			ti := BC+1
 			Menu, Main, Rename, %BC%, %ti%
 			BC += 1
-			ControlClick, x%CCx% y%CCy%, ahk_id %hwnd%
+			ClickS(CCx,CCy)
 			Sleep 500
-			ControlClick, x%BBx% y%BBy%, ahk_id %hwnd%
+			ClickS(BBx,BBy)
 			Sleep 500
-			ControlClick, x%ESx% y%ESy%, ahk_id %hwnd%
+			ClickS(ESx,ESy)
 			Sleep 500
-			ControlClick, x%BCx% y%BCy%, ahk_id %hwnd%	
+			ClickS(BCx,BCy)	
 			WaitForPixelColor(FX,FY,REPC)
 			Sleep 9000			
 		}
@@ -120,27 +121,27 @@ Sortie:
 		tpc2 := PixelGetColorS(FX,FY,3)
 		if (tpc2 != HPC)
 		{
-			ControlClick, x%Hx% y%Hy%, ahk_id %hwnd%
+			ClickS(Hx,Hy)
 			GuiControl,, NB, Waiting for home screen
 			WaitForPixelColor(FX,FY,HPC)
 		}
-		ControlClick, x%Sx% y%Sy%, ahk_id %hwnd%
+		ClickS(Sx,Sy)
 		GuiControl,, NB, Waiting for sortie screen
         WaitForPixelColor(FX,FY,SPC)
-		ControlClick, x%S2x% y%S2y%, ahk_id %hwnd%
+		ClickS(S2x,S2y)
 		GuiControl,, NB, Waiting for sortie selection screen
         WaitForPixelColor(FX,FY,S2PC)
 		tf := SPGx[World]
-		ControlClick, x%tf% y%PGy%, ahk_id %hwnd%
+		ClickS(tf,PGy)
 		GuiControl,, NB, Starting sortie
 		Sleep MiscDelay
 		tfx := MAPx[Map]
 		tfy := MAPy[Map]
-		ControlClick, x%tfx% y%tfy%, ahk_id %hwnd%
+		ClickS(tfx,tfy)
 		Sleep MiscDelay
-		ControlClick, x%ESx% y%ESy%, ahk_id %hwnd%
+		ClickS(ESx,ESy)
 		Sleep MiscDelay
-		ControlClick, x%ESx% y%ESy%, ahk_id %hwnd%
+		ClickS(ESx,ESy)
 		if SortieInterval != -1
 		{
 			SetTimer, Sortie, %SortieInterval%
@@ -150,7 +151,7 @@ Sortie:
 		GuiControl,, NB, Waiting for compass
 		WaitForPixelColor(LAx,LAy,CPC)
 		Sleep MiscDelay
-		ControlClick, x%ESx% y%ESy%, ahk_id %hwnd%
+		ClickS(ESx,ESy)
 		GuiControl,, NB, Waiting for formation
 		tpc2 := WaitForPixelColor(LAx,LAy,FPC)
 		if tpc2 := 0
@@ -158,13 +159,13 @@ Sortie:
 			Pause
 		}
 		Sleep MiscDelay
-		ControlClick, x%LAx% y%LAy%, ahk_id %hwnd%
+		ClickS(LAx,LAy)
 		GuiControl,, NB, Waiting for results
 		tpc2 := WaitForPixelColor(FX,FY,SRPC,NBPC,,,,300000)
 		if tpc2 = 2
 		{
 			Sleep 3000
-			ControlClick, x%CNBx% y%CNBy%, ahk_id %hwnd%
+			ClickS(CNBx,CNBy)
 		}
 		else if tpc2 = 0
 		{
@@ -200,13 +201,13 @@ Resupply(r)
 	tpc := PixelGetColorS(FX,FY,3)
 	if (tpc = HPC)
 	{
-        ControlClick, x%Rx% y%Ry%, ahk_id %hwnd%
+        ClickS(Rx,Ry)
 	}
 	else if (tpc != RPC) 
     {
-        ControlClick, x%Hx% y%Hy%, ahk_id %hwnd%
+        ClickS(Hx,Hy)
         WaitForPixelColor(FX,FY,HPC)
-        ControlClick, x%Rx% y%Ry%, ahk_id %hwnd%
+        ClickS(Rx,Ry)
     }
 	WaitForPixelColor(FX,FY,RPC)
 	GuiControl,, NB, Resupplying fleet %r%
@@ -214,9 +215,9 @@ Resupply(r)
 	tpc := PixelGetColorS(SAx,SAy,2)
 	if (tpc != RRPC)
 	{
-		ControlClick, x%SAx% y%SAy%, ahk_id %hwnd%
+		ClickS(SAx,SAy)
 		Sleep MiscDelay
-		ControlClick, x%ESx% y%ESy%, ahk_id %hwnd%
+		ClickS(ESx,ESy)
 		WaitForPixelColor(FX,FY,RPC)
 	}
 	return
@@ -329,6 +330,7 @@ DN:
 	return
 }
 
+#Include %A_ScriptDir%/Functions/Click.ahk
 #Include %A_ScriptDir%/Functions/PixelCheck.ahk
 #Include %A_ScriptDir%/Functions/Pause.ahk
 #Include %A_ScriptDir%/Functions/PixelSearch.ahk
