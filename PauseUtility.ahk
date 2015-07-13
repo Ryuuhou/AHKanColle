@@ -1,4 +1,4 @@
-﻿;Pause Utility for AHKanColle
+﻿;Pause Utility v1.1 for AHKanColle and AHKCSortie
 #Persistent
 
 ;Use 24 hour format only.
@@ -83,6 +83,7 @@ TogglePause:
 	WM_COMMAND := 0x111
 	ID_FILE_PAUSE := 65403
 	PostMessage, WM_COMMAND, ID_FILE_PAUSE,,, %A_ScriptDir%\AHKanColle.ahk ahk_class AutoHotkey
+	PostMessage, WM_COMMAND, ID_FILE_PAUSE,,, %A_ScriptDir%\AHKCSortie.ahk ahk_class AutoHotkey
 	if (PCSleep = 1 and Resume = 0)
 	{
 		DllCall("PowrProf\SetSuspendState", "int", 0, "int", 0, "int", 0)
@@ -101,6 +102,7 @@ ToggleResume:
 	WM_COMMAND := 0x111
 	ID_FILE_PAUSE := 65403
 	PostMessage, WM_COMMAND, ID_FILE_PAUSE,,, %A_ScriptDir%\AHKanColle.ahk ahk_class AutoHotkey
+	PostMessage, WM_COMMAND, ID_FILE_PAUSE,,, %A_ScriptDir%\AHKCSortie.ahk ahk_class AutoHotkey
 	{
 		SetTimer, ToggleResume, 86400000
 	}
