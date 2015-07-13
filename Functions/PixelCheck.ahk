@@ -1,4 +1,4 @@
-﻿;PixelCheck v1.02 6/2/15
+﻿;PixelCheck v1.03 7/13/15
 
 DEC2HEX(DEC, RARGB="false") 
 {
@@ -70,11 +70,11 @@ WaitForPixelColor(x, y, pc, pc2 := 0, pc3 := 0, cx := -1, cy := -1, timeout := 6
 		}
 		if cy != -1
 		{
-			ControlClick, x%cx% y%cy%, ahk_id %hwnd%
+			ClickS(cx,cy)
 		}
 		else if cx != -1
 		{
-			ControlClick, x%x% y%y%, ahk_id %hwnd%
+			ClickS(x,y)
 		}
 		Sleep 500
 		i += 1
