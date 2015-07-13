@@ -4,7 +4,7 @@ AHKanColle (Click script for KanColle expeditions)
 
 by Ryuuhou
 
-README 6/2/15
+README 7/13/15
 
 ```
 >scripting
@@ -65,13 +65,42 @@ Some recommended intervals:
 
 **I AM NOT RESPONSIBLE IF THIS SCRIPT BUGS AND SINKS YOUR SHIP. Use at your own risk.**
 
-## Warnings:
+## FAQ:
+
+#### Why does the script stop working after my computer idles/goes to screensaver?
 Do NOT use hardware acceleration on your browsers or use "Direct/GPU" on KCV unless your computer is set to never idle.  When the computer idles, hardware acceleration is turned off and flash no longer renders.
 
+#### Why does the script take focus when it supposedly works in background?
 Although this script was designed to work in background, certain applications may lose focus while scripting.
 
+#### Can I minimize my browser/viewer while scripting?
 Do NOT minimize browser/KCV, mouse clicks do not work while minimized. It can be behind other windows.
 
+#### Why did the script send the wrong expedition?
 If you have not unlocked all expeditions, your expeditions may be out of place and cause problems.  It is up to you to change the constants within the script if you wish to use it.
 
-Playing while scripting may lead to bugging the script, avoid playing if you decide to script. Unless you know how the script works :^)
+#### Can I play while scripting?
+You may play when the script is idle. Playing while the script is running may lead to bugging the script.
+
+#### Why is the script having issues clicking on my viewer?
+Some viewers (notably Electronic Observer) seem to block the home button from being clicked in background. Disable background clicking in the config.ini. See the bottom for a full list of config.ini settings.
+
+##Config.ini
+```
+[Variables]
+WINID=KanColleViewer!
+//Name of the browser window/viewer that the script should script on.
+Background=1
+//Script attempts to click without losing focus from other windows. When set to 0, clicks are no longer done in background.  May fix issues with certain viewers.
+DisableCriticalCheck=0
+//When set to 1, AHKCSortie will not check for critical damage ONLY when "Start" is pressed. Sorties triggered by the interval will ALWAYS be checked.
+DisableResupply=0
+//When set to 1, AHKCSortie will not resupply ONLY when "Start" is pressed.  Sorties triggered by the interval will ALWAYS be resupplied.
+PauseHr=22
+PauseMn=22
+//Pauses the script at 22:22 (24 hr format ONLY). Used for PauseUtility since there is no GUI for it. Set these first, then open pause utility.
+PCSleep=0
+//When set to 1, the script will attempt to put the computer to sleep when PauseUtility pauses the scripts.
+iDOL=0
+//When set to 1, the script will always idle on HQ screen (Mainly if you want to hear your secretary's hourlies). Yes, its a reference/play on words.
+```
