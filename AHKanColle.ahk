@@ -1,4 +1,4 @@
-﻿;AHKanColle v1.0943 6/10/15
+﻿;AHKanColle v1.095 7/13/15
 #Persistent
 #SingleInstance
 #Include %A_ScriptDir%/Functions/Gdip_All.ahk ;Thanks to tic (Tariq Porter) for his GDI+ Library => ahkscript.org/boards/viewtopic.php?t=6517
@@ -31,6 +31,7 @@ RTI := 2000 ;Refresh interval for GUI
 SetTimer, Refresh, %RTI%
 
 IniRead, iDOL, config.ini, Variables, iDOL, 0
+IniRead, Background, config.ini, Variables, Background, 1
 IniRead, TWinX, config.ini, Variables, LastX, 0
 IniRead, TWinY, config.ini, Variables, LastY, 0
 IniRead, World, config.ini, Variables, World, 0
@@ -175,12 +176,12 @@ Queue:
 	tpc := PixelGetColorS(FX,FY,3)
 	if (tpc = HPC)
 	{
-		ControlClick, x%Rx% y%Ry%, ahk_id %hwnd%
+		ClickS(Rx,Ry)
 		WaitForPixelColor(FX,FY,RPC)
 	}
 	if (tpc != HEPC)
 	{
-		ControlClick, x%Hx% y%Hy%, ahk_id %hwnd%
+		ClickS(Hx,Hy)
 	}
 	GuiControl,, NB, Waiting for home screen...
 	tpc := WaitForPixelColor(FX,FY,HPC,HEPC,,,,900)
@@ -222,7 +223,7 @@ Queue:
 	GuiControl,, NB, Idle
 	if iDOL = 1 
 	{
-		ControlClick, x%Hx% y%Hy%, ahk_id %hwnd%
+		ClickS(Hx,Hy)
 		GuiControl,, NB, iDOL
 	}	
 	IniWrite,0,config.ini,Do Not Modify,Busy
@@ -238,35 +239,35 @@ Resupply(r)
 	tpc := PixelGetColorS(FX,FY,3)
 	if (tpc = HPC)
 	{
-        ControlClick, x%Rx% y%Ry%, ahk_id %hwnd%
+        ClickS(Rx,Ry)
 	}
 	else if (tpc != RPC) 
     {
-        ControlClick, x%Hx% y%Hy%, ahk_id %hwnd%
+        ClickS(Hx,Hy)
         WaitForPixelColor(FX,FY,HPC)
-        ControlClick, x%Rx% y%Ry%, ahk_id %hwnd%
+        ClickS(Rx,Ry)
     }
 	WaitForPixelColor(FX,FY,RPC)
 	GuiControl,, NB, Resupplying expedition %r%
     if r = 2
 	{
-        ControlClick, x%2Rx% y%234Ry%, ahk_id %hwnd%
+        ClickS(2Rx,234Ry)
 	}
     else if r = 3
 	{
-        ControlClick, x%3Rx% y%234Ry%, ahk_id %hwnd%
+        ClickS(3Rx,234Ry)
 	}
     else if r = 4
 	{
-        ControlClick, x%4Rx% y%234Ry%, ahk_id %hwnd%
+        ClickS(4Rx,234Ry)
 	}
     Sleep MiscDelay
 	tpc := PixelGetColorS(SAx,SAy,2)
 	if (tpc != RRPC)
 	{
-		ControlClick, x%SAx% y%SAy%, ahk_id %hwnd%
+		ClickS(SAx,SAy)
 		Sleep MiscDelay
-		ControlClick, x%ESx% y%ESy%, ahk_id %hwnd%
+		ClickS(ESx,ESy)
 		WaitForPixelColor(FX,FY,RPC)
 	}
 }
@@ -285,54 +286,54 @@ SendExp(n)
 		{
 			if (tpc != HPC)
 			{
-				ControlClick, x%Hx% y%Hy%, ahk_id %hwnd%
+				ClickS(Hx,Hy)
 				WaitForPixelColor(FX,FY,HPC)
 			}
-			ControlClick, x%Sx% y%Sy%, ahk_id %hwnd%
+			ClickS(Sx,Sy)
             WaitForPixelColor(FX,FY,SPC)
-            ControlClick, x%Ex% y%Ey%, ahk_id %hwnd%
+            ClickS(Ex,Ey)
             WaitForPixelColor(FX,FY,EPC)	
 		}
 		GuiControl,, NB, Sending expedition %n%
         if td >  32
         {
             tf := PGx[5]
-            ControlClick, x%tf% y%PGy%, ahk_id %hwnd%
+            ClickS(tf,PGy)
         }
         else if td > 24
         {
             tf := PGx[4]
-            ControlClick, x%tf% y%PGy%, ahk_id %hwnd%
+            ClickS(tf,PGy)
         }
         else if td > 16
         {
             tf := PGx[3]
-            ControlClick, x%tf% y%PGy%, ahk_id %hwnd%
+            ClickS(tf,PGy)
         }
         else if td > 8
         {
             tf := PGx[2]
-            ControlClick, x%tf% y%PGy%, ahk_id %hwnd%
+            ClickS(tf,PGy)
         }
         else
         {
             tf := PGx[1]
-            ControlClick, x%tf% y%PGy%, ahk_id %hwnd%
+            ClickS(tf,PGy)
         }
         Sleep MiscDelay
-        ControlClick, x%FX% y%te%, ahk_id %hwnd%
+        ClickS(FX,te)
         Sleep MiscDelay
 		tpc := PixelGetColorS(ESx,ESy,2)
 		if (tpc != EHPC and tpc != ENPC)
 		{
-			ControlClick, x%ESx% y%ESy%, ahk_id %hwnd%
+			ClickS(ESx,ESy)
 			Sleep MiscDelay
 			if n = 3
-				ControlClick, x%3Ex% y%34Ey%, ahk_id %hwnd%
+				ClickS(3Ex,34Ey)
 			else if n = 4
-				ControlClick, x%4Ex% y%34Ey%, ahk_id %hwnd%
+				ClickS(4Ex,34Ey)
 			Sleep MiscDelay
-			ControlClick, x%ESx% y%ESy%, ahk_id %hwnd%
+			ClickS(ESx,ESy)
 		}
 		WaitForPixelColor(FX,FY,EPC)
         if n = 2
@@ -723,6 +724,7 @@ Refresh:
 	return
 }
 
+#Include %A_ScriptDir%/Functions/Click.ahk
 #Include %A_ScriptDir%/Functions/TimerUtils.ahk
 #Include %A_ScriptDir%/Functions/PixelCheck.ahk
 #Include %A_ScriptDir%/Functions/Pause.ahk
