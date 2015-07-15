@@ -1,8 +1,9 @@
-﻿Click v1.0 7/13/15
+﻿Click v1.01 7/14/15
 
 ClickS(x,y)
 {
 	global hwnd
+	global Background
 	if Background = 1
 	{
 		ControlClick, x%x% y%y%, ahk_id %hwnd%
