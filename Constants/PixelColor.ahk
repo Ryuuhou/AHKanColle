@@ -1,4 +1,4 @@
-﻿;Pixel Color Constants
+﻿;Pixel Color Constants 10/10/15
 
 HPC := 0x4acacd ;Home
 HEPC := 0x42b6b8 ;Home + Exped
@@ -9,7 +9,7 @@ SPC := 0x293137 ;Sortie
 S2PC := 0x37444d ;Sortie 2
 EPC := 0xede6d9 ;Expeditions
 NRPC := 0x444444 ;Needs Resupply
-RRPC := 0xd1c1b2 ;Resupplied
+;RRPC := 0xd1c1b2 ;Resupplied (Legacy)
 ECPC := 0xffffff ;Error Cat
 EHPC := 0xee8b28 ;Cancel expedition button hovered
 ENPC := 0xcd3547 ;Cancel expedition button
