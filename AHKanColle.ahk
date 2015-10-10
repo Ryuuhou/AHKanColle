@@ -1,4 +1,4 @@
-﻿;AHKanColle v1.095 7/13/15
+﻿;AHKanColle v1.096 10/10/15
 #Persistent
 #SingleInstance
 #Include %A_ScriptDir%/Functions/Gdip_All.ahk ;Thanks to tic (Tariq Porter) for his GDI+ Library => ahkscript.org/boards/viewtopic.php?t=6517
@@ -262,14 +262,8 @@ Resupply(r)
         ClickS(4Rx,234Ry)
 	}
     Sleep MiscDelay
-	tpc := PixelGetColorS(SAx,SAy,2)
-	if (tpc != RRPC)
-	{
-		ClickS(SAx,SAy)
-		Sleep MiscDelay
-		ClickS(ESx,ESy)
-		WaitForPixelColor(FX,FY,RPC)
-	}
+	ClickS(SAx,SAy)
+	WaitForPixelColor(FX,FY,RPC)
 }
     
 SendExp(n)
