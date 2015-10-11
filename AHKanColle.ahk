@@ -1,4 +1,4 @@
-﻿;AHKanColle v1.096 10/10/15
+﻿;AHKanColle v1.096a 10/11/15
 #Persistent
 #SingleInstance
 #Include %A_ScriptDir%/Functions/Gdip_All.ahk ;Thanks to tic (Tariq Porter) for his GDI+ Library => ahkscript.org/boards/viewtopic.php?t=6517
@@ -261,8 +261,15 @@ Resupply(r)
 	{
         ClickS(4Rx,234Ry)
 	}
-    Sleep MiscDelay
-	ClickS(SAx,SAy)
+	Sleep MiscDelay
+	rti := 0
+	Loop
+	{
+		ClickS(SAx,SAy+50*rti)
+		rti := rti+1
+		Sleep 1
+	}Until rti > 5
+	ClickS(ESx,ESy)
 	WaitForPixelColor(FX,FY,RPC)
 }
     
@@ -735,7 +742,7 @@ PixelMap()
 	Rx := FX - 300 ;Resupply Button
 	Ry := FY - 240
 	SAx := FX - 255
-	SAy := FY - 335
+	SAy := FY - 291
 	Ex := FX + 280 ;Expedition Button
 	Ey := FY - 240
 	ESx := FX + 330
