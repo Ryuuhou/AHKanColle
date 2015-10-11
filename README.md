@@ -4,7 +4,7 @@ AHKanColle (Click script for KanColle expeditions)
 
 by Ryuuhou
 
-README 7/13/15
+README 10/11/15
 
 ```
 >scripting
@@ -15,6 +15,8 @@ README 7/13/15
 
 * AHK_L
 * Gdip_All library by tic
+
+THIS SCRIPT IS ONLY TESTED AND MAINTAINED ON WIN8.1 AND WIN10. I may be unable to help you on any other version.
 
 ## Features:
 
@@ -36,11 +38,13 @@ Use a remaining time of -1 to disable scripting for that fleet.
 
 Enter a MinWait and MaxWait in MILLISECONDS. The script will wait a random amount of time between these two numbers after an expedition comes back.
 
-If you are not playing with KanColleViewer, add/create an entry in the config.ini file in the script directory. As shown below -
+If you are not playing with KanColleViewer, add/create an entry in the config.ini file in the script directory. Use AutoIt3 Window Spy that is included with your AHK installation to determine the window properties.  As shown below (Three valid options are show, **PICK ONE**)-
 
 ```
 [Variables]
-WINID = NameOfWindow
+WINID=艦隊これくしょん -艦これ- - オンラインゲーム - DMM.com - Mozilla Firefox
+WINID=ahk_class MozillaWindowClass
+WINID=ahk_exe firefox.exe
 ```
 
 If using a browser, the name of window will usually be in the titlebar.
@@ -83,7 +87,7 @@ If you have not unlocked all expeditions, your expeditions may be out of place a
 You may play when the script is idle. Playing while the script is running may lead to bugging the script.
 
 #### Why is the script having issues clicking on my viewer?
-Some viewers (notably Electronic Observer) seem to block the home button from being clicked in background. Disable background clicking in the config.ini. See the bottom for a full list of config.ini settings.
+Try running the script as administrator.  If that does not work, disable background clicking in the config.ini. See the bottom for a full list of config.ini settings.
 
 ##Config.ini
 ```
