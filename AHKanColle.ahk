@@ -173,6 +173,7 @@ Queue:
 	}
 	CheckWindow()
 	tpc := 0
+	MsgBox % "X,Y: " . FX . ", " . FY
 	tpc := PixelGetColorS(FX,FY,3)
 	MsgBox % tpc
 	if (tpc = HPC)
