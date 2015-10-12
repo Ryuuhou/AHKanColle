@@ -174,6 +174,7 @@ Queue:
 	CheckWindow()
 	tpc := 0
 	tpc := PixelGetColorS(FX,FY,3)
+	MsgBox % tpc
 	if (tpc = HPC)
 	{
 		ClickS(Rx,Ry)
