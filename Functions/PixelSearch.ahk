@@ -1,4 +1,4 @@
-﻿;PixelSearch v1.01 10/12/15
+﻿;PixelSearch v1.02 10/13/15
 
 RPixelSearch()
 {
@@ -7,7 +7,7 @@ RPixelSearch()
 	local PSS
 	Loop
 	{
-		WinActivate, ahk_id %hwnd%
+		WinActivate, ahk_id %uid%
 		PSS := 0
 		PixelSearch, BX1, BY1, 0, 0, WinW, WinH, BPC1, 1, Fast RGB
 		PixelGetColor, BPCT, BX1+1, BY1, RGB
