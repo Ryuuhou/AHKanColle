@@ -1,4 +1,4 @@
-﻿;AHKanColle v1.096a 10/11/15
+﻿;AHKanColle v1.097 10/12/15
 #Persistent
 #SingleInstance
 #Include %A_ScriptDir%/Functions/Gdip_All.ahk ;Thanks to tic (Tariq Porter) for his GDI+ Library => ahkscript.org/boards/viewtopic.php?t=6517
