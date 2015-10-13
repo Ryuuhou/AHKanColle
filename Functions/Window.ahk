@@ -1,4 +1,4 @@
-﻿;Window v1.0
+﻿;Window v1.01 10/12/15
 
 CheckWindow()
 {
@@ -34,7 +34,7 @@ SetWindow()
 		hwnd := WinExist(WINID)
 		if not hwnd = 0
 		{
-			WinActivateRestore()
+			WinActivateRestore(1)
 			WinGetPos, , , WinW, WinH
 			GuiControl,, NB, Window found
 			Break
@@ -55,17 +55,21 @@ SetWindow()
 	RPixelSearch()
 }
 
-WinActivateRestore()
+WinActivateRestore(force := 0)
 {
-	global hwnd
 	global Background
+	global hwnd
+	
+	WinExist(hwnd)
 	WinGet, MMX, MinMax
 	if MMX = -1
 	{
 		WinRestore
 		Sleep 500
 	}
-	if (not WinActive) and (Background = 0)
+	IfWinActive
+	{}
+	else if (Background = 0 or force = 1)
 	{
 		WinActivate
 		Sleep 500
