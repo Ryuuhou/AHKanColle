@@ -1,4 +1,4 @@
-﻿;PixelCheck v1.03 7/13/15
+﻿;PixelCheck v1.04 10/13/15
 
 DEC2HEX(DEC, RARGB="false") 
 {
@@ -12,14 +12,15 @@ DEC2HEX(DEC, RARGB="false")
 
 PixelGetColorS(x,y,z := 0)
 {
-	global hwnd
+	global uid
 	i := 0
 	lHEX := 0
+	
 	WinActivateRestore()
 	Loop
 	{
 		pToken  := Gdip_Startup()
-		pBitmap := Gdip_BitmapFromHWND(hwnd)
+		pBitmap := Gdip_BitmapFromHWND(uid)
 		pARGB := GDIP_GetPixel(pBitmap, x, y)
 		pHEX := DEC2HEX(pARGB,"true")
 		if (pHEX = lHEX)
@@ -39,7 +40,7 @@ PixelGetColorS(x,y,z := 0)
 
 WaitForPixelColor(x, y, pc, pc2 := 0, pc3 := 0, cx := -1, cy := -1, timeout := 60)
 {
-	global hwnd
+	global uid
 	global ECPC
 	ecc := 0
 	i := 0
