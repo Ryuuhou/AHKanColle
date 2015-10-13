@@ -1,4 +1,4 @@
-﻿;AHKCSortie v1.05a 10/11/15
+﻿;AHKCSortie v1.06 10/12/15
 #Persistent
 #SingleInstance
 #Include %A_ScriptDir%/Functions/Gdip_All.ahk ;Thanks to tic (Tariq Porter) for his GDI+ Library => ahkscript.org/boards/viewtopic.php?t=6517
@@ -21,6 +21,7 @@ TR := 0
 IniRead, TWinX, config.ini, Variables, LastXS, 0
 IniRead, TWinY, config.ini, Variables, LastYS, 0
 IniRead, Background, config.ini, Variables, Background, 1
+SpecificWindows()
 IniRead, World, config.ini, Variables, World, %A_Space%
 IniRead, Map, config.ini, Variables, Map, %A_Space%
 IniRead, DisableCriticalCheck, config.ini, Variables, DisableCriticalCheck, 0
@@ -334,6 +335,7 @@ DN:
 #Include %A_ScriptDir%/Functions/Click.ahk
 #Include %A_ScriptDir%/Functions/PixelCheck.ahk
 #Include %A_ScriptDir%/Functions/Pause.ahk
+#Include %A_ScriptDir%/Functions/Window.ahk
 #Include %A_ScriptDir%/Functions/PixelSearch.ahk
 
 PixelMap()

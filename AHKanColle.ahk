@@ -1,4 +1,4 @@
-﻿;AHKanColle v1.096a 10/11/15
+﻿;AHKanColle v1.097 10/12/15
 #Persistent
 #SingleInstance
 #Include %A_ScriptDir%/Functions/Gdip_All.ahk ;Thanks to tic (Tariq Porter) for his GDI+ Library => ahkscript.org/boards/viewtopic.php?t=6517
@@ -32,6 +32,7 @@ SetTimer, Refresh, %RTI%
 
 IniRead, iDOL, config.ini, Variables, iDOL, 0
 IniRead, Background, config.ini, Variables, Background, 1
+SpecificWindows()
 IniRead, TWinX, config.ini, Variables, LastX, 0
 IniRead, TWinY, config.ini, Variables, LastY, 0
 IniRead, World, config.ini, Variables, World, 0
@@ -729,6 +730,7 @@ Refresh:
 #Include %A_ScriptDir%/Functions/TimerUtils.ahk
 #Include %A_ScriptDir%/Functions/PixelCheck.ahk
 #Include %A_ScriptDir%/Functions/Pause.ahk
+#Include %A_ScriptDir%/Functions/Window.ahk
 #Include %A_ScriptDir%/Functions/PixelSearch.ahk
 
 PixelMap()
