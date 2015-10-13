@@ -1,9 +1,9 @@
-﻿;Window v1.01 10/12/15
+﻿;Window v1.02 10/13/15
 
 CheckWindow()
 {
 	global
-	IfWinExist, ahk_id %hwnd%
+	IfWinExist, ahk_id %uid%
 	{
 		WinActivateRestore()
 		WinGetPos, , , TWinW, TWinH
@@ -30,9 +30,9 @@ SetWindow()
 	Sleep 300
 	Loop
 	{
-		hwnd := 0
-		hwnd := WinExist(WINID)
-		if not hwnd = 0
+		uid := 0
+		uid := WinExist(WINID)
+		if not uid = 0
 		{
 			WinActivateRestore(1)
 			WinGetPos, , , WinW, WinH
@@ -58,17 +58,17 @@ SetWindow()
 WinActivateRestore(force := 0)
 {
 	global Background
-	global hwnd
+	global uid
 	
-	WinExist(hwnd)
-	WinGet, MMX, MinMax
+	WinGet, MMX, MinMax, ahk_id %uid%
 	if MMX = -1
 	{
 		WinRestore
 		Sleep 500
 	}
-	IfWinActive
-	{}
+	if WinActive(ahk_id %uid%)
+	{
+	}
 	else if (Background = 0 or force = 1)
 	{
 		WinActivate
