@@ -21,6 +21,7 @@ TR := 0
 IniRead, TWinX, config.ini, Variables, LastXS, 0
 IniRead, TWinY, config.ini, Variables, LastYS, 0
 IniRead, Background, config.ini, Variables, Background, 1
+SpecificWindows()
 IniRead, World, config.ini, Variables, World, %A_Space%
 IniRead, Map, config.ini, Variables, Map, %A_Space%
 IniRead, DisableCriticalCheck, config.ini, Variables, DisableCriticalCheck, 0
@@ -334,6 +335,7 @@ DN:
 #Include %A_ScriptDir%/Functions/Click.ahk
 #Include %A_ScriptDir%/Functions/PixelCheck.ahk
 #Include %A_ScriptDir%/Functions/Pause.ahk
+#Include %A_ScriptDir%/Functions/Window.ahk
 #Include %A_ScriptDir%/Functions/PixelSearch.ahk
 
 PixelMap()

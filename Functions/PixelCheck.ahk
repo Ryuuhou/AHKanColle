@@ -13,11 +13,9 @@ DEC2HEX(DEC, RARGB="false")
 PixelGetColorS(x,y,z := 0)
 {
 	global hwnd
-	global NB
-	global ECPC
-	MsgBox % "hwnd: " + hwnd
 	i := 0
 	lHEX := 0
+	WinActivateRestore()
 	Loop
 	{
 		pToken  := Gdip_Startup()

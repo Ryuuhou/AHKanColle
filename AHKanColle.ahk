@@ -32,6 +32,7 @@ SetTimer, Refresh, %RTI%
 
 IniRead, iDOL, config.ini, Variables, iDOL, 0
 IniRead, Background, config.ini, Variables, Background, 1
+SpecificWindows()
 IniRead, TWinX, config.ini, Variables, LastX, 0
 IniRead, TWinY, config.ini, Variables, LastY, 0
 IniRead, World, config.ini, Variables, World, 0
@@ -173,9 +174,7 @@ Queue:
 	}
 	CheckWindow()
 	tpc := 0
-	MsgBox % "X,Y: " . FX . ", " . FY
 	tpc := PixelGetColorS(FX,FY,3)
-	MsgBox % tpc
 	if (tpc = HPC)
 	{
 		ClickS(Rx,Ry)
@@ -731,6 +730,7 @@ Refresh:
 #Include %A_ScriptDir%/Functions/TimerUtils.ahk
 #Include %A_ScriptDir%/Functions/PixelCheck.ahk
 #Include %A_ScriptDir%/Functions/Pause.ahk
+#Include %A_ScriptDir%/Functions/Window.ahk
 #Include %A_ScriptDir%/Functions/PixelSearch.ahk
 
 PixelMap()
