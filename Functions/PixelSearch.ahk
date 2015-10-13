@@ -1,4 +1,4 @@
-﻿;PixelSearch v1.01
+﻿;PixelSearch v1.01 10/12/15
 
 RPixelSearch()
 {
