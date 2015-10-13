@@ -1,4 +1,4 @@
-﻿;AHKCSortie v1.05a 10/11/15
+﻿;AHKCSortie v1.06 10/12/15
 #Persistent
 #SingleInstance
 #Include %A_ScriptDir%/Functions/Gdip_All.ahk ;Thanks to tic (Tariq Porter) for his GDI+ Library => ahkscript.org/boards/viewtopic.php?t=6517
