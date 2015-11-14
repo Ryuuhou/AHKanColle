@@ -1,4 +1,4 @@
-﻿;AHKCSortie v1.06 10/12/15
+﻿;AHKCSortie v1.061 11/14/15
 #Persistent
 #SingleInstance
 #Include %A_ScriptDir%/Functions/Gdip_All.ahk ;Thanks to tic (Tariq Porter) for his GDI+ Library => ahkscript.org/boards/viewtopic.php?t=6517
@@ -314,6 +314,11 @@ IntervalF:
 
 SSBF:
 {
+	if Map < 1 or World < 1
+	{
+		MsgBox Map or world invalid. Press enter after each field to submit.
+		return
+	}
 	GuiControl, Hide, SSB
 	BP := 1
 	goto Sortie
