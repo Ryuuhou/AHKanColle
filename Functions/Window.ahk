@@ -1,4 +1,4 @@
-﻿;Window v1.02 10/13/15
+﻿;Window v1.03 11/14/15
 
 CheckWindow()
 {
@@ -80,11 +80,14 @@ WinActivateRestore(force := 0)
 SpecificWindows()
 {
 	global Background
-	if A_OSVersion in WIN_XP
+	if A_OSVersion in WIN_NT4,WIN_95,WIN_98,WIN_ME,WIN_XP
 	{
-		MsgBox Background scripting has been disabled due to an unsupported Windows version.
-		Background := 0
-		IniWrite,%Background%,config.ini,Variables,Background
+		if Background = 1
+		{
+			MsgBox This version of Windows is unsupported. Script may not function properly.
+			Background := 0
+			IniWrite,%Background%,config.ini,Variables,Background
+		}
 	}
 	return
 }
