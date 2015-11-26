@@ -27,7 +27,7 @@ RPixelSearch()
 
 		if PSS = 1
 		{
-			if Background = 3
+			if Background = 2
 			{
 				XDiff := BX1 - 678
 				YDiff := BY1 - 17

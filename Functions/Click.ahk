@@ -16,7 +16,7 @@ ClickS(x,y)
 	{
 		Click %x%, %y%
 	}
-	else if Background = 3
+	else if Background = 2
 	{
 		SetControlDelay -1
 		tx := x-XDiff
