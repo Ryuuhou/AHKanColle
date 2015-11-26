@@ -1,16 +1,8 @@
-﻿;AHKanColle v1.098 11/26/15
-
-if not A_IsAdmin
-{
-   Run *RunAs "%A_ScriptFullPath%"  ; Requires v1.0.92.01+
-   ExitApp
-}
+﻿;AHKanColle v1.097 10/12/15
 #Persistent
 #SingleInstance
 #Include %A_ScriptDir%/Functions/Gdip_All.ahk ;Thanks to tic (Tariq Porter) for his GDI+ Library => ahkscript.org/boards/viewtopic.php?t=6517
 CoordMode, Pixel, Relative
-
-IniRead, Background, config.ini, Variables, Background, 1
 
 Initialize()
 
@@ -39,10 +31,7 @@ RTI := 2000 ;Refresh interval for GUI
 SetTimer, Refresh, %RTI%
 
 IniRead, iDOL, config.ini, Variables, iDOL, 0
-if Background = 0
-{
-	StayAwake()
-}
+IniRead, Background, config.ini, Variables, Background, 1
 SpecificWindows()
 IniRead, TWinX, config.ini, Variables, LastX, 0
 IniRead, TWinY, config.ini, Variables, LastY, 0
@@ -184,7 +173,6 @@ Queue:
 		RF := 0
 	}
 	CheckWindow()
-	GuiControl,, NB, Waiting for home screen...
 	tpc := 0
 	tpc := PixelGetColorS(FX,FY,3)
 	if (tpc = HPC)
@@ -196,6 +184,7 @@ Queue:
 	{
 		ClickS(Hx,Hy)
 	}
+	GuiControl,, NB, Waiting for home screen...
 	tpc := WaitForPixelColor(FX,FY,HPC,HEPC,,,,900)
 	if tpc = 2
 	{
@@ -743,9 +732,48 @@ Refresh:
 #Include %A_ScriptDir%/Functions/Pause.ahk
 #Include %A_ScriptDir%/Functions/Window.ahk
 #Include %A_ScriptDir%/Functions/PixelSearch.ahk
-#Include %A_ScriptDir%/Functions/StayAwake.ahk
-#Include %A_ScriptDir%/Functions/PixelMap.ahk
 
+PixelMap()
+{
+	global
+	local i := 1
+	Hx := FX - 330 ;Home Button
+	Hy := FY - 415
+	Sx := FX - 185 ;Sortie Button
+	Sy := FY - 200
+	Rx := FX - 300 ;Resupply Button
+	Ry := FY - 240
+	SAx := FX - 255
+	SAy := FY - 291
+	Ex := FX + 280 ;Expedition Button
+	Ey := FY - 240
+	ESx := FX + 330
+	ESy := FY - 15
+	3Ex := FX + 45
+	4Ex := FX + 75
+	34Ey := FY - 335
+	2Rx := FX - 200
+	3Rx := FX - 170
+	4Rx := FX - 140
+	234Ry := FY - 340
+	PGx[1] := FX - 240
+	PGx[2] := FX - 180
+	PGx[3] := FX - 125
+	PGx[4] := FX - 70
+	PGx[5] := FX - 10
+	PGy := FY - 20
+	Loop
+	{
+		th := FY-280+30*(i-1)
+		Eh[i] := th
+		Eh[i+8] := th
+		Eh[i+16] := th
+		Eh[i+24] := th
+		Eh[i+32] := th
+		i += 1
+	}Until i = 9
+	return
+}
 		
 Initialize()
 {

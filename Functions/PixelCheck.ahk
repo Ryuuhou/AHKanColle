@@ -15,6 +15,7 @@ PixelGetColorS(x,y,z := 0)
 	global uid
 	i := 0
 	lHEX := 0
+	
 	WinActivateRestore()
 	Loop
 	{
