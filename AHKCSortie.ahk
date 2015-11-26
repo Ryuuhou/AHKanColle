@@ -1,8 +1,15 @@
-﻿;AHKCSortie v1.061 11/14/15
+﻿;AHKCSortie v1.062 11/26/15
+
+if not A_IsAdmin
+{
+   Run *RunAs "%A_ScriptFullPath%"  ; Requires v1.0.92.01+
+   ExitApp
+}
 #Persistent
 #SingleInstance
 #Include %A_ScriptDir%/Functions/Gdip_All.ahk ;Thanks to tic (Tariq Porter) for his GDI+ Library => ahkscript.org/boards/viewtopic.php?t=6517
 CoordMode, Pixel, Relative
+IniRead, Background, config.ini, Variables, Background, 1
 
 Initialize()
 
@@ -20,7 +27,6 @@ TR := 0
 
 IniRead, TWinX, config.ini, Variables, LastXS, 0
 IniRead, TWinY, config.ini, Variables, LastYS, 0
-IniRead, Background, config.ini, Variables, Background, 1
 SpecificWindows()
 IniRead, World, config.ini, Variables, World, %A_Space%
 IniRead, Map, config.ini, Variables, Map, %A_Space%
@@ -342,47 +348,8 @@ DN:
 #Include %A_ScriptDir%/Functions/Pause.ahk
 #Include %A_ScriptDir%/Functions/Window.ahk
 #Include %A_ScriptDir%/Functions/PixelSearch.ahk
+#Include %A_ScriptDir%/Functions/PixelMap.ahk
 
-PixelMap()
-{
-	global
-	Hx := FX - 330 ;Home Button
-	Hy := FY - 415
-	Sx := FX - 185 ;Sortie Button
-	Sy := FY - 200
-	S2x := FX - 151
-	S2y := FY - 248
-	Rx := FX - 300 ;Resupply Button
-	Ry := FY - 240
-	SAx := FX - 255
-	SAy := FY - 291
-	ESx := FX + 330
-	ESy := FY - 15
-	SPGx[3] := FX - 71
-	SPGx[5] := FX + 75
-	PGy := FY - 20
-	REx := FX - 255
-	REy := FY - 97
-	MAPx[2] := FX + 252
-	MAPy[2] := FY - 247
-	MAPx[4] := FX + 252
-	MAPy[4] := FY - 100
-	LAx := FX + 69
-	LAy := FY - 275
-	ESBx := FX + 130
-	ESBy := FY - 221
-	CNBx := FX - 88
-	CNBy := FY - 216
-	RBx := FX - 128
-	RBy := FY - 294
-	BBx := FX + 361
-	BBy := FY - 169
-	BCx := FX + 128
-	BCy := FY - 55
-	CCx := FX + 353
-	CCy := FY - 324
-	return
-}
 		
 Initialize()
 {
