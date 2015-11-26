@@ -1,4 +1,4 @@
-﻿;AHKCSortie v1.062 11/14/15
+﻿;AHKCSortie v1.062 11/26/15
 
 if not A_IsAdmin
 {
