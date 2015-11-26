@@ -1,10 +1,10 @@
-
+﻿
 AHKanColle (Click script for KanColle expeditions)
 --
 
 by Ryuuhou
 
-README 10/11/15
+README 11/26/15
 
 ```
 >scripting
@@ -87,7 +87,8 @@ If you have not unlocked all expeditions, your expeditions may be out of place a
 You may play when the script is idle. Playing while the script is running may lead to bugging the script.
 
 #### Why is the script having issues clicking on my viewer?
-Try running the script as administrator.  If that does not work, disable background clicking in the config.ini. See the bottom for a full list of config.ini settings.
+FOR ELECTRONICOBSERVER ONLY: Use Background=2 for a specialized setting for EO.
+Another option is to disable background clicking in the config.ini. See the bottom for a full list of config.ini settings.
 
 ##Config.ini
 ```
