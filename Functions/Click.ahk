@@ -1,4 +1,4 @@
-﻿;Click v1.04 11/26/15
+﻿;Click v1.05 11/26/15
 
 ClickS(x,y)
 {
@@ -6,26 +6,25 @@ ClickS(x,y)
 	global Background
 	global XDiff
 	global YDiff
+	global Class
 	WinActivateRestore()
 	if Background = 1
 	{
 		SetControlDelay -1
-		ControlClick, x%x% y%y%, ahk_id %uid%,,,,NA Pos
+		if Class = 0
+		{
+			ControlClick, x%x% y%y%, ahk_id %uid%,,,,NA Pos
+		}
+		else
+		{
+			tx := x-XDiff
+			ty := y-YDiff
+			ControlClick, %Class%,ahk_id %uid%,,,, x%tx% y%ty%
+		}
 	}
 	else if Background = 0
 	{
 		Click %x%, %y%
-	}
-	else if Background = 2
-	{
-		SetControlDelay -1
-		tx := x-XDiff
-		ty := y-YDiff
-		ControlClick, Internet Explorer_Server1,ahk_id %uid%,,,, x%tx% y%ty%
-		if ErrorLevel = 1 
-		{
-			MsgBox NotFound
-		}
 	}
 	return
 }

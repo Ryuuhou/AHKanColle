@@ -4,7 +4,7 @@ AHKanColle (Click script for KanColle expeditions)
 
 by Ryuuhou
 
-README 11/26/15
+README 11/26/15 r2
 
 ```
 >scripting
@@ -87,7 +87,8 @@ If you have not unlocked all expeditions, your expeditions may be out of place a
 You may play when the script is idle. Playing while the script is running may lead to bugging the script.
 
 #### Why is the script having issues clicking on my viewer?
-FOR ELECTRONICOBSERVER ONLY: Use Background=2 for a specialized setting for EO.
+If you are able to get the class name of the game frame (using Window Spy), you can specify a class name in config.ini.
+For ElectronicObserver, Class=Internet Explorer_Server1
 Another option is to disable background clicking in the config.ini. See the bottom for a full list of config.ini settings.
 
 ##Config.ini
@@ -97,6 +98,8 @@ WINID=KanColleViewer!
 //Name of the browser window/viewer that the script should script on.
 Background=1
 //Script attempts to click without losing focus from other windows. When set to 0, clicks are no longer done in background.  May fix issues with certain viewers.
+Class=0
+//When set to class name, i.e. Internet Explorer_Server1, the script will click directly on the class rather than the window.  May fix issues with certain applications. This setting is ignored if Background=0
 DisableCriticalCheck=0
 //When set to 1, AHKCSortie will not check for critical damage ONLY when "Start" is pressed. Sorties triggered by the interval will ALWAYS be checked.
 DisableResupply=0

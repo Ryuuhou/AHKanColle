@@ -1,4 +1,4 @@
-﻿;AHKCSortie v1.063 11/26/15
+﻿;AHKCSortie v1.063r2 11/26/15
 
 #Persistent
 #SingleInstance
@@ -11,6 +11,7 @@ if not A_IsAdmin
 }
 CoordMode, Pixel, Relative
 IniRead, Background, config.ini, Variables, Background, 1
+IniRead, Class, config.ini, Variables, Class, 0
 
 Initialize()
 

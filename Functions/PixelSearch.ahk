@@ -1,4 +1,4 @@
-﻿;PixelSearch v1.03 11/26/15
+﻿;PixelSearch v1.04 11/26/15
 
 RPixelSearch()
 {
@@ -27,7 +27,7 @@ RPixelSearch()
 
 		if PSS = 1
 		{
-			if Background = 2
+			if not Class = 0
 			{
 				XDiff := BX1 - 678
 				YDiff := BY1 - 17

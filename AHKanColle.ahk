@@ -1,4 +1,4 @@
-﻿;AHKanColle v1.098 11/26/15
+﻿;AHKanColle v1.098r2 11/26/15
 
 if not A_IsAdmin
 {
@@ -11,6 +11,7 @@ if not A_IsAdmin
 CoordMode, Pixel, Relative
 
 IniRead, Background, config.ini, Variables, Background, 1
+IniRead, Class, config.ini, Variables, Class, 0
 
 Initialize()
 
