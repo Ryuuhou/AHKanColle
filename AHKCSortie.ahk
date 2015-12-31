@@ -54,6 +54,10 @@ GuiControl, Move, MapV, x62 h17 w15
 Gui, Add, Text, ym, Interval(ms):
 Gui, Add, Edit, gIntervalF r2 w15 vIntervalV -VScroll ym, %SortieInterval%
 GuiControl, Move, IntervalV, h17 w70
+Gui, Add, Text, vText, #Nodes
+GuiControl, Move, Text, x150 y35
+Gui, Add, Edit, gNodeCount r2 limit3 w10 vNodeCount -VScroll ym, %Nodes%
+GuiControl, Move, NodeCount, x195 y33 h17 w25
 Gui, Add, Button, gSSBF vSSB, A
 GuiControl, Move, SSB, x250 w60 ym
 GuiControl,,SSB, Start
@@ -125,13 +129,23 @@ Repair()
 
 Delay:
 {
-	if (Busy != 1 and BusyS != 1)
+	IniRead, Busy, config.ini, Do Not Modify, Busy, 1
+	if (Busy = 0 and BusyS = 0)
 	{
-		DT := 1
-		Random, SR, MinRandomWait, MaxRandomWait
-		QTS := A_TickCount
-		QTL := SR
-		goto Sortie
+		if DT = 0
+		{
+			DT := 1
+			Random, SR, MinRandomWait, MaxRandomWait
+			QTS := A_TickCount
+			QTL := SR
+			SetTimer, NBUpdate, 2000
+			Sleep SR
+			goto Delay
+		}
+		else if DT = 1
+		{
+			goto Sortie
+		}
 	}
 	else
 	{
@@ -147,7 +161,6 @@ Delay:
 Sortie:
 {
 	SetTimer, NBUpdate, Off
-	IniRead, Busy, config.ini, Do Not Modify, Busy, KanColleViewer!
 	SetTimer, Delay, Off
 	BusyS := 1
 	DT := 0
@@ -198,43 +211,68 @@ Sortie:
 		TR := 1
 		TCS := A_TickCount
 	}
-	NC := 0
+	NC := 1
 	Loop
 	{
-		NC += 1
-		GuiControl,, NB, Waiting for compass
+		GuiControl,, NB, Waiting for compass/formation
 		pc := []
-		pc := [CPC]
-		WaitForPixelColor(LAx,LAy,pc)
+		pc := [CPC,FPC,IBPC]
+		tpc := WaitForPixelColor(LAx,LAy,pc,,,30)
 		Sleep MiscDelay
-		ClickS(ESx,ESy)
-		GuiControl,, NB, Waiting for formation
-		pc := []
-		pc := [FPC]
-		tpc2 := WaitForPixelColor(LAx,LAy,pc)
-		if tpc2 := 0
+		if tpc = 1
 		{
-			Pause
+			ClickS(ESx,ESy)
+			GuiControl,, NB, Waiting for formation
+			pc := []
+			pc := [FPC,IBPC]
+			tpc2 := WaitForPixelColor(LAx,LAy,pc)
+			if tpc2 = 1
+			{
+				Sleep MiscDelay
+				ClickS(LAx,LAy)
+			}
 		}
-		Sleep MiscDelay
-		ClickS(LAx,LAy)
+		else if tpc = 2 
+		{
+			ClickS(LAx,LAy)	
+		}
 		GuiControl,, NB, Waiting for results
 		pc := []
 		pc := [SRPC,NBPC]
-		tpc2 := WaitForPixelColor(FX,FY,pc,,,300000)
-		if tpc2 = 2
+		WaitForPixelColor(FX,FY,pc,,,250)
+		Sleep 5000
+		tpc := WaitForPixelColor(FX,FY,pc)
+		if tpc = 2
 		{
+			GuiControl,, NB, Cancelling night battle
 			Sleep 3000
 			ClickS(CNBx,CNBy)
 		}
-		else if tpc2 = 0
-		{
-			Pause
-		}
+		GuiControl,, NB, Waiting...
 		pc := []
-		pc := [HPC,HEPC]
-		WaitForPixelColor(FX,FY,pc,ESBx,ESBy)
-	}Until NC = Nodes
+		pc := [HPC,HEPC,CSPC]
+		tpc := WaitForPixelColor(FX,FY,pc,FX,FY)
+		if tpc = 1 or tpc = 2
+		{
+			Break
+		}
+		else if tpc = 3
+		{
+			GuiControl,, NB, Continue screen
+			Sleep 2000
+			if (NC = Nodes)
+			{
+				GuiControl,, NB, Ending sortie
+				ClickS(ESBx,ESBy)
+			}
+			else
+			{
+				GuiControl,, NB, Continuing Sortie
+				ClickS(CSBx,CSBy)
+			}
+		}
+		NC += 1
+	}Until NC > Nodes
 	GuiControl,, NB, Waiting for home screen
 	pc := []
 	pc := [HPC,HEPC]
@@ -331,6 +369,31 @@ MapF:
 	return
 }
 
+NodeCount:
+{
+	Gui, submit,nohide
+	if NodeCount contains `n
+	{
+		StringReplace, NodeCount, NodeCount, `n,,All
+		GuiControl,, NodeCount, %NodeCount%
+		Send, {end}
+		if (NodeCount > 0 and NodeCount < 4)
+		{
+			Nodes := NodeCount
+			if Nodes > 1
+			{
+				MsgBox WARNING: Script will continue past first node and will NOT check for critical damage. You risk sinking any girl that is not flagship.
+			}
+			GuiControl,, NB, # of nodes set
+		}
+		else
+		{
+			GuiControl,, NB, Invalid entry, must be within 1 and 3
+		}
+	}
+	return
+}
+
 IntervalF:
 {
 	Gui, submit,nohide
@@ -406,13 +469,14 @@ MaW:
 
 SSBF:
 {
-	if Map < 1 or World < 1
+	if (Map < 1 or World < 1)
 	{
 		MsgBox Map or world invalid. Press enter after each field to submit.
 		return
 	}
 	GuiControl, Hide, SSB
 	BP := 1
+	DT := 1
 	goto Delay
 	return
 }
@@ -452,7 +516,9 @@ Initialize()
 	SPGx := Array(item)
 	MAPx := Array(item)
 	MAPy := Array(item)
+	pc := Array(item)
     Q := Array()
+	NC := 0
 }
 
 GuiClose:

@@ -47,7 +47,7 @@ WaitForPixelColor(x, y, pc, cx := -1, cy := -1, timeout := 60)
 	loop
 	{
 		Sleep 500
-		tpc := PixelGetColorS(x,y)
+		tpc := PixelGetColorS(x,y,3)
 		For A, value in pc
 		{
 			if (tpc = pc[A])
@@ -60,13 +60,9 @@ WaitForPixelColor(x, y, pc, cx := -1, cy := -1, timeout := 60)
 		{
 			ecc += 1
 		}
-		if cy != -1
+		if (cy != -1 and cx != -1)
 		{
 			ClickS(cx,cy)
-		}
-		else if cx != -1
-		{
-			ClickS(x,y)
 		}
 		Sleep 500
 		i += 1
