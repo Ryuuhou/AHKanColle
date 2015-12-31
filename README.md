@@ -4,7 +4,7 @@ AHKanColle (Click script for KanColle expeditions)
 
 by Ryuuhou
 
-README 11/26/15 r2
+README 12/30/15
 
 ```
 >scripting
@@ -13,8 +13,8 @@ README 11/26/15 r2
 
 ## Requirements: 
 
-* AHK_L
-* Gdip_All library by tic
+* AHK_L (http://ahkscript.org/)
+* Gdip_All library by tic (included)
 
 THIS SCRIPT IS ONLY TESTED AND MAINTAINED ON WIN8.1 AND WIN10. I may be unable to help you on any other version.
 
@@ -60,7 +60,7 @@ Use ResumeHr and ResumeMn to have the script resume at a specific time. Can be o
 ## How to use: AHKCSortie
 
 Sortie script that should be used along with AHKanColle. GUI is pretty self explanatory.  Set the map you would like to script (only does the first node), set an interval if you would like it to automatically send again, and press start.
-Currently, only world 3 and 5, maps 2 and 4, are supported (3-2,3-4,5-2,5-4) though only 3-2 and 5-4 are recommended.  The script will check for critically damaged ships and resupply before each sortie.
+Currently, world 1, 3 and 5, maps 1, 2 and 4, are supported though only 1-1 (sparkling), 3-2 and 5-4 are recommended.  The script will check for critically damaged ships and resupply before each sortie. For sparkling, set #Nodes to 2 so the script continues to the next battle.
 
 Some recommended intervals:
 * 1000 for fatigue grinding
