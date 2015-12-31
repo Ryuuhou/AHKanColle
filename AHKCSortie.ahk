@@ -151,6 +151,7 @@ Delay:
 		if (Busy = 1 and BusyS = 0)
 		{
 			GuiControl,, NB, An expedition is returning, retrying every 10 seconds
+			SetTimer, NBUpdate, Off
 		}
 		SetTimer, Delay, 10000
 	}

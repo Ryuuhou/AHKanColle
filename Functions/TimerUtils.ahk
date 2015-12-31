@@ -102,8 +102,8 @@ IsExpedWithinRange( d, lc, uc)
 
 GetRemainingTime(n, n2, b := 0) 
 {	
-	global
-	local i := n+n2-A_TickCount
+	global Busy
+	i := n+n2-A_TickCount
 	if b = 1
 	{
 		if (i < 60000 and Busy = 0)
