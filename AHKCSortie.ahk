@@ -27,6 +27,7 @@ BC := 0
 BusyS := 0
 TR := 0
 DT := 0
+Nodes := 1
 
 IniRead, TWinX, config.ini, Variables, LastXS, 0
 IniRead, TWinY, config.ini, Variables, LastYS, 0
@@ -80,11 +81,15 @@ Repair()
 	{
 		ClickS(Hx,Hy)
 		GuiControl,, NB, Waiting for home screen
-		WaitForPixelColor(FX,FY,HPC,HEPC)	
+		pc := []
+		pc := [HPC,HEPC]
+		WaitForPixelColor(FX,FY,pc)	
 	}
 	ClickS(REx,REy)
 	GuiControl,, NB, Waiting for repair screen
-	WaitForPixelColor(FX,FY,REPC)
+	pc := []
+	pc := [REPC]
+	WaitForPixelColor(FX,FY,pc)
 	Sleep MiscDelay
 	Loop
 	{
@@ -105,7 +110,9 @@ Repair()
 			ClickS(ESx,ESy)
 			Sleep 500
 			ClickS(BCx,BCy)	
-			WaitForPixelColor(FX,FY,REPC)
+			pc := []
+			pc := [REPC]
+			WaitForPixelColor(FX,FY,pc)
 			Sleep 9000			
 		}
 		else
@@ -160,14 +167,20 @@ Sortie:
 	{
 		ClickS(Hx,Hy)
 		GuiControl,, NB, Waiting for home screen
-		WaitForPixelColor(FX,FY,HPC)
+		pc := []
+		pc := [HPC]
+		WaitForPixelColor(FX,FY,pc)
 	}
 	ClickS(Sx,Sy)
 	GuiControl,, NB, Waiting for sortie screen
-    WaitForPixelColor(FX,FY,SPC)
+	pc := []
+	pc := [SPC]
+    WaitForPixelColor(FX,FY,pc)
 	ClickS(S2x,S2y)
 	GuiControl,, NB, Waiting for sortie selection screen
-	WaitForPixelColor(FX,FY,S2PC)
+	pc := []
+	pc := [S2PC]
+	WaitForPixelColor(FX,FY,pc)
 	tf := SPGx[World]
 	ClickS(tf,PGy)
 	GuiControl,, NB, Starting sortie
@@ -185,31 +198,47 @@ Sortie:
 		TR := 1
 		TCS := A_TickCount
 	}
-	GuiControl,, NB, Waiting for compass
-	WaitForPixelColor(LAx,LAy,CPC)
-	Sleep MiscDelay
-	ClickS(ESx,ESy)
-	GuiControl,, NB, Waiting for formation
-	tpc2 := WaitForPixelColor(LAx,LAy,FPC)
-	if tpc2 := 0
+	NC := 0
+	Loop
 	{
-		Pause
-	}
-	Sleep MiscDelay
-	ClickS(LAx,LAy)
-	GuiControl,, NB, Waiting for results
-	tpc2 := WaitForPixelColor(FX,FY,SRPC,NBPC,,,,300000)
-	if tpc2 = 2
-	{
-		Sleep 3000
-		ClickS(CNBx,CNBy)
-	}
-	else if tpc2 = 0
-	{
-		Pause
-	}
+		NC += 1
+		GuiControl,, NB, Waiting for compass
+		pc := []
+		pc := [CPC]
+		WaitForPixelColor(LAx,LAy,pc)
+		Sleep MiscDelay
+		ClickS(ESx,ESy)
+		GuiControl,, NB, Waiting for formation
+		pc := []
+		pc := [FPC]
+		tpc2 := WaitForPixelColor(LAx,LAy,pc)
+		if tpc2 := 0
+		{
+			Pause
+		}
+		Sleep MiscDelay
+		ClickS(LAx,LAy)
+		GuiControl,, NB, Waiting for results
+		pc := []
+		pc := [SRPC,NBPC]
+		tpc2 := WaitForPixelColor(FX,FY,pc,,,300000)
+		if tpc2 = 2
+		{
+			Sleep 3000
+			ClickS(CNBx,CNBy)
+		}
+		else if tpc2 = 0
+		{
+			Pause
+		}
+		pc := []
+		pc := [HPC,HEPC]
+		WaitForPixelColor(FX,FY,pc,ESBx,ESBy)
+	}Until NC = Nodes
 	GuiControl,, NB, Waiting for home screen
-	WaitForPixelColor(FX,FY,HPC,HEPC,,ESBx,ESBy)
+	pc := []
+	pc := [HPC,HEPC]
+	WaitForPixelColor(FX,FY,pc,ESBx,ESBy)
 	GuiControl,, NB, Idle
 	BusyS := 0
 	GuiControl, Show, SSB
@@ -234,10 +263,14 @@ Resupply(r)
 	else if (tpc != RPC) 
     {
         ClickS(Hx,Hy)
-        WaitForPixelColor(FX,FY,HPC)
+		pc := []
+		pc := [HPC]
+        WaitForPixelColor(FX,FY,pc)
         ClickS(Rx,Ry)
     }
-	WaitForPixelColor(FX,FY,RPC)
+	pc := []
+	pc := [RPC]
+	WaitForPixelColor(FX,FY,pc)
 	GuiControl,, NB, Resupplying fleet %r%
     Sleep MiscDelay
 	rti := 0
@@ -248,7 +281,9 @@ Resupply(r)
 		Sleep 1
 	}Until rti > 5
 	ClickS(ESx,ESy)
-	WaitForPixelColor(FX,FY,RPC)
+	pc := []
+	pc := [RPC]
+	WaitForPixelColor(FX,FY,pc)
 	return
 }
 
@@ -260,7 +295,7 @@ WorldF:
 		StringReplace, WorldV, WorldV, `n,,All
 		GuiControl,, WorldV, %WorldV%
 		Send, {end}
-		if (WorldV = 3 or WorldV=5)
+		if (WorldV=1 or WorldV=3 or WorldV=5)
 		{
 			World := WorldV
 			GuiControl,, NB, World set
@@ -282,7 +317,7 @@ MapF:
 		StringReplace, MapV, MapV, `n,,All
 		GuiControl,, MapV, %MapV%
 		Send, {end}
-		if (MapV = 2 or MapV=4)
+		if (MapV=1 or MapV=2 or MapV=4)
 		{
 			Map := MapV
 			GuiControl,, NB, Map # set

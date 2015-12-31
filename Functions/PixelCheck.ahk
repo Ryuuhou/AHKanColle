@@ -37,7 +37,7 @@ PixelGetColorS(x,y,z := 0)
 	return lHEX
 }
 
-WaitForPixelColor(x, y, pc, pc2 := 0, pc3 := 0, cx := -1, cy := -1, timeout := 60)
+WaitForPixelColor(x, y, pc, cx := -1, cy := -1, timeout := 60)
 {
 	global uid
 	global ECPC
@@ -48,22 +48,15 @@ WaitForPixelColor(x, y, pc, pc2 := 0, pc3 := 0, cx := -1, cy := -1, timeout := 6
 	{
 		Sleep 500
 		tpc := PixelGetColorS(x,y)
-		if (tpc = pc)
+		For A, value in pc
 		{
-			Sleep 500
-			return 1
+			if (tpc = pc[A])
+			{
+				Sleep 500
+				return A
+			}
 		}
-		else if (pc2 != 0 and tpc = pc2)
-		{
-			Sleep 500
-			return 2
-		}
-		else if (pc3 != 0 and tpc = pc3)
-		{
-			Sleep 500
-			return 3
-		}
-		else if (tpc = ECPC)
+		if (tpc = ECPC)
 		{
 			ecc += 1
 		}
