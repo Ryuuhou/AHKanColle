@@ -130,19 +130,18 @@ Repair()
 Delay:
 {
 	IniRead, Busy, config.ini, Do Not Modify, Busy, 1
-	if (Busy = 0 and BusyS = 0)
+	if DT = 0
 	{
-		if DT = 0
-		{
-			DT := 1
-			Random, SR, MinRandomWait, MaxRandomWait
-			QTS := A_TickCount
-			QTL := SR
-			SetTimer, NBUpdate, 2000
-			Sleep SR
-			goto Delay
-		}
-		else if DT = 1
+		DT := 1
+		Random, SR, MinRandomWait, MaxRandomWait
+		QTS := A_TickCount
+		QTL := SR
+		SetTimer, NBUpdate, 2000
+		Sleep SR
+		goto Delay
+	}
+	else if (Busy = 0 and BusyS = 0)
+	{	
 		{
 			goto Sortie
 		}
