@@ -483,7 +483,7 @@ SSBF:
 
 NBUpdate:
 {
-	if DT = 0 then
+	if DT = 0
 	{
 		ts := Round((TCS + SortieInterval - A_TickCount)/60000,2)
 		GuiControl,, NB, Idle - Restarting in %ts% minutes

@@ -48,12 +48,12 @@ WaitForPixelColor(x, y, pc, cx := -1, cy := -1, timeout := 60)
 	{
 		Sleep 500
 		tpc := PixelGetColorS(x,y,3)
-		For A, value in pc
+		For k,v in pc
 		{
-			if (tpc = pc[A])
+			if (tpc = v)
 			{
 				Sleep 500
-				return A
+				return k
 			}
 		}
 		if (tpc = ECPC)
