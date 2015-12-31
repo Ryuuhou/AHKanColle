@@ -100,14 +100,17 @@ IsExpedWithinRange( d, lc, uc)
 	return d
 }
 
-GetRemainingTime(n, n2) 
+GetRemainingTime(n, n2, b := 0) 
 {	
 	global
 	local i := n+n2-A_TickCount
-	if (i < 60000 and Busy = 0)
+	if b = 1
 	{
-		IniWrite,1,config.ini,Do Not Modify,Busy
-		Busy := 1
+		if (i < 60000 and Busy = 0)
+		{
+			IniWrite,1,config.ini,Do Not Modify,Busy
+			Busy := 1
+		}
 	}
 	return i
 }

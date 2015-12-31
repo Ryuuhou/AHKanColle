@@ -737,22 +737,22 @@ Refresh:
 {
 	if CDT[1] = 1
 	{
-		tSS := MS2HMS(GetRemainingTime(QTS,QTL))
+		tSS := MS2HMS(GetRemainingTime(QTS,QTL,1))
 		GuiControl,, NB, Expedition returning - %tSS%
 	}
 	if CDT[2] = 1 
 	{
-		tSS := MS2HMS(GetRemainingTime(TCS[2],TCL[2]))
+		tSS := MS2HMS(GetRemainingTime(TCS[2],TCL[2],1))
 		GuiControl,, T2, %tSS%
 	}	
 	if CDT[3] = 1 
 	{
-		tSS := MS2HMS(GetRemainingTime(TCS[3],TCL[3]))
+		tSS := MS2HMS(GetRemainingTime(TCS[3],TCL[3],1))
 		GuiControl,, T3, %tSS%
 	}	
 	if CDT[4] = 1 
 	{
-		tSS := MS2HMS(GetRemainingTime(TCS[4],TCL[4]))
+		tSS := MS2HMS(GetRemainingTime(TCS[4],TCL[4],1))
 		GuiControl,, T4, %tSS%
 	}
 	return
