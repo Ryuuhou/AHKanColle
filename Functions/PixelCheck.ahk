@@ -1,4 +1,4 @@
-﻿;PixelCheck v1.04 10/13/15
+﻿;PixelCheck v1.51230
 
 DEC2HEX(DEC, RARGB="false") 
 {

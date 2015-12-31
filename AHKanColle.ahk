@@ -1,4 +1,4 @@
-﻿;AHKanColle v1.098r2 11/26/15
+﻿;AHKanColle v1.51230
 
 if not A_IsAdmin
 {

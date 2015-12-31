@@ -1,4 +1,4 @@
-﻿;TimerUtils v1.021 6/1/15
+﻿;TimerUtils v1.51230
 
 ParseTime(ss)
 {
