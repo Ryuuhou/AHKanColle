@@ -88,14 +88,14 @@ if PSS = 1
 	CCy := FY - 324
     CM := 1
 	tpc := 0
-	Gui, 1: New
-	Gui, 1: Default
+	Gui, 1:New
+	Gui, 1:Default
 	Gui, Add, Edit, r1 w20 vNB ReadOnly
 	GuiControl, Move, NB, w100
 	Gui, Show, Autosize
 	Loop
 	{
-		tpc := PixelGetColorS(CCx,CCy)
+		PixelGetColorS(FX,FY)
 		Sleep 100
 	}
 }
@@ -117,9 +117,9 @@ PixelGetColorS(x,y)
 	if not LastPixel = pHEX
 	{
 		LastPixel := pHEX
+		GuiControl,, NB, %pHEX%
 		FileAppend, %pHEX% `n, %A_ScriptDir%/PixelTest.txt	
 	}
-	GuiControl,, NB, %pHEX%
 	Gdip_DisposeImage(pBitmap)
 	Gdip_Shutdown(pToken)
 	return pHEX

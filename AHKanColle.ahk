@@ -1,4 +1,4 @@
-﻿;AHKanColle v1.098r2 11/26/15
+﻿;AHKanColle v1.51230
 
 if not A_IsAdmin
 {
@@ -191,16 +191,22 @@ Queue:
 	if (tpc = HPC)
 	{
 		ClickS(Rx,Ry)
-		WaitForPixelColor(FX,FY,RPC)
+		pc := []
+		pc := [RPC]
+		WaitForPixelColor(FX,FY,pc)
 	}
 	if (tpc != HEPC)
 	{
 		ClickS(Hx,Hy)
 	}
-	tpc := WaitForPixelColor(FX,FY,HPC,HEPC,,,,900)
+	pc := []
+	pc := [HPC,HEPC]
+	tpc := WaitForPixelColor(FX,FY,pc,,,900)
 	if tpc = 2
 	{
-		WaitForPixelColor(FX,FY,HPC,,,ESx,ESy,120)
+		pc := []
+		pc := [HPC]
+		WaitForPixelColor(FX,FY,pc,ESx,ESy,120)
 	}
 	else if tpc = 0
 	{
@@ -257,10 +263,14 @@ Resupply(r)
 	else if (tpc != RPC) 
     {
         ClickS(Hx,Hy)
-        WaitForPixelColor(FX,FY,HPC)
+		pc := []
+		pc := [HPC]
+        WaitForPixelColor(FX,FY,pc)
         ClickS(Rx,Ry)
     }
-	WaitForPixelColor(FX,FY,RPC)
+	pc := []
+	pc := [RPC]
+	WaitForPixelColor(FX,FY,pc)
 	GuiControl,, NB, Resupplying expedition %r%
     if r = 2
 	{
@@ -283,7 +293,9 @@ Resupply(r)
 		Sleep 1
 	}Until rti > 5
 	ClickS(ESx,ESy)
-	WaitForPixelColor(FX,FY,RPC)
+	pc := []
+	pc := [RPC]
+	WaitForPixelColor(FX,FY,pc)
 }
     
 SendExp(n)
@@ -301,12 +313,18 @@ SendExp(n)
 			if (tpc != HPC)
 			{
 				ClickS(Hx,Hy)
-				WaitForPixelColor(FX,FY,HPC)
+				pc := []
+				pc := [HPC]
+				WaitForPixelColor(FX,FY,pc)
 			}
 			ClickS(Sx,Sy)
-            WaitForPixelColor(FX,FY,SPC)
+			pc := []
+			pc := [SPC]
+            WaitForPixelColor(FX,FY,pc)
             ClickS(Ex,Ey)
-            WaitForPixelColor(FX,FY,EPC)	
+			pc := []
+			pc := [EPC]
+            WaitForPixelColor(FX,FY,pc)	
 		}
 		GuiControl,, NB, Sending expedition %n%
         if td >  32
@@ -349,7 +367,9 @@ SendExp(n)
 			Sleep MiscDelay
 			ClickS(ESx,ESy)
 		}
-		WaitForPixelColor(FX,FY,EPC)
+		pc := []
+		pc := [EPC]
+		WaitForPixelColor(FX,FY,pc)
         if n = 2
         {
             ta := (ET[SetExped[2]]+ClockDelay)*-1
@@ -717,22 +737,22 @@ Refresh:
 {
 	if CDT[1] = 1
 	{
-		tSS := MS2HMS(GetRemainingTime(QTS,QTL))
+		tSS := MS2HMS(GetRemainingTime(QTS,QTL,1))
 		GuiControl,, NB, Expedition returning - %tSS%
 	}
 	if CDT[2] = 1 
 	{
-		tSS := MS2HMS(GetRemainingTime(TCS[2],TCL[2]))
+		tSS := MS2HMS(GetRemainingTime(TCS[2],TCL[2],1))
 		GuiControl,, T2, %tSS%
 	}	
 	if CDT[3] = 1 
 	{
-		tSS := MS2HMS(GetRemainingTime(TCS[3],TCL[3]))
+		tSS := MS2HMS(GetRemainingTime(TCS[3],TCL[3],1))
 		GuiControl,, T3, %tSS%
 	}	
 	if CDT[4] = 1 
 	{
-		tSS := MS2HMS(GetRemainingTime(TCS[4],TCL[4]))
+		tSS := MS2HMS(GetRemainingTime(TCS[4],TCL[4],1))
 		GuiControl,, T4, %tSS%
 	}
 	return
@@ -763,6 +783,7 @@ Initialize()
 	CDT := Array(item)
     Q := Array()
 	S := Array(item)
+	pc := Array(item)
 	S[2] := 0
 	S[3] := 0
 	S[4] := 0

@@ -1,4 +1,4 @@
-﻿;PixelMap v1.00 11/26/15
+﻿;PixelMap v1.51230
 
 
 PixelMap()
@@ -42,17 +42,22 @@ PixelMap()
 		Eh[i+32] := th
 		i += 1
 	}Until i = 9
+	SPGx[1]	:= FX - 225
 	SPGx[3] := FX - 71
 	SPGx[5] := FX + 75
 	PGy := FY - 20
 	REx := FX - 255
 	REy := FY - 97
+	MAPx[1] := FX - 100
+	MAPy[1] := FY - 251
 	MAPx[2] := FX + 252
 	MAPy[2] := FY - 247
 	MAPx[4] := FX + 252
 	MAPy[4] := FY - 100
 	LAx := FX + 69
 	LAy := FY - 275
+	CSBx := FX - 86
+	CSBy := FY - 221
 	ESBx := FX + 130
 	ESBy := FY - 221
 	CNBx := FX - 88

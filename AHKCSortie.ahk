@@ -1,4 +1,4 @@
-﻿;AHKCSortie v1.063r2 11/26/15
+﻿;AHKCSortie v1.51230
 
 #Persistent
 #SingleInstance
@@ -27,6 +27,7 @@ BC := 0
 BusyS := 0
 TR := 0
 DT := 0
+Nodes := 1
 
 IniRead, TWinX, config.ini, Variables, LastXS, 0
 IniRead, TWinY, config.ini, Variables, LastYS, 0
@@ -53,6 +54,10 @@ GuiControl, Move, MapV, x62 h17 w15
 Gui, Add, Text, ym, Interval(ms):
 Gui, Add, Edit, gIntervalF r2 w15 vIntervalV -VScroll ym, %SortieInterval%
 GuiControl, Move, IntervalV, h17 w70
+Gui, Add, Text, vText, #Nodes
+GuiControl, Move, Text, x150 y35
+Gui, Add, Edit, gNodeCount r2 limit3 w10 vNodeCount -VScroll ym, %Nodes%
+GuiControl, Move, NodeCount, x195 y33 h17 w25
 Gui, Add, Button, gSSBF vSSB, A
 GuiControl, Move, SSB, x250 w60 ym
 GuiControl,,SSB, Start
@@ -80,11 +85,15 @@ Repair()
 	{
 		ClickS(Hx,Hy)
 		GuiControl,, NB, Waiting for home screen
-		WaitForPixelColor(FX,FY,HPC,HEPC)	
+		pc := []
+		pc := [HPC,HEPC]
+		WaitForPixelColor(FX,FY,pc)	
 	}
 	ClickS(REx,REy)
 	GuiControl,, NB, Waiting for repair screen
-	WaitForPixelColor(FX,FY,REPC)
+	pc := []
+	pc := [REPC]
+	WaitForPixelColor(FX,FY,pc)
 	Sleep MiscDelay
 	Loop
 	{
@@ -105,7 +114,9 @@ Repair()
 			ClickS(ESx,ESy)
 			Sleep 500
 			ClickS(BCx,BCy)	
-			WaitForPixelColor(FX,FY,REPC)
+			pc := []
+			pc := [REPC]
+			WaitForPixelColor(FX,FY,pc)
 			Sleep 9000			
 		}
 		else
@@ -118,19 +129,29 @@ Repair()
 
 Delay:
 {
-	if (Busy != 1 and BusyS != 1)
+	IniRead, Busy, config.ini, Do Not Modify, Busy, 1
+	if DT = 0
 	{
 		DT := 1
 		Random, SR, MinRandomWait, MaxRandomWait
 		QTS := A_TickCount
 		QTL := SR
-		goto Sortie
+		SetTimer, NBUpdate, 2000
+		Sleep SR
+		goto Delay
+	}
+	else if (Busy = 0 and BusyS = 0)
+	{	
+		{
+			goto Sortie
+		}
 	}
 	else
 	{
 		if (Busy = 1 and BusyS = 0)
 		{
 			GuiControl,, NB, An expedition is returning, retrying every 10 seconds
+			SetTimer, NBUpdate, Off
 		}
 		SetTimer, Delay, 10000
 	}
@@ -140,7 +161,6 @@ Delay:
 Sortie:
 {
 	SetTimer, NBUpdate, Off
-	IniRead, Busy, config.ini, Do Not Modify, Busy, KanColleViewer!
 	SetTimer, Delay, Off
 	BusyS := 1
 	DT := 0
@@ -160,14 +180,20 @@ Sortie:
 	{
 		ClickS(Hx,Hy)
 		GuiControl,, NB, Waiting for home screen
-		WaitForPixelColor(FX,FY,HPC)
+		pc := []
+		pc := [HPC]
+		WaitForPixelColor(FX,FY,pc)
 	}
 	ClickS(Sx,Sy)
 	GuiControl,, NB, Waiting for sortie screen
-    WaitForPixelColor(FX,FY,SPC)
+	pc := []
+	pc := [SPC]
+    WaitForPixelColor(FX,FY,pc)
 	ClickS(S2x,S2y)
 	GuiControl,, NB, Waiting for sortie selection screen
-	WaitForPixelColor(FX,FY,S2PC)
+	pc := []
+	pc := [S2PC]
+	WaitForPixelColor(FX,FY,pc)
 	tf := SPGx[World]
 	ClickS(tf,PGy)
 	GuiControl,, NB, Starting sortie
@@ -185,31 +211,72 @@ Sortie:
 		TR := 1
 		TCS := A_TickCount
 	}
-	GuiControl,, NB, Waiting for compass
-	WaitForPixelColor(LAx,LAy,CPC)
-	Sleep MiscDelay
-	ClickS(ESx,ESy)
-	GuiControl,, NB, Waiting for formation
-	tpc2 := WaitForPixelColor(LAx,LAy,FPC)
-	if tpc2 := 0
+	NC := 1
+	Loop
 	{
-		Pause
-	}
-	Sleep MiscDelay
-	ClickS(LAx,LAy)
-	GuiControl,, NB, Waiting for results
-	tpc2 := WaitForPixelColor(FX,FY,SRPC,NBPC,,,,300000)
-	if tpc2 = 2
-	{
-		Sleep 3000
-		ClickS(CNBx,CNBy)
-	}
-	else if tpc2 = 0
-	{
-		Pause
-	}
+		GuiControl,, NB, Waiting for compass/formation
+		pc := []
+		pc := [CPC,FPC,IBPC]
+		tpc := WaitForPixelColor(LAx,LAy,pc,,,30)
+		Sleep MiscDelay
+		if tpc = 1
+		{
+			ClickS(ESx,ESy)
+			GuiControl,, NB, Waiting for formation
+			pc := []
+			pc := [FPC,IBPC]
+			tpc2 := WaitForPixelColor(LAx,LAy,pc)
+			if tpc2 = 1
+			{
+				Sleep MiscDelay
+				ClickS(LAx,LAy)
+			}
+		}
+		else if tpc = 2 
+		{
+			ClickS(LAx,LAy)	
+		}
+		GuiControl,, NB, Waiting for results
+		pc := []
+		pc := [SRPC,NBPC]
+		WaitForPixelColor(FX,FY,pc,,,250)
+		Sleep 5000
+		tpc := WaitForPixelColor(FX,FY,pc)
+		if tpc = 2
+		{
+			GuiControl,, NB, Cancelling night battle
+			Sleep 3000
+			ClickS(CNBx,CNBy)
+		}
+		GuiControl,, NB, Waiting...
+		pc := []
+		pc := [HPC,HEPC,CSPC]
+		tpc := WaitForPixelColor(FX,FY,pc,FX,FY)
+		if tpc = 1 or tpc = 2
+		{
+			Break
+		}
+		else if tpc = 3
+		{
+			GuiControl,, NB, Continue screen
+			Sleep 2000
+			if (NC = Nodes)
+			{
+				GuiControl,, NB, Ending sortie
+				ClickS(ESBx,ESBy)
+			}
+			else
+			{
+				GuiControl,, NB, Continuing Sortie
+				ClickS(CSBx,CSBy)
+			}
+		}
+		NC += 1
+	}Until NC > Nodes
 	GuiControl,, NB, Waiting for home screen
-	WaitForPixelColor(FX,FY,HPC,HEPC,,ESBx,ESBy)
+	pc := []
+	pc := [HPC,HEPC]
+	WaitForPixelColor(FX,FY,pc,ESBx,ESBy)
 	GuiControl,, NB, Idle
 	BusyS := 0
 	GuiControl, Show, SSB
@@ -234,10 +301,14 @@ Resupply(r)
 	else if (tpc != RPC) 
     {
         ClickS(Hx,Hy)
-        WaitForPixelColor(FX,FY,HPC)
+		pc := []
+		pc := [HPC]
+        WaitForPixelColor(FX,FY,pc)
         ClickS(Rx,Ry)
     }
-	WaitForPixelColor(FX,FY,RPC)
+	pc := []
+	pc := [RPC]
+	WaitForPixelColor(FX,FY,pc)
 	GuiControl,, NB, Resupplying fleet %r%
     Sleep MiscDelay
 	rti := 0
@@ -248,7 +319,9 @@ Resupply(r)
 		Sleep 1
 	}Until rti > 5
 	ClickS(ESx,ESy)
-	WaitForPixelColor(FX,FY,RPC)
+	pc := []
+	pc := [RPC]
+	WaitForPixelColor(FX,FY,pc)
 	return
 }
 
@@ -260,7 +333,7 @@ WorldF:
 		StringReplace, WorldV, WorldV, `n,,All
 		GuiControl,, WorldV, %WorldV%
 		Send, {end}
-		if (WorldV = 3 or WorldV=5)
+		if (WorldV=1 or WorldV=3 or WorldV=5)
 		{
 			World := WorldV
 			GuiControl,, NB, World set
@@ -282,7 +355,7 @@ MapF:
 		StringReplace, MapV, MapV, `n,,All
 		GuiControl,, MapV, %MapV%
 		Send, {end}
-		if (MapV = 2 or MapV=4)
+		if (MapV=1 or MapV=2 or MapV=4)
 		{
 			Map := MapV
 			GuiControl,, NB, Map # set
@@ -291,6 +364,31 @@ MapF:
 		else
 		{
 			GuiControl,, NB, Unsupported map #
+		}
+	}
+	return
+}
+
+NodeCount:
+{
+	Gui, submit,nohide
+	if NodeCount contains `n
+	{
+		StringReplace, NodeCount, NodeCount, `n,,All
+		GuiControl,, NodeCount, %NodeCount%
+		Send, {end}
+		if (NodeCount > 0 and NodeCount < 4)
+		{
+			Nodes := NodeCount
+			if Nodes > 1
+			{
+				MsgBox WARNING: Script will continue past first node and will NOT check for critical damage. You risk sinking any girl that is not flagship.
+			}
+			GuiControl,, NB, # of nodes set
+		}
+		else
+		{
+			GuiControl,, NB, Invalid entry, must be within 1 and 3
 		}
 	}
 	return
@@ -371,20 +469,21 @@ MaW:
 
 SSBF:
 {
-	if Map < 1 or World < 1
+	if (Map < 1 or World < 1)
 	{
 		MsgBox Map or world invalid. Press enter after each field to submit.
 		return
 	}
 	GuiControl, Hide, SSB
 	BP := 1
+	DT := 1
 	goto Delay
 	return
 }
 
 NBUpdate:
 {
-	if DT = 0 then
+	if DT = 0
 	{
 		ts := Round((TCS + SortieInterval - A_TickCount)/60000,2)
 		GuiControl,, NB, Idle - Restarting in %ts% minutes
@@ -417,7 +516,9 @@ Initialize()
 	SPGx := Array(item)
 	MAPx := Array(item)
 	MAPy := Array(item)
+	pc := Array(item)
     Q := Array()
+	NC := 0
 }
 
 GuiClose:
