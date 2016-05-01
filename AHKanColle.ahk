@@ -1,4 +1,4 @@
-﻿;AHKanColle v1.51230
+﻿;AHKanColle v1.60501
 
 if not A_IsAdmin
 {
@@ -801,6 +801,7 @@ Initialize()
 	CDT[4] := 0
     RF := 0
 	IB := 0
+	coffset := 2
 	#Include %A_ScriptDir%/Constants/ExpeditionTime.ahk
 }
 
