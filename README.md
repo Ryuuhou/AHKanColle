@@ -4,7 +4,7 @@ AHKanColle (Click script for KanColle expeditions)
 
 by Ryuuhou
 
-README 12/30/15
+README 6/9/16
 
 ```
 >scripting
@@ -25,6 +25,7 @@ THIS SCRIPT IS ONLY TESTED AND MAINTAINED ON WIN8.1 AND WIN10. I may be unable t
 * Easy to use GUI with changeable settings
 * Error Cat detection (script will be paused)
 * Can be set up to pause/resume at a certain time
+* All clicks have randomness to avoid click tracking
 
 ## How to use: AHKanColle
 Set which expedition each fleet will run, press ENTER to submit.  
@@ -35,6 +36,8 @@ Enter a remaining time if it is currently already on an expedition. The followin
 If it is not on an expedition, use 0 to resupply and send after pushing the button "Send Expeditions."
 
 Use a remaining time of -1 to disable scripting for that fleet.
+
+Do not leave the fields blank.
 
 Enter a MinWait and MaxWait in MILLISECONDS. The script will wait a random amount of time between these two numbers after an expedition comes back.
 
@@ -59,7 +62,7 @@ Use ResumeHr and ResumeMn to have the script resume at a specific time. Can be o
 
 ## How to use: AHKCSortie
 
-Sortie script that should be used along with AHKanColle. GUI is pretty self explanatory.  Set the map you would like to script (only does the first node), set an interval if you would like it to automatically send again, and press start.
+Sortie script that should be used along with AHKanColle. GUI is pretty self explanatory.  Set the map you would like to script, set an interval if you would like it to automatically send again, and press start.
 Currently, world 1, 3 and 5, maps 1, 2 and 4, are supported though only 1-1 (sparkling), 3-2 and 5-4 are recommended.  The script will check for critically damaged ships and resupply before each sortie. For sparkling, set #Nodes to 2 so the script continues to the next battle.
 
 Some recommended intervals:
@@ -71,8 +74,8 @@ Some recommended intervals:
 
 ## FAQ:
 
-#### Why does the script stop working after my computer idles/goes to screensaver?
-Do NOT use hardware acceleration on your browsers or use "Direct/GPU" on KCV unless your computer is set to never idle.  When the computer idles, hardware acceleration is turned off and flash no longer renders.
+#### The script gets stuck at "Waiting for homescreen..." or after hiding the UI, how do I fix this?
+Do NOT use hardware acceleration on your browsers (KC Kai) or use "Direct/GPU" on KCV.
 
 #### Why does the script take focus when it supposedly works in background?
 Although this script was designed to work in background, certain applications may lose focus while scripting.
@@ -88,10 +91,16 @@ You may play when the script is idle. Playing while the script is running may le
 
 #### Why is the script having issues clicking on my viewer?
 If you are able to get the class name of the game frame (using Window Spy), you can specify a class name in config.ini.
-For ElectronicObserver, Class=Internet Explorer_Server1
+For ElectronicObserver, Class=Internet Explorer_Server1 (shown below)
+```
+[Variables]
+WINID=ahk_exe ElectronicObserver.exe
+Class=Internet Explorer_Server1
+```
 Another option is to disable background clicking in the config.ini. See the bottom for a full list of config.ini settings.
 
 ##Config.ini
+Many of these variables are OPTIONAL and will have default values, only WINID is mandatory. See "How to use: AHKanColle" for proper WINID format.
 ```
 [Variables]
 WINID=KanColleViewer!
