@@ -1,4 +1,4 @@
-﻿;AHKCSortie v1.51230
+﻿;AHKCSortie v1.60726
 
 #Persistent
 #SingleInstance
@@ -519,6 +519,7 @@ Initialize()
 	pc := Array(item)
     Q := Array()
 	NC := 0
+	coffset := 2
 }
 
 GuiClose:
