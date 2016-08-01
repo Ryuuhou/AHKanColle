@@ -1,4 +1,4 @@
-﻿;AHKanColle v1.60501
+﻿;AHKanColle v1.60801
 
 if not A_IsAdmin
 {
@@ -45,6 +45,8 @@ if Background = 0
 	StayAwake()
 }
 SpecificWindows()
+IniRead, NotificationLevel, config.ini, Variables, NotificationLevel, 1
+Notify("AHKanColle", "Notifications enabled, disable in config with NotificationLevel=0",1)
 IniRead, TWinX, config.ini, Variables, LastX, 0
 IniRead, TWinY, config.ini, Variables, LastY, 0
 IniRead, World, config.ini, Variables, World, 0
@@ -114,10 +116,13 @@ return
 		QTS := A_TickCount
 		QTL := SR
 		CDT[1] := 1
-		return
-    }
+	}
     else
+	{
         RF := 1
+    }
+	tSS := MS2HMS(GetRemainingTime(QTS,QTL,1))
+	Notify("AHKanColle", "Expedition 2 returning in " . tSS,1)
     return
 }
 
@@ -137,11 +142,14 @@ return
 		QTS := A_TickCount
 		QTL := SR
 		CDT[1] := 1
-		return
-    }
+	}
     else
+	{
         RF := 1
-    return
+    }
+	tSS := MS2HMS(GetRemainingTime(QTS,QTL,1))
+	Notify("AHKanColle", "Expedition 3 returning in " . tSS,1)
+	return
 }
 
 4Return:
@@ -160,10 +168,13 @@ return
 		QTS := A_TickCount
 		QTL := SR
 		CDT[1] := 1
-		return
     }
     else
+	{
         RF := 1
+    }
+	tSS := MS2HMS(GetRemainingTime(QTS,QTL,1))
+	Notify("AHKanColle", "Expedition 3 returning in " . tSS,1)
     return
 }
 
@@ -190,6 +201,7 @@ Queue:
 	tpc := PixelGetColorS(FX,FY,3)
 	if (tpc = HPC)
 	{
+		GuiControl,, NB, Detected home screen
 		ClickS(Rx,Ry)
 		pc := []
 		pc := [RPC]
@@ -204,6 +216,7 @@ Queue:
 	tpc := WaitForPixelColor(FX,FY,pc,,,900)
 	if tpc = 2
 	{
+		GuiControl,, NB, Detected expeditions returning, waiting for animations
 		pc := []
 		pc := [HPC]
 		WaitForPixelColor(FX,FY,pc,ESx,ESy,120)
@@ -239,6 +252,7 @@ Queue:
             return
         }
     }Until Q.MaxIndex() = ""
+	Notify("AHKanColle", "Expedition(s) have been sent",1)
 	GuiControl,, NB, Idle
 	if iDOL = 1 
 	{
@@ -766,7 +780,7 @@ Refresh:
 #Include %A_ScriptDir%/Functions/PixelSearch.ahk
 #Include %A_ScriptDir%/Functions/StayAwake.ahk
 #Include %A_ScriptDir%/Functions/PixelMap.ahk
-
+#Include %A_ScriptDir%/Functions/Notify.ahk
 		
 Initialize()
 {
