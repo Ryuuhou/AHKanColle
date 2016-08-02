@@ -226,8 +226,8 @@ Queue:
 		if Q.MaxIndex() > 0
 		{
 			goto Queue
+			return
 		}
-		return
 	}
 	qi := 1
     Loop
@@ -254,13 +254,13 @@ Queue:
     }Until Q.MaxIndex() = ""
 	Notify("AHKanColle", "Expedition(s) have been sent",1)
 	GuiControl,, NB, Idle
-	if iDOL = 1 
+	IniWrite,0,config.ini,Do Not Modify,Busy
+	Busy := 0
+	if (iDOL = 1)
 	{
 		ClickS(Hx,Hy)
 		GuiControl,, NB, iDOL
 	}	
-	IniWrite,0,config.ini,Do Not Modify,Busy
-	Busy := 0
     return
 }    
 

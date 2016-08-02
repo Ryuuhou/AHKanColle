@@ -141,7 +141,7 @@ Delay:
 		QTL := SR
 		SetTimer, NBUpdate, 2000
 		Sleep SR
-		tSS := MS2HMS(GetRemainingTime(QTS,QTL,1))
+		tSS := MS2HMS(GetRemainingTime(QTS,QTL))
 		Notify("AHKCSortie", "Starting sortie in " . tSS,1)
 		goto Delay
 	}
