@@ -4,7 +4,7 @@ AHKanColle (Click script for KanColle expeditions)
 
 by Ryuuhou
 
-README 6/9/16
+README 08/03/16
 
 ```
 >scripting
@@ -13,8 +13,12 @@ README 6/9/16
 
 ## Requirements: 
 
-* AHK_L (http://ahkscript.org/)
+Running from source
+* AHK (http://ahkscript.org/ or https://autohotkey.com/)
 * Gdip_All library by tic (included)
+
+Running from releases (v1.60803 or above)
+* None
 
 THIS SCRIPT IS ONLY TESTED AND MAINTAINED ON WIN8.1 AND WIN10. I may be unable to help you on any other version.
 
@@ -26,6 +30,7 @@ THIS SCRIPT IS ONLY TESTED AND MAINTAINED ON WIN8.1 AND WIN10. I may be unable t
 * Error Cat detection (script will be paused)
 * Can be set up to pause/resume at a certain time
 * All clicks have randomness to avoid click tracking
+* Uses Windows notifications
 
 ## How to use: AHKanColle
 Set which expedition each fleet will run, press ENTER to submit.  
@@ -77,6 +82,9 @@ Some recommended intervals:
 #### The script gets stuck at "Waiting for homescreen..." or after hiding the UI, how do I fix this?
 Do NOT use hardware acceleration on your browsers (KC Kai) or use "Direct/GPU" on KCV.
 
+#### The script says invalid screen even though I am sitting on the HQ screen, what is going on?
+No clue. For unknown reasons, the script sometimes starts unable to "see" the game window. Restart the script a few times, if this does not fix it, make sure the game is at High quality and 100% scale.
+
 #### Why does the script take focus when it supposedly works in background?
 Although this script was designed to work in background, certain applications may lose focus while scripting.
 
@@ -109,6 +117,8 @@ Background=1
 //Script attempts to click without losing focus from other windows. When set to 0, clicks are no longer done in background.  May fix issues with certain viewers.
 Class=0
 //When set to class name, i.e. Internet Explorer_Server1, the script will click directly on the class rather than the window.  May fix issues with certain applications. This setting is ignored if Background=0
+NotificationLevel=1
+//Uses Windows notifications to alert you of expeditions returning or sortie status.  Use a value of 0 to disable notifications.  Use a value of 2 for more detailed notifications.
 DisableCriticalCheck=0
 //When set to 1, AHKCSortie will not check for critical damage ONLY when "Start" is pressed. Sorties triggered by the interval will ALWAYS be checked.
 DisableResupply=0
