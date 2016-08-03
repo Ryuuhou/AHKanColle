@@ -1,4 +1,4 @@
-﻿;AHKCSortie v1.60726
+﻿;AHKCSortie v1.60803
 
 #Persistent
 #SingleInstance
@@ -10,6 +10,8 @@ if not A_IsAdmin
    ExitApp
 }
 CoordMode, Pixel, Relative
+Menu, Tray, Icon, %A_ScriptDir%/Icons/favicon_ahkcsortie.ico,,1
+
 IniRead, Background, config.ini, Variables, Background, 1
 IniRead, Class, config.ini, Variables, Class, 0
 
@@ -29,6 +31,7 @@ TR := 0
 DT := 0
 Nodes := 1
 
+IniRead, NotificationLevel, config.ini, Variables, NotificationLevel, 1
 IniRead, TWinX, config.ini, Variables, LastXS, 0
 IniRead, TWinY, config.ini, Variables, LastYS, 0
 SpecificWindows()
@@ -103,6 +106,7 @@ Repair()
 		tpc2 := PixelGetColorS(CCx,CCy,3)
 		if (tpc2 = CCPC)
 		{
+			Notify("AHKCSortie", "Critical HP detected, repairing",1)
 			GuiControl,, NB, Critical HP detected, repairing
 			ti := BC+1
 			Menu, Main, Rename, %BC%, %ti%
@@ -121,6 +125,7 @@ Repair()
 		}
 		else
 		{
+			Notify("AHKCSortie", "HP check completed",2)
 			GuiControl,, NB, HP check completed
 			return
 		}
@@ -138,6 +143,8 @@ Delay:
 		QTL := SR
 		SetTimer, NBUpdate, 2000
 		Sleep SR
+		tSS := MS2HMS(GetRemainingTime(QTS,QTL))
+		Notify("AHKCSortie", "Starting sortie in " . tSS,1)
 		goto Delay
 	}
 	else if (Busy = 0 and BusyS = 0)
@@ -167,6 +174,7 @@ Sortie:
 	TR := 0
 	GuiControl, Hide, SSB
 	CheckWindow()
+	Notify("AHKCSortie", "Preparing to send sortie",1)
 	if not (BP = 1 and DisableCriticalCheck = 1)
 	{
 		Repair()
@@ -205,6 +213,7 @@ Sortie:
 	ClickS(ESx,ESy)
 	Sleep MiscDelay
 	ClickS(ESx,ESy)
+	Notify("AHKCSortie", "Sortie started",1)
 	if SortieInterval != -1
 	{
 		SetTimer, Delay, %SortieInterval%
@@ -267,6 +276,7 @@ Sortie:
 			}
 			else
 			{
+				Notify("AHKCSortie", "Proceeding to next node",2)
 				GuiControl,, NB, Continuing Sortie
 				ClickS(CSBx,CSBy)
 			}
@@ -277,6 +287,7 @@ Sortie:
 	pc := []
 	pc := [HPC,HEPC]
 	WaitForPixelColor(FX,FY,pc,ESBx,ESBy)
+	Notify("AHKCSortie", "Sortie completed",1)
 	GuiControl,, NB, Idle
 	BusyS := 0
 	GuiControl, Show, SSB
@@ -508,6 +519,7 @@ DN:
 #Include %A_ScriptDir%/Functions/Window.ahk
 #Include %A_ScriptDir%/Functions/PixelSearch.ahk
 #Include %A_ScriptDir%/Functions/PixelMap.ahk
+#Include %A_ScriptDir%/Functions/Notify.ahk
 
 	
 Initialize()

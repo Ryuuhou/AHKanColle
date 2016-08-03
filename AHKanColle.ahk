@@ -1,4 +1,4 @@
-﻿;AHKanColle v1.60501
+﻿;AHKanColle v1.60803
 
 if not A_IsAdmin
 {
@@ -9,6 +9,7 @@ if not A_IsAdmin
 #SingleInstance
 #Include %A_ScriptDir%/Functions/Gdip_All.ahk ;Thanks to tic (Tariq Porter) for his GDI+ Library => ahkscript.org/boards/viewtopic.php?t=6517
 CoordMode, Pixel, Relative
+Menu, Tray, Icon, %A_ScriptDir%/Icons/favicon_ahkancolle.ico,,1
 
 IniRead, Background, config.ini, Variables, Background, 1
 IniRead, Class, config.ini, Variables, Class, 0
@@ -45,6 +46,8 @@ if Background = 0
 	StayAwake()
 }
 SpecificWindows()
+IniRead, NotificationLevel, config.ini, Variables, NotificationLevel, 1
+Notify("AHKanColle", "Notifications enabled, disable in config with NotificationLevel=0",1)
 IniRead, TWinX, config.ini, Variables, LastX, 0
 IniRead, TWinY, config.ini, Variables, LastY, 0
 IniRead, World, config.ini, Variables, World, 0
@@ -114,10 +117,13 @@ return
 		QTS := A_TickCount
 		QTL := SR
 		CDT[1] := 1
-		return
-    }
+	}
     else
+	{
         RF := 1
+    }
+	tSS := MS2HMS(GetRemainingTime(QTS,QTL,1))
+	Notify("AHKanColle", "Expedition 2 returning in " . tSS,1)
     return
 }
 
@@ -137,11 +143,14 @@ return
 		QTS := A_TickCount
 		QTL := SR
 		CDT[1] := 1
-		return
-    }
+	}
     else
+	{
         RF := 1
-    return
+    }
+	tSS := MS2HMS(GetRemainingTime(QTS,QTL,1))
+	Notify("AHKanColle", "Expedition 3 returning in " . tSS,1)
+	return
 }
 
 4Return:
@@ -160,10 +169,13 @@ return
 		QTS := A_TickCount
 		QTL := SR
 		CDT[1] := 1
-		return
     }
     else
+	{
         RF := 1
+    }
+	tSS := MS2HMS(GetRemainingTime(QTS,QTL,1))
+	Notify("AHKanColle", "Expedition 3 returning in " . tSS,1)
     return
 }
 
@@ -190,6 +202,7 @@ Queue:
 	tpc := PixelGetColorS(FX,FY,3)
 	if (tpc = HPC)
 	{
+		GuiControl,, NB, Detected home screen
 		ClickS(Rx,Ry)
 		pc := []
 		pc := [RPC]
@@ -204,6 +217,7 @@ Queue:
 	tpc := WaitForPixelColor(FX,FY,pc,,,900)
 	if tpc = 2
 	{
+		GuiControl,, NB, Detected expeditions returning, waiting for animations
 		pc := []
 		pc := [HPC]
 		WaitForPixelColor(FX,FY,pc,ESx,ESy,120)
@@ -213,8 +227,8 @@ Queue:
 		if Q.MaxIndex() > 0
 		{
 			goto Queue
+			return
 		}
-		return
 	}
 	qi := 1
     Loop
@@ -239,14 +253,15 @@ Queue:
             return
         }
     }Until Q.MaxIndex() = ""
+	Notify("AHKanColle", "Expedition(s) have been sent",1)
 	GuiControl,, NB, Idle
-	if iDOL = 1 
+	IniWrite,0,config.ini,Do Not Modify,Busy
+	Busy := 0
+	if (iDOL = 1)
 	{
 		ClickS(Hx,Hy)
 		GuiControl,, NB, iDOL
 	}	
-	IniWrite,0,config.ini,Do Not Modify,Busy
-	Busy := 0
     return
 }    
 
@@ -766,7 +781,7 @@ Refresh:
 #Include %A_ScriptDir%/Functions/PixelSearch.ahk
 #Include %A_ScriptDir%/Functions/StayAwake.ahk
 #Include %A_ScriptDir%/Functions/PixelMap.ahk
-
+#Include %A_ScriptDir%/Functions/Notify.ahk
 		
 Initialize()
 {
@@ -812,31 +827,3 @@ GuiClose:
 	IniWrite,%TWinY%,config.ini,Variables,LastY
 	ExitApp 
 }
-
-;To-do list
-
-
-;ChangeLog
-;1.093: Added integration with sortie script.  Delays can now be overidden using the start expedition button.
-;1.09: Script can now be opened when window is not open or on an invalid screen.
-;1.08: Now accepts 02:02:02 timer input format.  Old format also accepted.
-;1.07: Fixed script interaction with timing out waiting for home screen. Added check for change in window size.
-;1.06: Added multi pixel checking to further reduce bugging. Addition of SysInternal for future suspend option.
-;1.05: Fixed repeat resupply/sending. Adjusted pixel check delay. Script now exits when GUI is closed.
-;1.04: Added short delay to allow window activation, fixed starting script on expedition return. Removal of archaic variables.
-;1.03: Image no longer required, script can now be started on most pages of the game. Fixed a pixel check after sending expeditions that may bug iDOL and sending multiple expeds.
-;1.0: Stable (?) Release
-;0.98a: (ALPHA) Highly untested background pixel checking. Expect problems #BLAZEIT
-;0.97: Adjusted delays
-;0.95: Added support for INI file for saved values, repositioned GUI controls
-;0.92: Improved GUI, Added countdown timer and notification bar
-;0.91: Fixed all remaining times updating when pressing enter.
-;0.9: GUI Interface
-;0.8: Added a new detection method of overlapping returning fleets. Added support for expedition 32. Reformatted and simplified configuration instructions.
-;0.7: Bugfixes, reduce bug rate of overlapping.
-;0.6: Added text syntax for remaining time. Retimed constant delays. Revised delay variables for better configuration.
-;0.5: Bugfixes.
-;0.4: Early stage support for overlapping expeditions.
-;0.1: Simple timer script created.
-
-
