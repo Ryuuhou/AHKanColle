@@ -1,4 +1,4 @@
-﻿;AHKanColle v1.60801
+﻿;AHKanColle v1.60803
 
 if not A_IsAdmin
 {
@@ -9,6 +9,7 @@ if not A_IsAdmin
 #SingleInstance
 #Include %A_ScriptDir%/Functions/Gdip_All.ahk ;Thanks to tic (Tariq Porter) for his GDI+ Library => ahkscript.org/boards/viewtopic.php?t=6517
 CoordMode, Pixel, Relative
+Menu, Tray, Icon, favicon_ahkancolle.ico,,1
 
 IniRead, Background, config.ini, Variables, Background, 1
 IniRead, Class, config.ini, Variables, Class, 0
@@ -826,31 +827,3 @@ GuiClose:
 	IniWrite,%TWinY%,config.ini,Variables,LastY
 	ExitApp 
 }
-
-;To-do list
-
-
-;ChangeLog
-;1.093: Added integration with sortie script.  Delays can now be overidden using the start expedition button.
-;1.09: Script can now be opened when window is not open or on an invalid screen.
-;1.08: Now accepts 02:02:02 timer input format.  Old format also accepted.
-;1.07: Fixed script interaction with timing out waiting for home screen. Added check for change in window size.
-;1.06: Added multi pixel checking to further reduce bugging. Addition of SysInternal for future suspend option.
-;1.05: Fixed repeat resupply/sending. Adjusted pixel check delay. Script now exits when GUI is closed.
-;1.04: Added short delay to allow window activation, fixed starting script on expedition return. Removal of archaic variables.
-;1.03: Image no longer required, script can now be started on most pages of the game. Fixed a pixel check after sending expeditions that may bug iDOL and sending multiple expeds.
-;1.0: Stable (?) Release
-;0.98a: (ALPHA) Highly untested background pixel checking. Expect problems #BLAZEIT
-;0.97: Adjusted delays
-;0.95: Added support for INI file for saved values, repositioned GUI controls
-;0.92: Improved GUI, Added countdown timer and notification bar
-;0.91: Fixed all remaining times updating when pressing enter.
-;0.9: GUI Interface
-;0.8: Added a new detection method of overlapping returning fleets. Added support for expedition 32. Reformatted and simplified configuration instructions.
-;0.7: Bugfixes, reduce bug rate of overlapping.
-;0.6: Added text syntax for remaining time. Retimed constant delays. Revised delay variables for better configuration.
-;0.5: Bugfixes.
-;0.4: Early stage support for overlapping expeditions.
-;0.1: Simple timer script created.
-
-

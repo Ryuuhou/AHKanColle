@@ -1,4 +1,4 @@
-﻿;AHKCSortie v1.60801
+﻿;AHKCSortie v1.60803
 
 #Persistent
 #SingleInstance
@@ -10,6 +10,8 @@ if not A_IsAdmin
    ExitApp
 }
 CoordMode, Pixel, Relative
+Menu, Tray, Icon, favicon_ahkcsortie.ico,,1
+
 IniRead, Background, config.ini, Variables, Background, 1
 IniRead, Class, config.ini, Variables, Class, 0
 
