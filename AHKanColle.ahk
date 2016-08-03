@@ -9,7 +9,7 @@ if not A_IsAdmin
 #SingleInstance
 #Include %A_ScriptDir%/Functions/Gdip_All.ahk ;Thanks to tic (Tariq Porter) for his GDI+ Library => ahkscript.org/boards/viewtopic.php?t=6517
 CoordMode, Pixel, Relative
-Menu, Tray, Icon, favicon_ahkancolle.ico,,1
+Menu, Tray, Icon, %A_ScriptDir%/Icons/favicon_ahkancolle.ico,,1
 
 IniRead, Background, config.ini, Variables, Background, 1
 IniRead, Class, config.ini, Variables, Class, 0
