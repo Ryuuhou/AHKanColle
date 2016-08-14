@@ -1,4 +1,4 @@
-﻿;AHKCSortie v1.60813
+﻿;AHKCSortie v1.60814
 
 #Persistent
 #SingleInstance
@@ -38,6 +38,7 @@ SpecificWindows()
 IniRead, World, config.ini, Variables, World, %A_Space%
 IniRead, Map, config.ini, Variables, Map, %A_Space%
 IniRead, DisableCriticalCheck, config.ini, Variables, DisableCriticalCheck, 0
+IniRead, Sparkling, config.ini, Variables, Sparkling, 0
 IniRead, DisableResupply, config.ini, Variables, DisableResupply, 0
 IniRead, SortieInterval, config.ini, Variables, SortieInterval, -1 ;900000 for full morale
 IniRead, MinRandomWait, config.ini, Variables, MinRandomWaitS, 0
@@ -177,7 +178,10 @@ Sortie:
 	Notify("AHKCSortie", "Preparing to send sortie",1)
 	if not (BP = 1 and DisableCriticalCheck = 1)
 	{
-		Repair()
+		if not (World = 1 and Map = 1 and Sparkling = 1)
+		{
+			Repair()
+		}
 	}
 	if not (BP = 1 and DisableResupply = 1)
 	{
@@ -326,6 +330,10 @@ Resupply(r)
 	Loop
 	{
 		ClickS(SAx,SAy+50*rti)
+		if (World = 1 and Map = 1 and Sparkling = 1)
+		{
+			Break
+		}
 		rti := rti+1
 		Sleep 1
 	}Until rti > 5
