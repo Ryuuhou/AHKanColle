@@ -1,4 +1,4 @@
-﻿;AHKCSortie v1.60803
+﻿;AHKCSortie v1.60813
 
 #Persistent
 #SingleInstance
@@ -142,9 +142,9 @@ Delay:
 		QTS := A_TickCount
 		QTL := SR
 		SetTimer, NBUpdate, 2000
-		Sleep SR
 		tSS := MS2HMS(GetRemainingTime(QTS,QTL))
 		Notify("AHKCSortie", "Starting sortie in " . tSS,1)
+		Sleep SR
 		goto Delay
 	}
 	else if (Busy = 0 and BusyS = 0)

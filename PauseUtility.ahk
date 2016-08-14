@@ -1,23 +1,19 @@
-﻿;Pause Utility v1.1 for AHKanColle and AHKCSortie
-#Persistent
+﻿;Pause Utility v1.60813
 
-;Use 24 hour format only.
-;Set these variables in config.ini file.
-;Put PC to sleep after pausing, 0 for disable, 1 for enable.
-;
-;Example for 18:00. Order of the variables does not matter. config.ini is used by AHKanColle.ahk as well.
-;Do not edit anything in this script, all configurations go in config.ini
-;
-;[Variables]
-;PauseHr=18
-;PauseMn=00
-;PCSleep=0
+if not A_IsAdmin
+{
+   Run *RunAs "%A_ScriptFullPath%"  ; Requires v1.0.92.01+
+   ExitApp
+}
+
+#Persistent
 
 IniRead, PauseHr, config.ini, Variables, PauseHr, -1
 IniRead, PauseMn, config.ini, Variables, PauseMn, -1
 IniRead, ResumeHr, config.ini, Variables, ResumeHr, -1
 IniRead, ResumeMn, config.ini, Variables, ResumeMn, -1
 IniRead, PCSleep, config.ini, Variables, PCSleep, 0
+IniRead, NotificationLevel, config.ini, Variables, NotificationLevel, 1
 
 Resume := 0
 tString := ""
@@ -42,7 +38,7 @@ if not (ResumeHr = -1 or ResumeHr < 0 or ResumeHr > 23 or ResumeMn = -1 or Resum
 	tString := tString . " and resumed at " . ResumeHr . ":" . ResumeMn
 }
 
-MsgBox % tString
+Notify("Pause Utility", tString,1)
 
 return
 
@@ -80,16 +76,19 @@ TogglePause:
 {
 	SetTimer, TogglePause, Off
 	DetectHiddenWindows, On
-	WM_COMMAND := 0x111
-	ID_FILE_PAUSE := 65403
-	PostMessage, WM_COMMAND, ID_FILE_PAUSE,,, %A_ScriptDir%\AHKanColle.ahk ahk_class AutoHotkey
-	PostMessage, WM_COMMAND, ID_FILE_PAUSE,,, %A_ScriptDir%\AHKCSortie.ahk ahk_class AutoHotkey
+	SetTitleMatchMode 2
+	WinGet, ahkc_id, ID, AHKanColle ahk_class AutoHotkeyGUI
+	WinGet, ahkcs_id, ID, AHKCSortie ahk_class AutoHotkeyGUI
+	PostMessage, 0x111, 65306,,, ahk_id %ahkc_id%
+	PostMessage, 0x111, 65306,,, ahk_id %ahkcs_id%
+	Notify("Pause Utility", "Paused",1)
 	if (PCSleep = 1 and Resume = 0)
 	{
 		DllCall("PowrProf\SetSuspendState", "int", 0, "int", 0, "int", 0)
 	}
 	else if Resume = 1
 	{
+		Notify("Pause Utility", "Pause repeating in 24 hours",1)
 		SetTimer, TogglePause, 86400000
 	}
 	return
@@ -99,12 +98,14 @@ ToggleResume:
 {
 	SetTimer, ToggleResume, Off
 	DetectHiddenWindows, On
-	WM_COMMAND := 0x111
-	ID_FILE_PAUSE := 65403
-	PostMessage, WM_COMMAND, ID_FILE_PAUSE,,, %A_ScriptDir%\AHKanColle.ahk ahk_class AutoHotkey
-	PostMessage, WM_COMMAND, ID_FILE_PAUSE,,, %A_ScriptDir%\AHKCSortie.ahk ahk_class AutoHotkey
-	{
-		SetTimer, ToggleResume, 86400000
-	}
+	SetTitleMatchMode 2
+	WinGet, ahkc_id, ID, AHKanColle ahk_class AutoHotkeyGUI
+	WinGet, ahkcs_id, ID, AHKCSortie ahk_class AutoHotkeyGUI
+	PostMessage, 0x111, 65306,,, ahk_id %ahkc_id%
+	PostMessage, 0x111, 65306,,, ahk_id %ahkcs_id%
+	SetTimer, ToggleResume, 86400000
+	Notify("Pause Utility", "Resumed",1)
 	return
 }
+
+#Include %A_ScriptDir%/Functions/Notify.ahk
