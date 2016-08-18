@@ -210,6 +210,10 @@ Sortie:
 	ClickS(tf,PGy)
 	GuiControl,, NB, Starting sortie
 	Sleep MiscDelay
+	if(World = 1 and Map = 5)
+		{
+		ClickS(Extrax,Extray)
+		}
 	tfx := MAPx[Map]
 	tfy := MAPy[Map]
 	ClickS(tfx,tfy)
@@ -374,7 +378,7 @@ MapF:
 		StringReplace, MapV, MapV, `n,,All
 		GuiControl,, MapV, %MapV%
 		Send, {end}
-		if (MapV=1 or MapV=2 or MapV=4)
+		if (MapV=1 or MapV=2 or MapV=4 or MapV=5)
 		{
 			Map := MapV
 			GuiControl,, NB, Map # set
