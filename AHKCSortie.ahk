@@ -327,16 +327,17 @@ Resupply(r)
 	GuiControl,, NB, Resupplying fleet %r%
     Sleep MiscDelay
 	rti := 0
+	rti2 := 5
+	if (World = 1 and Map = 1 and Sparkling = 1)
+	{
+		rti2 := 0
+	}
 	Loop
 	{
 		ClickS(SAx,SAy+50*rti)
-		if (World = 1 and Map = 1 and Sparkling = 1)
-		{
-			Break
-		}
 		rti := rti+1
 		Sleep 1
-	}Until rti > 5
+	}Until (rti > rti2)
 	ClickS(ESx,ESy)
 	pc := []
 	pc := [RPC]
