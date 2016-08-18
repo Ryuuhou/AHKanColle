@@ -1,4 +1,4 @@
-﻿;PixelMap v1.51230
+﻿;PixelMap v1.51232
 
 
 PixelMap()
@@ -17,6 +17,10 @@ PixelMap()
 	SAy := FY - 291
 	Ex := FX + 280 ;Expedition Button
 	Ey := FY - 240
+	Extrax := FX + 300 ;Extra mission Button
+	Extray := FY - 240
+	LAbreastx := FX + 266
+	LAbreasty := FY - 115
 	ESx := FX + 330
 	ESy := FY - 15
 	3Ex := FX + 45
@@ -54,6 +58,8 @@ PixelMap()
 	MAPy[2] := FY - 247
 	MAPx[4] := FX + 252
 	MAPy[4] := FY - 100
+	MAPx[5] := FX + 252
+	MAPy[5] := FY - 247
 	LAx := FX + 69
 	LAy := FY - 275
 	CSBx := FX - 86

@@ -1,4 +1,4 @@
-﻿;AHKCSortie v1.60814
+﻿;AHKCSortie v1.60816
 
 #Persistent
 #SingleInstance
@@ -210,6 +210,10 @@ Sortie:
 	ClickS(tf,PGy)
 	GuiControl,, NB, Starting sortie
 	Sleep MiscDelay
+	if(World = 1 and Map = 5)
+		{
+		ClickS(Extrax,Extray)
+		}
 	tfx := MAPx[Map]
 	tfy := MAPy[Map]
 	ClickS(tfx,tfy)
@@ -232,6 +236,19 @@ Sortie:
 		pc := [CPC,FPC,IBPC]
 		tpc := WaitForPixelColor(LAx,LAy,pc,,,30)
 		Sleep MiscDelay
+		if(World = 1 and Map = 5)
+		{
+			ClickS(ESx,ESy)
+			GuiControl,, NB, Waiting for formation
+			pc := []
+			pc := [FPC,IBPC]
+			tpc2 := WaitForPixelColor(LAx,LAy,pc)
+			if tpc2 = 1
+			{
+				Sleep MiscDelay
+				ClickS(LAbreastx,LAbreasty)
+			}
+		}
 		if tpc = 1
 		{
 			ClickS(ESx,ESy)
@@ -375,7 +392,7 @@ MapF:
 		StringReplace, MapV, MapV, `n,,All
 		GuiControl,, MapV, %MapV%
 		Send, {end}
-		if (MapV=1 or MapV=2 or MapV=4)
+		if (MapV=1 or MapV=2 or MapV=4 or MapV=5)
 		{
 			Map := MapV
 			GuiControl,, NB, Map # set
