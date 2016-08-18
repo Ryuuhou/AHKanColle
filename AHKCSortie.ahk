@@ -1,4 +1,4 @@
-﻿;AHKCSortie v1.60814
+﻿;AHKCSortie v1.60816
 
 #Persistent
 #SingleInstance
@@ -236,6 +236,19 @@ Sortie:
 		pc := [CPC,FPC,IBPC]
 		tpc := WaitForPixelColor(LAx,LAy,pc,,,30)
 		Sleep MiscDelay
+		if(World = 1 and Map = 5)
+		{
+			ClickS(ESx,ESy)
+			GuiControl,, NB, Waiting for formation
+			pc := []
+			pc := [FPC,IBPC]
+			tpc2 := WaitForPixelColor(LAx,LAy,pc)
+			if tpc2 = 1
+			{
+				Sleep MiscDelay
+				ClickS(LAbreastx,LAbreasty)
+			}
+		}
 		if tpc = 1
 		{
 			ClickS(ESx,ESy)
