@@ -1,4 +1,4 @@
-﻿;AHKCSortie v1.60816
+﻿;AHKCSortie v1.60820
 
 #Persistent
 #SingleInstance
@@ -210,10 +210,10 @@ Sortie:
 	ClickS(tf,PGy)
 	GuiControl,, NB, Starting sortie
 	Sleep MiscDelay
-	if(World = 1 and Map = 5)
-		{
+	if(Map > 4)
+	{
 		ClickS(Extrax,Extray)
-		}
+	}
 	tfx := MAPx[Map]
 	tfy := MAPy[Map]
 	ClickS(tfx,tfy)
@@ -236,19 +236,6 @@ Sortie:
 		pc := [CPC,FPC,IBPC]
 		tpc := WaitForPixelColor(LAx,LAy,pc,,,30)
 		Sleep MiscDelay
-		if(World = 1 and Map = 5)
-		{
-			ClickS(ESx,ESy)
-			GuiControl,, NB, Waiting for formation
-			pc := []
-			pc := [FPC,IBPC]
-			tpc2 := WaitForPixelColor(LAx,LAy,pc)
-			if tpc2 = 1
-			{
-				Sleep MiscDelay
-				ClickS(LAbreastx,LAbreasty)
-			}
-		}
 		if tpc = 1
 		{
 			ClickS(ESx,ESy)
@@ -259,12 +246,26 @@ Sortie:
 			if tpc2 = 1
 			{
 				Sleep MiscDelay
-				ClickS(LAx,LAy)
+				if(World = 1 and Map = 5)
+				{
+					ClickS(LAbreastx,LAbreasty)
+				}
+				else
+				{
+					ClickS(LAx,LAy)
+				}
 			}
 		}
 		else if tpc = 2 
 		{
-			ClickS(LAx,LAy)	
+			if(World = 1 and Map = 5)
+			{
+				ClickS(LAbreastx,LAbreasty)
+			}
+			else
+			{
+				ClickS(LAx,LAy)
+			}
 		}
 		GuiControl,, NB, Waiting for results
 		pc := []
