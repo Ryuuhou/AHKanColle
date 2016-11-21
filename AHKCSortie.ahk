@@ -556,7 +556,7 @@ Initialize()
 	pc := Array(item)
     Q := Array()
 	NC := 0
-	coffset := 2
+	coffset := 7
 }
 
 GuiClose:
