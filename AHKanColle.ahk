@@ -816,7 +816,7 @@ Initialize()
 	CDT[4] := 0
     RF := 0
 	IB := 0
-	coffset := 2
+	coffset := 7
 	#Include %A_ScriptDir%/Constants/ExpeditionTime.ahk
 }
 

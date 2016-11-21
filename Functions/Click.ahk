@@ -2,6 +2,7 @@
 
 ClickS(x,y)
 {
+	sleep 1500
 	global uid
 	global Background
 	global XDiff
