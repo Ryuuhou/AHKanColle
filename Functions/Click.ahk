@@ -1,14 +1,15 @@
-﻿;Click v1.60501
+﻿;Click v1.61121
 
 ClickS(x,y)
 {
-	sleep 1500
 	global uid
 	global Background
 	global XDiff
 	global YDiff
 	global Class
+	global ClickDelay
 	global coffset
+	Sleep ClickDelay
 	WinActivateRestore()
 	Random, xoff, -coffset, coffset
 	Random, yoff, -coffset, coffset

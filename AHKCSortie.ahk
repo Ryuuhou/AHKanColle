@@ -1,4 +1,4 @@
-﻿;AHKCSortie v1.60820
+﻿;AHKCSortie v1.61121
 
 #Persistent
 #SingleInstance
@@ -558,6 +558,7 @@ Initialize()
 	pc := Array(item)
     Q := Array()
 	NC := 0
+	ClickDelay := 500
 	coffset := 7
 }
 
