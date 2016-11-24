@@ -1,4 +1,4 @@
-﻿;Pixel Color Constants v1.51230
+﻿;Pixel Color Constants v1.61124
 
 HPC := 0x4acacd ;Home
 HEPC := 0x42b6b8 ;Home + Exped
@@ -25,3 +25,4 @@ NBPC := 0x408 ;Night Battle
 CSPC := 0x162629 ;Continue Screen
 CCPC := 0xcc5852 ;Critical
 IBPC := 0x3a87b3 ;In Battle
+EX2PC := 0x23A0A1 ; Expedition 2 highlighted 

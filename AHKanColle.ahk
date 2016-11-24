@@ -1,4 +1,4 @@
-﻿;AHKanColle v1.61121
+﻿;AHKanColle v1.61124
 
 if not A_IsAdmin
 {
@@ -289,7 +289,9 @@ Resupply(r)
 	GuiControl,, NB, Resupplying expedition %r%
     if r = 2
 	{
-        ClickS(2Rx,234Ry)
+		pc := []
+		pc := [EX2PC]
+		WaitForPixelColor(2Rx,234Ry,pc,2Rx,234Ry)
 	}
     else if r = 3
 	{
