@@ -21,11 +21,11 @@ PixelMap()
 	Extray := FY - 240
 	LAbreastx := FX + 266
 	LAbreasty := FY - 115
-	ESx := FX + 330
-	ESy := FY - 15
-	3Ex := FX + 45
-	4Ex := FX + 75
-	34Ey := FY - 335
+	ESx := FX + 290
+	ESy := FY - 11
+	3Ex := FX + 47
+	4Ex := FX + 78
+	34Ey := FY - 344
 	2Rx := FX - 200
 	3Rx := FX - 170
 	4Rx := FX - 140
