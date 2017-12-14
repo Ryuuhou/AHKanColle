@@ -816,8 +816,8 @@ Initialize()
 	CDT[4] := 0
     RF := 0
 	IB := 0
-	ClickDelay := 500
-	coffset := 7
+	ClickDelay := 150
+	coffset := 4
 	#Include %A_ScriptDir%/Constants/ExpeditionTime.ahk
 }
 

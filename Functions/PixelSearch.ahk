@@ -23,7 +23,7 @@ RPixelSearch()
 		RPTR := 0
 		loop
 		{
-			run = run + 1
+			run := run + 1
 			PixelSearch, BX1, BY1, tx, ty, WinW, cy, RPN, 1, Fast RGB
 			if (ErrorLevel = 0)
 			{
@@ -59,6 +59,7 @@ RPixelSearch()
 			}
 			
 		} until ty >= WinH
+		MsgBox % run
 		if (PSS = 0)
 		{
 			WinActivate, ahk_id %uid%
@@ -71,7 +72,7 @@ RPixelSearch()
 			run := 0
 			loop
 			{
-				run = run + 1
+				run := run + 1
 				PixelSearch, BX1, BY1, tx, ty, WinW, cy, RPD, 1, Fast RGB
 				if (ErrorLevel = 0)
 				{
@@ -108,6 +109,7 @@ RPixelSearch()
 				
 			} until ty >= WinH
 		}
+		MsgBox % run
 		if PSS = 1
 		{
 			if not Class = 0
