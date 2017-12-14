@@ -10,8 +10,6 @@ RPixelSearch()
 	local PSS
 	local RPTL
 	local RPTR
-	local RPTU
-	local RPTD
 	loop
 	{
 		WinActivate, ahk_id %uid%
@@ -21,21 +19,16 @@ RPixelSearch()
 		cy := WinH
 		RPTL := 0
 		RPTR := 0
-		RPTU := 0
-		RPTD := 0
 		loop
 		{
-			PixelSearch, BX1, BY1, tx, ty, WinW, cy, RPN1, 1, Fast RGB
-			;MsgBox % BX1 .  ", " . BY1 .  ", " . tx .  ", " . ty .  ", " . cy
-			;MsgBox % BX1 .  ", " . BY1
+			PixelSearch, BX1, BY1, tx, ty, WinW, cy, RPN, 1, Fast RGB
 			if (ErrorLevel = 0)
 			{
-				;MsgBox % BX1 .  ", " . BY1
+				
+				MsgBox % BX1 .  ", " . BY1
 				PixelGetColor, RPTL, BX1-1, BY1, RGB
 				PixelGetColor, RPTR, BX1+1, BY1, RGB
-				PixelGetColor, RPTU, BX1, BY1-1, RGB
-				PixelGetColor, RPTD, BX1, BY1+1, RGB
-				if (RPTL = RPN1 and RPTR = RPN1 and RPTU = RPN1 and RPTD = RPN1)
+				if (RPTL = RPNL and RPTR = RPNR)
 				{
 					PSS := 1
 					;MsgBox % BX1 .  ", " . BY1
@@ -70,8 +63,8 @@ RPixelSearch()
 				XDiff := BX1 - 678
 				YDiff := BY1 - 17
 			}
-			FX := BX1 - 398
-			FY := BY1 + 9
+			FX := BX1 - 397
+			FY := BY1 + 19
 			PixelMap()
 			GuiControl,, NB, Ready
 			return

@@ -380,7 +380,7 @@ SendExp(n)
 			else if n = 4
 				ClickS(4Ex,34Ey)
 			Sleep MiscDelay
-			ClickS(ESx,ESy)
+			ClickS(ES2x,ES2y)
 		}
 		pc := []
 		pc := [EPC]

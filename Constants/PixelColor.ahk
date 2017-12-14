@@ -1,6 +1,6 @@
 ﻿;Pixel Color Constants v1.51230
 
-HPC := 0x4acacd ;Home
+HPC := 0x33b3b4 ;Home
 HEPC := 0x42b6b8 ;Home + Exped
 ;0x49afb1 = fleet selection
 ;0x41413c = " "
@@ -13,8 +13,10 @@ NRPC := 0x444444 ;Needs Resupply
 ECPC := 0xffffff ;Error Cat
 EHPC := 0xee8b28 ;Cancel expedition button hovered
 ENPC := 0xcd3547 ;Cancel expedition button
-RPN1 := 0x209fa2 ;Reference Pixel Normal
-RPD1 := 0x1c8f92 ;Reference Pixel Dimmed
+RPN := 0xb0887f ;Reference pixel normal
+RPNL := 0x686d4a ;Reference pixel left
+RPNR := 0xa88665 ; Reference pixel right
+RPD1 := 0x1c8f92 ;Reference Pixel Dimmed NOT DONE YET
 REPC := 0xe8dece ;Repair
 CPC := 0xd0d5d3 ;Compass
 FPC := 0xdedfdc ;Formation
