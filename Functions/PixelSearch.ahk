@@ -59,7 +59,6 @@ RPixelSearch()
 			}
 			
 		} until ty >= WinH
-		MsgBox % run
 		if (PSS = 0)
 		{
 			WinActivate, ahk_id %uid%
@@ -109,7 +108,6 @@ RPixelSearch()
 				
 			} until ty >= WinH
 		}
-		MsgBox % run
 		if PSS = 1
 		{
 			if not Class = 0
