@@ -61,56 +61,52 @@ RPixelSearch()
 		} until ty >= WinH
 		if (PSS = 0)
 		{
+			WinActivate, ahk_id %uid%
+			PSS := 0
+			tx := 0
+			ty := 0
+			cy := WinH
+			RPTL := 0
+			RPTR := 0
+			run := 0
 			loop
 			{
-				WinActivate, ahk_id %uid%
-				PSS := 0
-				tx := 0
-				ty := 0
-				cy := WinH
-				RPTL := 0
-				RPTR := 0
-				run := 0
-				loop
+				run = run + 1
+				PixelSearch, BX1, BY1, tx, ty, WinW, cy, RPD, 1, Fast RGB
+				if (ErrorLevel = 0)
 				{
-					run = run + 1
-					PixelSearch, BX1, BY1, tx, ty, WinW, cy, RPD, 1, Fast RGB
-					if (ErrorLevel = 0)
+					PixelGetColor, RPTL, BX1-1, BY1, RGB
+					PixelGetColor, RPTR, BX1+1, BY1, RGB
+					if (RPTL = RPDL and RPTR = RPDR)
 					{
-						PixelGetColor, RPTL, BX1-1, BY1, RGB
-						PixelGetColor, RPTR, BX1+1, BY1, RGB
-						MsgBox % RPTL . ", " . RPTR
-						if (RPTL = RPDL and RPTR = RPDR)
-						{
-							PSS := 1
-							break
-						}
-						if (++tx >= WinW)
-						{
-							tx := 0
-							ty := ty + 1
-							cy := ty
-						}
-						else
-						{
-							tx := BX1+1
-							ty := BY1
-							cy := BY1
-						}
-					}
-					else if (run = 1)
-					{
+						PSS := 1
 						break
 					}
-					else
+					if (++tx >= WinW)
 					{
 						tx := 0
 						ty := ty + 1
-						cy := WinH
+						cy := ty
 					}
-					
-				} until ty >= WinH
-			}
+					else
+					{
+						tx := BX1+1
+						ty := BY1
+						cy := BY1
+					}
+				}
+				else if (run = 1)
+				{
+					break
+				}
+				else
+				{
+					tx := 0
+					ty := ty + 1
+					cy := WinH
+				}
+				
+			} until ty >= WinH
 		}
 		if PSS = 1
 		{
