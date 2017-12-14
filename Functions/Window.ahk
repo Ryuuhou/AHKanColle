@@ -52,6 +52,7 @@ SetWindow()
 			}
 		}
 	}
+	RPixelDump()
 	RPixelSearch()
 }
 
