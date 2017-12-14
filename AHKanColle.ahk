@@ -1,4 +1,4 @@
-﻿;AHKanColle v1.61121
+﻿;AHKanColle v1.71214
 
 if not A_IsAdmin
 {
@@ -779,7 +779,6 @@ Refresh:
 #Include %A_ScriptDir%/Functions/Pause.ahk
 #Include %A_ScriptDir%/Functions/Window.ahk
 #Include %A_ScriptDir%/Functions/PixelSearch.ahk
-#Include %A_ScriptDir%/Functions/PixelDump.ahk
 #Include %A_ScriptDir%/Functions/StayAwake.ahk
 #Include %A_ScriptDir%/Functions/PixelMap.ahk
 #Include %A_ScriptDir%/Functions/Notify.ahk

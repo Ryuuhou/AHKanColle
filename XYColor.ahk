@@ -59,6 +59,8 @@ return
 		GuiControl,, FYB, %ty%
 		PixelGetColor, PC, mxp, myp, RGB
 		GuiControl,, ColorB, %PC%
+		PixelGetColor, PC, FX, FY, RGB
+		MsgBox % PC
 		
 	}
 	return

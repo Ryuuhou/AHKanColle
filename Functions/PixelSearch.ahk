@@ -1,4 +1,4 @@
-﻿;PixelSearch v1.04 11/26/15
+﻿;PixelSearch v1.71214
 
 RPixelSearch()
 {
@@ -10,6 +10,7 @@ RPixelSearch()
 	local PSS
 	local RPTL
 	local RPTR
+	local run
 	loop
 	{
 		WinActivate, ahk_id %uid%
@@ -17,21 +18,20 @@ RPixelSearch()
 		tx := 0
 		ty := 0
 		cy := WinH
+		run := 0
 		RPTL := 0
 		RPTR := 0
 		loop
 		{
+			run = run + 1
 			PixelSearch, BX1, BY1, tx, ty, WinW, cy, RPN, 1, Fast RGB
 			if (ErrorLevel = 0)
 			{
-				
-				MsgBox % BX1 .  ", " . BY1
 				PixelGetColor, RPTL, BX1-1, BY1, RGB
 				PixelGetColor, RPTR, BX1+1, BY1, RGB
 				if (RPTL = RPNL and RPTR = RPNR)
 				{
 					PSS := 1
-					;MsgBox % BX1 .  ", " . BY1
 					break
 				}
 				if (++tx >= WinW)
@@ -47,6 +47,10 @@ RPixelSearch()
 					cy := BY1
 				}
 			}
+			else if (run = 1)
+			{
+				break
+			}
 			else
 			{
 				tx := 0
@@ -55,7 +59,59 @@ RPixelSearch()
 			}
 			
 		} until ty >= WinH
-
+		if (PSS = 0)
+		{
+			loop
+			{
+				WinActivate, ahk_id %uid%
+				PSS := 0
+				tx := 0
+				ty := 0
+				cy := WinH
+				RPTL := 0
+				RPTR := 0
+				run := 0
+				loop
+				{
+					run = run + 1
+					PixelSearch, BX1, BY1, tx, ty, WinW, cy, RPD, 1, Fast RGB
+					if (ErrorLevel = 0)
+					{
+						PixelGetColor, RPTL, BX1-1, BY1, RGB
+						PixelGetColor, RPTR, BX1+1, BY1, RGB
+						MsgBox % RPTL . ", " . RPTR
+						if (RPTL = RPDL and RPTR = RPDR)
+						{
+							PSS := 1
+							break
+						}
+						if (++tx >= WinW)
+						{
+							tx := 0
+							ty := ty + 1
+							cy := ty
+						}
+						else
+						{
+							tx := BX1+1
+							ty := BY1
+							cy := BY1
+						}
+					}
+					else if (run = 1)
+					{
+						break
+					}
+					else
+					{
+						tx := 0
+						ty := ty + 1
+						cy := WinH
+					}
+					
+				} until ty >= WinH
+			}
+		}
 		if PSS = 1
 		{
 			if not Class = 0
@@ -63,8 +119,8 @@ RPixelSearch()
 				XDiff := BX1 - 678
 				YDiff := BY1 - 17
 			}
-			FX := BX1 - 397
-			FY := BY1 + 19
+			FX := BX1 + 98
+			FY := BY1 + 458
 			PixelMap()
 			GuiControl,, NB, Ready
 			return
