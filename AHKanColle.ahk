@@ -1,4 +1,5 @@
-﻿;AHKanColle v1.61124
+;AHKanColle v1.71214
+
 
 if not A_IsAdmin
 {
@@ -382,7 +383,7 @@ SendExp(n)
 			else if n = 4
 				ClickS(4Ex,34Ey)
 			Sleep MiscDelay
-			ClickS(ESx,ESy)
+			ClickS(ES2x,ES2y)
 		}
 		pc := []
 		pc := [EPC]
@@ -818,8 +819,8 @@ Initialize()
 	CDT[4] := 0
     RF := 0
 	IB := 0
-	ClickDelay := 500
-	coffset := 7
+	ClickDelay := 150
+	coffset := 4
 	#Include %A_ScriptDir%/Constants/ExpeditionTime.ahk
 }
 

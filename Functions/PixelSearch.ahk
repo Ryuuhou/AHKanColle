@@ -1,30 +1,115 @@
-﻿;PixelSearch v1.04 11/26/15
+﻿;PixelSearch v1.71214
 
 RPixelSearch()
 {
 	global
 	local i := 1
+	local tx
+	local ty
+	local cy
 	local PSS
-	Loop
+	local RPTL
+	local RPTR
+	local run
+	loop
 	{
 		WinActivate, ahk_id %uid%
 		PSS := 0
-		PixelSearch, BX1, BY1, 0, 0, WinW, WinH, BPC1, 1, Fast RGB
-		PixelGetColor, BPCT, BX1+1, BY1, RGB
-		if (ErrorLevel = 0 and BPCT = BPC2)
+		tx := 0
+		ty := 0
+		cy := WinH
+		run := 0
+		RPTL := 0
+		RPTR := 0
+		loop
 		{
-			PSS := 1
-		}	
-		else
-		{
-			PixelSearch, BX1, BY1, 0, 0, WinW, WinH, BEPC1, 1, Fast RGB
-			PixelGetColor, BPCT, BX1+1, BY1, RGB
-			if (ErrorLevel = 0 and BPCT = BEPC2)
+			run := run + 1
+			PixelSearch, BX1, BY1, tx, ty, WinW, cy, RPN, 1, Fast RGB
+			if (ErrorLevel = 0)
 			{
-				PSS := 1
+				PixelGetColor, RPTL, BX1-1, BY1, RGB
+				PixelGetColor, RPTR, BX1+1, BY1, RGB
+				if (RPTL = RPNL and RPTR = RPNR)
+				{
+					PSS := 1
+					break
+				}
+				if (++tx >= WinW)
+				{
+					tx := 0
+					ty := ty + 1
+					cy := ty
+				}
+				else
+				{
+					tx := BX1+1
+					ty := BY1
+					cy := BY1
+				}
 			}
+			else if (run = 1)
+			{
+				break
+			}
+			else
+			{
+				tx := 0
+				ty := ty + 1
+				cy := WinH
+			}
+			
+		} until ty >= WinH
+		MsgBox % run
+		if (PSS = 0)
+		{
+			WinActivate, ahk_id %uid%
+			PSS := 0
+			tx := 0
+			ty := 0
+			cy := WinH
+			RPTL := 0
+			RPTR := 0
+			run := 0
+			loop
+			{
+				run := run + 1
+				PixelSearch, BX1, BY1, tx, ty, WinW, cy, RPD, 1, Fast RGB
+				if (ErrorLevel = 0)
+				{
+					PixelGetColor, RPTL, BX1-1, BY1, RGB
+					PixelGetColor, RPTR, BX1+1, BY1, RGB
+					if (RPTL = RPDL and RPTR = RPDR)
+					{
+						PSS := 1
+						break
+					}
+					if (++tx >= WinW)
+					{
+						tx := 0
+						ty := ty + 1
+						cy := ty
+					}
+					else
+					{
+						tx := BX1+1
+						ty := BY1
+						cy := BY1
+					}
+				}
+				else if (run = 1)
+				{
+					break
+				}
+				else
+				{
+					tx := 0
+					ty := ty + 1
+					cy := WinH
+				}
+				
+			} until ty >= WinH
 		}
-
+		MsgBox % run
 		if PSS = 1
 		{
 			if not Class = 0
@@ -32,8 +117,8 @@ RPixelSearch()
 				XDiff := BX1 - 678
 				YDiff := BY1 - 17
 			}
-			FX := BX1 - 304
-			FY := BY1 + 441
+			FX := BX1 + 98
+			FY := BY1 + 458
 			PixelMap()
 			GuiControl,, NB, Ready
 			return
