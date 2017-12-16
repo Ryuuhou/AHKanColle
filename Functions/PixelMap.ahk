@@ -1,4 +1,4 @@
-;PixelMap v1.71214
+;PixelMap v1.71216
 
 
 PixelMap()
@@ -7,6 +7,8 @@ PixelMap()
 	local i := 1
 	Hx := FX - 330 ;Home Button
 	Hy := FY - 415
+	Gx := FX + 401
+	Gy := FY - 8
 	Sx := FX - 185 ;Sortie Button
 	Sy := FY - 200
 	S2x := FX - 151

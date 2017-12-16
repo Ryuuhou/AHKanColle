@@ -1,4 +1,4 @@
-﻿;PixelCheck v1.51230
+﻿;PixelCheck v1.71216
 
 DEC2HEX(DEC, RARGB="false") 
 {
@@ -67,6 +67,7 @@ WaitForPixelColor(x, y, pc, cx := -1, cy := -1, timeout := 60)
 		Sleep 500
 		i += 1
 	}Until i > timeout
+	;MsgBox % "Expecting " . v . ", got " . tpc
 	if ecc > 5
 	{
 		GuiControl,, NB, ErrorCat

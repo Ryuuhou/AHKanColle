@@ -1,18 +1,15 @@
-;Pixel Color Constants v1.71214
+;Pixel Color Constants v1.71216
 
-HPC := 0x33b3b4 ;Home
-HEPC := 0x2ea1a2 ;Home + Exped
-;0x49afb1 = fleet selection
-;0x41413c = " "
-RPC := 0xeee6d9 ;Resupply
-SPC := 0x293137 ;Sortie
+HPC := 0x209fa2 ;Home
+HEPC := 0x1c8f92 ;Home + Exped
+RPC := 0x404041 ;Resupply
+SPC := 0x626D6F ;Sortie
 S2PC := 0x37444d ;Sortie 2
-EPC := 0xede6d9 ;Expeditions
+EPC := 0xEFE8DB ;Expeditions
+ESUPC := 0x540907 ;Expedition sent unhovered button
+ESHPC := 0x760607 ;Expedition sent hovered button
 NRPC := 0x444444 ;Needs Resupply
-;RRPC := 0xd1c1b2 ;Resupplied (Legacy)
 ECPC := 0xffffff ;Error Cat
-EHPC := 0xee8b28 ;Cancel expedition button hovered
-ENPC := 0xcd3547 ;Cancel expedition button
 RPN := 0xb0887f ;Reference pixel normal
 RPNL := 0x686d4a ;Reference pixel left
 RPNR := 0xa88665 ;Reference pixel right
