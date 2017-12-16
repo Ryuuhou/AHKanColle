@@ -1,4 +1,4 @@
-;AHKanColle v1.71214
+;AHKanColle v1.71216
 
 
 if not A_IsAdmin
@@ -200,14 +200,14 @@ Queue:
 	CheckWindow()
 	GuiControl,, NB, Waiting for home screen...
 	tpc := 0
-	tpc := PixelGetColorS(FX,FY,3)
+	tpc := PixelGetColorS(Gx,Gy,3)
 	if (tpc = HPC)
 	{
 		GuiControl,, NB, Detected home screen
 		ClickS(Rx,Ry)
 		pc := []
 		pc := [RPC]
-		WaitForPixelColor(FX,FY,pc)
+		WaitForPixelColor(Gx,Gy,pc)
 	}
 	if (tpc != HEPC)
 	{
@@ -215,13 +215,13 @@ Queue:
 	}
 	pc := []
 	pc := [HPC,HEPC]
-	tpc := WaitForPixelColor(FX,FY,pc,,,900)
+	tpc := WaitForPixelColor(Gx,Gy,pc,,,900)
 	if tpc = 2
 	{
 		GuiControl,, NB, Detected expeditions returning, waiting for animations
 		pc := []
 		pc := [HPC]
-		WaitForPixelColor(FX,FY,pc,ESx,ESy,120)
+		WaitForPixelColor(Gx,Gy,pc,ESx,ESy,120)
 	}
 	else if tpc = 0
 	{
@@ -271,7 +271,7 @@ Resupply(r)
     global
 	GuiControl,, NB, Resupplying...
 	tpc := 0
-	tpc := PixelGetColorS(FX,FY,3)
+	tpc := PixelGetColorS(Gx,Gy,3)
 	if (tpc = HPC)
 	{
         ClickS(Rx,Ry)
@@ -281,12 +281,12 @@ Resupply(r)
         ClickS(Hx,Hy)
 		pc := []
 		pc := [HPC]
-        WaitForPixelColor(FX,FY,pc)
+        WaitForPixelColor(Gx,Gy,pc)
         ClickS(Rx,Ry)
     }
 	pc := []
 	pc := [RPC]
-	WaitForPixelColor(FX,FY,pc)
+	WaitForPixelColor(Gx,Gy,pc)
 	GuiControl,, NB, Resupplying expedition %r%
     if r = 2
 	{
@@ -313,7 +313,7 @@ Resupply(r)
 	ClickS(ESx,ESy)
 	pc := []
 	pc := [RPC]
-	WaitForPixelColor(FX,FY,pc)
+	WaitForPixelColor(Gx,Gy,pc)
 }
     
 SendExp(n)
@@ -325,24 +325,24 @@ SendExp(n)
         td := SetExped[n]
         te := Eh[td]
 		tpc := 0
-		tpc := PixelGetColorS(FX,FY,3)
-		if (tpc != EPC)
+		tpc := PixelGetColorS(Gx,Gy,3)
+		if (tpc != EPC and tpc != ESUPC and tpc != ESHPC)
 		{
 			if (tpc != HPC)
 			{
 				ClickS(Hx,Hy)
 				pc := []
 				pc := [HPC]
-				WaitForPixelColor(FX,FY,pc)
+				WaitForPixelColor(Gx,Gy,pc)
 			}
 			ClickS(Sx,Sy)
 			pc := []
 			pc := [SPC]
-            WaitForPixelColor(FX,FY,pc)
+            WaitForPixelColor(Gx,Gy,pc)
             ClickS(Ex,Ey)
 			pc := []
 			pc := [EPC]
-            WaitForPixelColor(FX,FY,pc)	
+            WaitForPixelColor(Gx,Gy,pc)	
 		}
 		GuiControl,, NB, Sending expedition %n%
         if td >  32
@@ -373,8 +373,8 @@ SendExp(n)
         Sleep MiscDelay
         ClickS(FX,te)
         Sleep MiscDelay
-		tpc := PixelGetColorS(ESx,ESy,2)
-		if (tpc != EHPC and tpc != ENPC)
+		tpc := PixelGetColorS(Gx,Gy,2)
+		if (tpc != ESUPC and tpc != ESHPC)
 		{
 			ClickS(ESx,ESy)
 			Sleep MiscDelay
@@ -385,9 +385,13 @@ SendExp(n)
 			Sleep MiscDelay
 			ClickS(ESx,ESy)
 		}
+		else
+		{
+			GuiControl,, NB, Error: Expedition in progress
+		}
 		pc := []
-		pc := [EPC]
-		WaitForPixelColor(FX,FY,pc)
+		pc := [ESUPC,ESHPC]
+		WaitForPixelColor(Gx,Gy,pc)
         if n = 2
         {
             ta := (ET[SetExped[2]]+ClockDelay)*-1
